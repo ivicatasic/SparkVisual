@@ -1,0 +1,20 @@
+﻿products,subproducts
+Economy,Inflation - annual growth rate
+Economy,GDP – quarterly growth rate
+Economy,Monthly industrial production
+Economy,Monthly volume of retail trade
+Economy,Monthly production in construction
+Population and health,Monthly excess mortality
+Population and health,Number of deaths by week
+Population and health,Monthly first-time asylum applicants
+Society and work,Monthly unemployment rate
+Society and work,Monthly youth unemployment rate
+Society and work,Quarterly employment
+Society and work,Quarterly labour market slack
+Society and work,Quarterly job vacancy rate
+Society and work,Quarterly labour cost
+"Agriculture, energy, transport & tourism",Monthly air passenger transport
+"Agriculture, energy, transport & tourism",Monthly commercial air flights
+"Agriculture, energy, transport & tourism",Monthly arrivals at tourist accommodation
+"Agriculture, energy, transport & tourism",Monthly nights spent at tourist accommodation
+"Agriculture, energy, transport & tourism",Monthly electricity consumed by end-users
