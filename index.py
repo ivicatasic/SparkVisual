@@ -820,7 +820,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
             'data': [go.Scatter(x=lab,
                                 y=valueEu1,
                                 mode='lines+markers',
-                                name='European Union',
+                                name='EU',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#E6D1D1'),
                                 marker=dict(size=5, symbol='circle', color='lightblue',
                                             line=dict(color='#E6D1D1', width=2)
@@ -834,7 +834,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                      go.Scatter(x=lab,
                                 y=valueBel1,
                                 mode='lines+markers',
-                                name='Belgium',
+                                name='BE',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#FF00FF'),
                                 marker=dict(size=5, symbol='circle', color='lightblue',
                                             line=dict(color='#FF00FF', width=2)
@@ -847,7 +847,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                      go.Scatter(x=lab,
                                 y=valueSer1,
                                 mode='lines+markers',
-                                name='Serbia',
+                                name='RS',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#FF0000'),
                                 marker=dict(size=5, symbol='circle', color='lightblue',
                                             line=dict(color='#FF0000', width=2)
@@ -855,7 +855,417 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 hoverinfo='text',
                                 hovertext=
                                 '<b>Country</b>: ' + 'Serbia' + '<br>'
-                                )
+                                ),
+                     go.Scatter(x=lab,
+                                y=valueMal1,
+                                mode='lines+markers',
+                                name='MT',
+                                line=dict(shape="spline", smoothing=1.3, width=3, color='#FF00FF'),
+                                marker=dict(size=5, symbol='circle', color='lightblue',
+                                            line=dict(color='#FF00FF', width=2)
+                                            ),
+                                hoverinfo='text',
+                                hovertext=
+                                '<b>Country</b>: ' + 'Malta' + '<br>'
+
+                                ),
+                     go.Scatter(x=lab,
+                                y=valueEa1,
+                                mode='lines+markers',
+                                name='EA',
+                                line=dict(shape="spline", smoothing=1.3, width=3, color='#472727'),
+                                marker=dict(size=5, symbol='circle', color='lightblue',
+                                            line=dict(color='#472727', width=2)
+                                            ),
+                                hoverinfo='text',
+                                hovertext=
+                                '<b>Country</b>: ' + 'Euro area' + '<br>'
+                                ),
+                     go.Scatter(x=lab,
+                                y=valueBul1,
+                                mode='lines+markers',
+                                name='BG',
+                                line=dict(shape="spline", smoothing=1.3, width=3, color='#353131'),
+                                marker=dict(size=5, symbol='circle', color='lightblue',
+                                            line=dict(color='#353131', width=2)
+                                            ),
+                                hoverinfo='text',
+                                hovertext=
+                                '<b>Country</b>: ' + 'Bulgaria' + '<br>'
+                                ),
+                     go.Scatter(x=lab,
+                                y=valueChe1,
+                                mode='lines+markers',
+                                name='CZ',
+                                line=dict(shape="spline", smoothing=1.3, width=3, color='#49AF30'),
+                                marker=dict(size=5, symbol='circle', color='lightblue',
+                                            line=dict(color='#49AF30', width=2)
+                                            ),
+                                hoverinfo='text',
+                                hovertext=
+                                '<b>Country</b>: ' + 'Czechia' + '<br>'
+                                ),
+                     go.Scatter(x=lab,
+                                y=valueDen1,
+                                mode='lines+markers',
+                                name='DK',
+                                line=dict(shape="spline", smoothing=1.3, width=3, color='#2A4623'),
+                                marker=dict(size=5, symbol='circle', color='lightblue',
+                                            line=dict(color='#2A4623', width=2)
+                                            ),
+                                hoverinfo='text',
+                                hovertext=
+                                '<b>Country</b>: ' + 'Denmark' + '<br>'
+                                ),
+                     go.Scatter(x=lab,
+                                y=valueGer1,
+                                mode='lines+markers',
+                                name='DE',
+                                line=dict(shape="spline", smoothing=1.3, width=3, color='#7B7D7B'),
+                                marker=dict(size=5, symbol='circle', color='lightblue',
+                                            line=dict(color='#7B7D7B', width=2)
+                                            ),
+                                hoverinfo='text',
+                                hovertext=
+                                '<b>Country</b>: ' + 'Germany' + '<br>'
+                                ),
+                     go.Scatter(x=lab,
+                                y=valueEst1,
+                                mode='lines+markers',
+                                name='EE',
+                                line=dict(shape="spline", smoothing=1.3, width=3, color='#C4C048'),
+                                marker=dict(size=5, symbol='circle', color='lightblue',
+                                            line=dict(color='#C4C048', width=2)
+                                            ),
+                                hoverinfo='text',
+                                hovertext=
+                                '<b>Country</b>: ' + 'Estonia' + '<br>'
+                                ),
+                     go.Scatter(x=lab,
+                                y=valueIre1,
+                                mode='lines+markers',
+                                name='IE',
+                                line=dict(shape="spline", smoothing=1.3, width=3, color='#9E9D7B'),
+                                marker=dict(size=5, symbol='circle', color='lightblue',
+                                            line=dict(color='#9E9D7B', width=2)
+                                            ),
+                                hoverinfo='text',
+                                hovertext=
+                                '<b>Country</b>: ' + 'Ireland' + '<br>'
+                                ),
+                     go.Scatter(x=lab,
+                                y=valueGree1,
+                                mode='lines+markers',
+                                name='EL',
+                                line=dict(shape="spline", smoothing=1.3, width=3, color='#1A46C0'),
+                                marker=dict(size=5, symbol='circle', color='lightblue',
+                                            line=dict(color='#1A46C0', width=2)
+                                            ),
+                                hoverinfo='text',
+                                hovertext=
+                                '<b>Country</b>: ' + 'Greece' + '<br>'
+                                ),
+                     go.Scatter(x=lab,
+                                y=valueSpa1,
+                                mode='lines+markers',
+                                name='ES',
+                                line=dict(shape="spline", smoothing=1.3, width=3, color='#2E063A'),
+                                marker=dict(size=5, symbol='circle', color='lightblue',
+                                            line=dict(color='#2E063A', width=2)
+                                            ),
+                                hoverinfo='text',
+                                hovertext=
+                                '<b>Country</b>: ' + 'Spain' + '<br>'
+                                ),
+                     go.Scatter(x=lab,
+                                y=valueFra1,
+                                mode='lines+markers',
+                                name='FR',
+                                line=dict(shape="spline", smoothing=1.3, width=3, color='#39313C'),
+                                marker=dict(size=5, symbol='circle', color='lightblue',
+                                            line=dict(color='#39313C', width=2)
+                                            ),
+                                hoverinfo='text',
+                                hovertext=
+                                '<b>Country</b>: ' + 'France' + '<br>'
+                                ),
+                     go.Scatter(x=lab,
+                                y=valueCro1,
+                                mode='lines+markers',
+                                name='HR',
+                                line=dict(shape="spline", smoothing=1.3, width=3, color='#189F96'),
+                                marker=dict(size=5, symbol='circle', color='lightblue',
+                                            line=dict(color='#189F96', width=2)
+                                            ),
+                                hoverinfo='text',
+                                hovertext=
+                                '<b>Country</b>: ' + 'Croatia' + '<br>'
+                                ),
+                     go.Scatter(x=lab,
+                                y=valueIta1,
+                                mode='lines+markers',
+                                name='IT',
+                                line=dict(shape="spline", smoothing=1.3, width=3, color='#94A4A3'),
+                                marker=dict(size=5, symbol='circle', color='lightblue',
+                                            line=dict(color='#94A4A3', width=2)
+                                            ),
+                                hoverinfo='text',
+                                hovertext=
+                                '<b>Country</b>: ' + 'Italy' + '<br>'
+                                ),
+                     go.Scatter(x=lab,
+                                y=valueCyp1,
+                                mode='lines+markers',
+                                name='CY',
+                                line=dict(shape="spline", smoothing=1.3, width=3, color='#ff3399'),
+                                marker=dict(size=5, symbol='circle', color='lightblue',
+                                            line=dict(color='#ff3399', width=2)
+                                            ),
+                                hoverinfo='text',
+                                hovertext=
+                                '<b>Country</b>: ' + 'Cyprus' + '<br>'
+                                ),
+                     go.Scatter(x=lab,
+                                y=valueLat1,
+                                mode='lines+markers',
+                                name='LV',
+                                line=dict(shape="spline", smoothing=1.3, width=3, color='#aaaa55'),
+                                marker=dict(size=5, symbol='circle', color='lightblue',
+                                            line=dict(color='#aaaa55', width=2)
+                                            ),
+                                hoverinfo='text',
+                                hovertext=
+                                '<b>Country</b>: ' + 'Latvia' + '<br>'
+                                ),
+                     go.Scatter(x=lab,
+                                y=valueLith1,
+                                mode='lines+markers',
+                                name='LT',
+                                line=dict(shape="spline", smoothing=1.3, width=3, color='#ffff00'),
+                                marker=dict(size=5, symbol='circle', color='lightblue',
+                                            line=dict(color='#ffff00', width=2)
+                                            ),
+                                hoverinfo='text',
+                                hovertext=
+                                '<b>Country</b>: ' + 'Lithuania' + '<br>'
+                                ),
+                     go.Scatter(x=lab,
+                                y=valueLux1,
+                                mode='lines+markers',
+                                name='LU',
+                                line=dict(shape="spline", smoothing=1.3, width=3, color='#007399'),
+                                marker=dict(size=5, symbol='circle', color='lightblue',
+                                            line=dict(color='#007399', width=2)
+                                            ),
+                                hoverinfo='text',
+                                hovertext=
+                                '<b>Country</b>: ' + 'Luxembourg' + '<br>'
+                                ),
+                     go.Scatter(x=lab,
+                                y=valueHun1,
+                                mode='lines+markers',
+                                name='HU',
+                                line=dict(shape="spline", smoothing=1.3, width=3, color='#ff3300'),
+                                marker=dict(size=5, symbol='circle', color='lightblue',
+                                            line=dict(color='#ff3300', width=2)
+                                            ),
+                                hoverinfo='text',
+                                hovertext=
+                                '<b>Country</b>: ' + 'Hungary' + '<br>'
+                                ),
+                     go.Scatter(x=lab,
+                                y=valueNet1,
+                                mode='lines+markers',
+                                name='NL',
+                                line=dict(shape="spline", smoothing=1.3, width=3, color='#00e600'),
+                                marker=dict(size=5, symbol='circle', color='lightblue',
+                                            line=dict(color='#00e600', width=2)
+                                            ),
+                                hoverinfo='text',
+                                hovertext=
+                                '<b>Country</b>: ' + 'Netherlands' + '<br>'
+                                ),
+                     go.Scatter(x=lab,
+                                y=valueAus1,
+                                mode='lines+markers',
+                                name='AT',
+                                line=dict(shape="spline", smoothing=1.3, width=3, color='#4dff4d'),
+                                marker=dict(size=5, symbol='circle', color='lightblue',
+                                            line=dict(color='#4dff4d', width=2)
+                                            ),
+                                hoverinfo='text',
+                                hovertext=
+                                '<b>Country</b>: ' + 'Austria' + '<br>'
+                                ),
+                     go.Scatter(x=lab,
+                                y=valuePol1,
+                                mode='lines+markers',
+                                name='PL',
+                                line=dict(shape="spline", smoothing=1.3, width=3, color='#003300'),
+                                marker=dict(size=5, symbol='circle', color='lightblue',
+                                            line=dict(color='#003300', width=2)
+                                            ),
+                                hoverinfo='text',
+                                hovertext=
+                                '<b>Country</b>: ' + 'Poland' + '<br>'
+                                ),
+                     go.Scatter(x=lab,
+                                y=valuePor1,
+                                mode='lines+markers',
+                                name='PT',
+                                line=dict(shape="spline", smoothing=1.3, width=3, color='#662900'),
+                                marker=dict(size=5, symbol='circle', color='lightblue',
+                                            line=dict(color='#662900', width=2)
+                                            ),
+                                hoverinfo='text',
+                                hovertext=
+                                '<b>Country</b>: ' + 'Portugal' + '<br>'
+                                ),
+                     go.Scatter(x=lab,
+                                y=valueRom1,
+                                mode='lines+markers',
+                                name='RO',
+                                line=dict(shape="spline", smoothing=1.3, width=3, color='#993399'),
+                                marker=dict(size=5, symbol='circle', color='lightblue',
+                                            line=dict(color='#993399', width=2)
+                                            ),
+                                hoverinfo='text',
+                                hovertext=
+                                '<b>Country</b>: ' + 'Romania' + '<br>'
+                                ),
+                     go.Scatter(x=lab,
+                                y=valueSlo1,
+                                mode='lines+markers',
+                                name='SI',
+                                line=dict(shape="spline", smoothing=1.3, width=3, color='#d98cd9'),
+                                marker=dict(size=5, symbol='circle', color='lightblue',
+                                            line=dict(color='#d98cd9', width=2)
+                                            ),
+                                hoverinfo='text',
+                                hovertext=
+                                '<b>Country</b>: ' + 'Slovenia' + '<br>'
+                                ),
+                     go.Scatter(x=lab,
+                                y=valueSlovak1,
+                                mode='lines+markers',
+                                name='SK',
+                                line=dict(shape="spline", smoothing=1.3, width=3, color='#0033cc'),
+                                marker=dict(size=5, symbol='circle', color='lightblue',
+                                            line=dict(color='#0033cc', width=2)
+                                            ),
+                                hoverinfo='text',
+                                hovertext=
+                                '<b>Country</b>: ' + 'Slovakia' + '<br>'
+                                ),
+                     go.Scatter(x=lab,
+                                y=valueFin1,
+                                mode='lines+markers',
+                                name='FI',
+                                line=dict(shape="spline", smoothing=1.3, width=3, color='#99b3ff'),
+                                marker=dict(size=5, symbol='circle', color='lightblue',
+                                            line=dict(color='#99b3ff', width=2)
+                                            ),
+                                hoverinfo='text',
+                                hovertext=
+                                '<b>Country</b>: ' + 'Finland' + '<br>'
+                                ),
+                     go.Scatter(x=lab,
+                                y=valueSwe1,
+                                mode='lines+markers',
+                                name='SE',
+                                line=dict(shape="spline", smoothing=1.3, width=3, color='#001a66'),
+                                marker=dict(size=5, symbol='circle', color='lightblue',
+                                            line=dict(color='#001a66', width=2)
+                                            ),
+                                hoverinfo='text',
+                                hovertext=
+                                '<b>Country</b>: ' + 'Sweden' + '<br>'
+                                ),
+                     go.Scatter(x=lab,
+                                y=valueUk1,
+                                mode='lines+markers',
+                                name='UK',
+                                line=dict(shape="spline", smoothing=1.3, width=3, color='#00cc99'),
+                                marker=dict(size=5, symbol='circle', color='lightblue',
+                                            line=dict(color='#00cc99', width=2)
+                                            ),
+                                hoverinfo='text',
+                                hovertext=
+                                '<b>Country</b>: ' + 'United Kingdom' + '<br>'
+                                ),
+                     go.Scatter(x=lab,
+                                y=valueIce1,
+                                mode='lines+markers',
+                                name='IS',
+                                line=dict(shape="spline", smoothing=1.3, width=3, color='#336600'),
+                                marker=dict(size=5, symbol='circle', color='lightblue',
+                                            line=dict(color='#336600', width=2)
+                                            ),
+                                hoverinfo='text',
+                                hovertext=
+                                '<b>Country</b>: ' + 'Iceland' + '<br>'
+                                ),
+                     go.Scatter(x=lab,
+                                y=valueNor1,
+                                mode='lines+markers',
+                                name='NO',
+                                line=dict(shape="spline", smoothing=1.3, width=3, color='#73e600'),
+                                marker=dict(size=5, symbol='circle', color='lightblue',
+                                            line=dict(color='#73e600', width=2)
+                                            ),
+                                hoverinfo='text',
+                                hovertext=
+                                '<b>Country</b>: ' + 'Norway' + '<br>'
+                                ),
+                     go.Scatter(x=lab,
+                                y=valueSwi1,
+                                mode='lines+markers',
+                                name='CH',
+                                line=dict(shape="spline", smoothing=1.3, width=3, color='#bfff80'),
+                                marker=dict(size=5, symbol='circle', color='lightblue',
+                                            line=dict(color='#bfff80', width=2)
+                                            ),
+                                hoverinfo='text',
+                                hovertext=
+                                '<b>Country</b>: ' + 'Switzerland' + '<br>'
+                                ),
+                     go.Scatter(x=lab,
+                                y=valueMake1,
+                                mode='lines+markers',
+                                name='MK',
+                                line=dict(shape="spline", smoothing=1.3, width=3, color='#ffa366'),
+                                marker=dict(size=5, symbol='circle', color='lightblue',
+                                            line=dict(color='#ffa366', width=2)
+                                            ),
+                                hoverinfo='text',
+                                hovertext=
+                                '<b>Country</b>: ' + 'North Macedonia' + '<br>'
+                                ),
+                     go.Scatter(x=lab,
+                                y=valueTur1,
+                                mode='lines+markers',
+                                name='TR',
+                                line=dict(shape="spline", smoothing=1.3, width=3, color='#ff4da6'),
+                                marker=dict(size=5, symbol='circle', color='lightblue',
+                                            line=dict(color='#ff4da6', width=2)
+                                            ),
+                                hoverinfo='text',
+                                hovertext=
+                                '<b>Country</b>: ' + 'Turkey' + '<br>'
+                                ),
+                     go.Scatter(x=lab,
+                                y=valueUs1,
+                                mode='lines+markers',
+                                name='US',
+                                line=dict(shape="spline", smoothing=1.3, width=3, color='#4dc3ff'),
+                                marker=dict(size=5, symbol='circle', color='lightblue',
+                                            line=dict(color='#4dc3ff', width=2)
+                                            ),
+                                hoverinfo='text',
+                                hovertext=
+                                '<b>Country</b>: ' + 'United States' + '<br>'
+                                ),
+
                      ],
 
             'layout': go.Layout(
@@ -926,9 +1336,9 @@ def update_graph(w_countries, w_countries1, country_chosen):
 
         }
     #
-    # ECONOMY INFLATION
-    #
-    # ECONOMY GDP
+    #Kraj ECONOMY INFLATION
+    #############################
+    #Pocinje ECONOMY GDP
     #
     elif (w_countries == 'Economy') & (w_countries1 == 'GDP – quarterly growth rate'):
 
