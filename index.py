@@ -1362,11 +1362,137 @@ def update_graph(w_countries, w_countries1, country_chosen):
         if ('Belgium' in coun):
             valueBel1 = getGDP('Belgium')
 
+        valueBul1 = []
+        if ('Bulgaria' in coun):
+            valueBul1 = getGDP('Bulgaria')
+
+        valueChe1 = []
+        if ('Czechia' in coun):
+            valueChe1 = getGDP('Czechia')
+
+        valueDen1 = []
+        if ('Denmark' in coun):
+            valueDen1 = getGDP('Denmark')
+
+        valueGer1 = []
+        if ('Germany' in coun):
+            valueGer1 = getGDP('Germany')
+
+        valueEst1 = []
+        if ('Estonia' in coun):
+            valueEst1 = getGDP('Estonia')
+
+        valueIre1 = []
+        if ('Ireland' in coun):
+            valueIre1 = getGDP('Ireland')
+
+        valueGree1 = []
+        if ('Greece' in coun):
+            valueGree1 = getGDP('Greece')
+
+        valueSpa1 = []
+        if ('Spain' in coun):
+            valueSpa1 = getGDP('Spain')
+
+        valueFra1 = []
+        if ('France' in coun):
+            valueFra1 = getGDP('France')
+
+        valueCro1 = []
+        if ('Croatia' in coun):
+            valueCro1 = getGDP('Croatia')
+
+        valueIta1 = []
+        if ('Italy' in coun):
+            valueIta1 = getGDP('Italy')
+
+        valueCyp1 = []
+        if ('Cyprus' in coun):
+            valueCyp1 = getGDP('Cyprus')
+
+        valueLat1 = []
+        if ('Latvia' in coun):
+            valueLat1 = getGDP('Latvia')
+
+        valueLith1 = []
+        if ('Lithuania' in coun):
+            valueLith1 = getGDP('Lithuania')
+
+        valueLux1 = []
+        if ('Luxembourg' in coun):
+            valueLux1 = getGDP('Luxembourg')
+
+        valueHun1 = []
+        if ('Hungary' in coun):
+            valueHun1 = getGDP('Hungary')
+
+        valueNet1 = []
+        if ('Netherlands' in coun):
+            valueNet1 = getGDP('Netherlands')
+
+        valueAus1 = []
+        if ('Austria' in coun):
+            valueAus1 = getGDP('Austria')
+
+        valuePol1 = []
+        if ('Poland' in coun):
+            valuePol1 = getGDP('Poland')
+
+        valuePor1 = []
+        if ('Portugal' in coun):
+            valuePor1 = getGDP('Portugal')
+
+        valueRom1 = []
+        if ('Romania' in coun):
+            valueRom1 = getGDP('Romania')
+
+        valueSlo1 = []
+        if ('Slovenia' in coun):
+            valueSlo1 = getGDP('Slovenia')
+
+        valueSlovak1 = []
+        if ('Slovakia' in coun):
+            valueSlovak1 = getGDP('Slovakia')
+
+        valueFin1 = []
+        if ('Finland' in coun):
+            valueFin1 = getGDP('Finland')
+
+        valueSwe1 = []
+        if ('Sweden' in coun):
+            valueSwe1 = getGDP('Sweden')
+
+        valueUk1 = []
+        if ('United Kingdom' in coun):
+            valueUk1 = getGDP('United Kingdom')
+
+        valueEea1 = []
+        if ('European Economic Area' in coun):
+            valueEea1 = getGDP('European Economic Area')
+
+        valueNor1 = []
+        if ('Norway' in coun):
+            valueNor1 = getGDP('Norway')
+
+        valueSwi1 = []
+        if ('Switzerland' in coun):
+            valueSwi1 = getGDP('Switzerland')
+
+        valueMake1 = []
+        if ('North Macedonia' in coun):
+            valueMake1 = getGDP('North Macedonia')
+
+        valueTur1 = []
+        if ('Turkey' in coun):
+            valueTur1 = getGDP('Turkey')
+
+
+
         return {
             'data': [go.Scatter(x=labGDP,
                                 y=valueEu1,
                                 mode='lines+markers',
-                                name='European Union',
+                                name='EU',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#E6D1D1'),
                                 marker=dict(size=5, symbol='circle', color='lightblue',
                                             line=dict(color='#E6D1D1', width=2)
@@ -1378,7 +1504,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                      go.Scatter(x=labGDP,
                                 y=valueBel1,
                                 mode='lines+markers',
-                                name='Belgium',
+                                name='BE',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#FF0000'),
                                 marker=dict(size=5, symbol='circle', color='lightblue',
                                             line=dict(color='#FF0000', width=2)
