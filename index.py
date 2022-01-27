@@ -1486,8 +1486,6 @@ def update_graph(w_countries, w_countries1, country_chosen):
         if ('Turkey' in coun):
             valueTur1 = getGDP('Turkey')
 
-
-
         return {
             'data': [go.Scatter(x=labGDP,
                                 y=valueEu1,
@@ -1582,6 +1580,8 @@ def update_graph(w_countries, w_countries1, country_chosen):
             )
 
         }
+
+
     #
     # ECONOMY GDP
     #
@@ -3491,61 +3491,524 @@ def update_graph(w_countries, w_countries1, country_chosen):
 # Kreiranje pie chart grafika
 #################################################
 #################################################
+#Uzimanje podataka za Podgrupu Economy Inflation
+def getPieArr(countryName):
+
+    data2 = data.where(data.GEOLABEL == countryName).collect()
+    suma = 0
+    for i in range(2, 31):
+        suma = suma + float(data2[0][i])
+    return suma
+
+#Uzimanje podataka za podgrupu:GDP – quarterly growth rate
+def getPieGDP(countryName):
+
+    data2 = dataGDP.where(dataGDP.GEOLABEL == countryName).collect()
+    suma = 0
+    for i in range(1, 19):
+        suma = suma + float(data2[0][i])
+    return suma
+
+#Uzimanje podataka za podgrupu:Economy Monthly industrial production
+def getPieMIP(countryName):
+
+    data2 = dataMIN.where(dataMIN.GEOLABEL == countryName).collect()
+    suma = 0
+    for i in range(1, 29):
+        suma = suma + float(data2[0][i])
+    return suma
+
+#Uzimanje podataka za podgrupu:Economy montly volume
+def getPieMV(countryName):
+
+    data2 = dataMV.where(dataMV.GEOLABEL == countryName).collect()
+    suma = 0
+    for i in range(1, 83):
+        suma = suma + float(data2[0][i])
+    return suma
+#Uzimanje podataka za podgrupu:Economy Monthly production in contruction
+def getPieMPIC(countryName):
+
+    data2 = dataMPIC.where(dataMPIC.GEOLABEL == countryName).collect()
+    suma = 0
+    for i in range(1, 29):
+        suma = suma + float(data2[0][i])
+    return suma
+
+#Uzimanje podataka za podgrupu:Population and health-Monthly excess mortality
+def getPieMEM(countryName):
+
+    data2 = dataPAHMEM.where(dataPAHMEM.GEOLABEL == countryName).collect()
+    suma = 0
+    for i in range(1, 22):
+        suma = suma + float(data2[0][i])
+    return suma
+
+#Uzimanje podataka za podgrupu:Population and health-Number of deaths by week
+def getPieNOD(countryName):
+
+    data2 = dataPAHDBW.where(dataPAHDBW.GEOLABEL == countryName).collect()
+    value = []
+    value1 = []
+    value2 = []
+    value3 = []
+
+    for i in range(1, 109):
+        val = data2[0][i]
+        value.append(val)
+    value1 = np.array(value)
+    for i in range(1, 95):
+        val = float(value[i].replace(',', ''))
+        value2.append(val)
+    value3 = np.array(value2)
+    suma = 0
+    for i in range(0, 94):
+        suma = suma + float(value3[i])
+    return suma
+
+#Uzimanje podataka za podgrupu:Population and health-Monthly first-time asylum
+def getPieMFTA(countryName):
+
+    data2 = dataPAHMFTA.where(dataPAHMFTA.GEOLABEL == countryName).collect()
+    value = []
+    value1 = []
+    value2 = []
+    value3 = []
+
+    for i in range(1, 150):
+        val = data2[0][i]
+        value.append(val)
+    value1 = np.array(value)
+    for i in range(1, 150):
+        val = float(value[i].replace(',', ''))
+        value2.append(val)
+    value3 = np.array(value2)
+    suma = 0
+    for i in range(0, 149):
+        suma = suma + float(value3[i])
+    return suma
+
 
 @app.callback(Output('pie', 'figure'),
               [Input('w_countries', 'value')],
-              [Input('w_countries1', 'value')])
-def display_content(w_countries, w_countries1):
-    select_years=[]
-    terr9 = terr2.groupby(['region_txt', 'country_txt', 'iyear'])[
-        ['nkill', 'nwound', 'attacktype1']].sum().reset_index()
-    death = terr9[(terr9['region_txt'] == w_countries) & (terr9['country_txt'] == w_countries1) & (
-                terr9['iyear'] >= select_years[0]) & (terr9['iyear'] <= select_years[1])]['nkill'].sum()
-    wound = terr9[(terr9['region_txt'] == w_countries) & (terr9['country_txt'] == w_countries1) & (
-                terr9['iyear'] >= select_years[0]) & (terr9['iyear'] <= select_years[1])]['nwound'].sum()
-    attack = terr9[(terr9['region_txt'] == w_countries) & (terr9['country_txt'] == w_countries1) & (
-                terr9['iyear'] >= select_years[0]) & (terr9['iyear'] <= select_years[1])]['attacktype1'].sum()
-    colors = ['#FF00FF', '#9C0C38', 'orange']
+              [Input('w_countries1', 'value')],
+              [Input('w_countries2', 'value')])
+def display_content(w_countries, w_countries1, country_chosen):
 
-    return {
-        'data': [go.Pie(labels=['Total Death', 'Total Wounded', 'Total Attack'],
-                        values=[death, wound, attack],
+    coun = []
+    coun = np.array(country_chosen)
+    colors = ['#FF00FF', '#9C0C38', 'orange', 'lightblue']
+
+    #Pocinje deo Economy- Inflation
+    if (w_countries == 'Economy') & (w_countries1 == 'Inflation - annual growth rate'):
+        valueEu1=0
+        if('European Union' in coun):
+           valueEu1 = getPieArr('European Union')
+
+        valueBel1=0
+        if('Belgium' in coun):
+           valueBel1=getPieArr('Belgium')
+
+        valueSer1 = 0
+        if ('Serbia' in coun):
+            valueSer1 = getPieArr('Serbia')
+
+        return {
+            'data': [go.Pie(labels=['EU','BE','SR'],
+                        values=[valueEu1, valueBel1,valueSer1],
                         marker=dict(colors=colors),
                         hoverinfo='label+value+percent',
                         textinfo='label+value',
                         textfont=dict(size=13)
-                        # hole=.7,
-                        # rotation=45
-                        # insidetextorientation='radial',
 
                         )],
 
-        'layout': go.Layout(
-            plot_bgcolor='#010915',
-            paper_bgcolor='#010915',
-            hovermode='closest',
-            title={
-                'text': 'Total Casualties : ' + (w_countries1) + '  ' + '<br>' + ' - '.join(
-                    [str(y) for y in select_years]) + '</br>',
+            'layout': go.Layout(
+                    plot_bgcolor='#010915',
+                    paper_bgcolor='#010915',
+                    hovermode='closest',
+                    title={
+                        'text': 'Economy: ' +(w_countries1) +'</br>',
 
-                'y': 0.93,
-                'x': 0.5,
-                'xanchor': 'center',
-                'yanchor': 'top'},
-            titlefont={
-                'color': 'white',
-                'size': 20},
-            legend={
-                'orientation': 'h',
-                'bgcolor': '#010915',
-                'xanchor': 'center', 'x': 0.5, 'y': -0.07},
-            font=dict(
-                family="sans-serif",
-                size=12,
-                color='white')
-        ),
+                        'y': 0.93,
+                        'x': 0.5,
+                        'xanchor': 'center',
+                        'yanchor': 'top'},
+                    titlefont={
+                        'color': 'white',
+                        'size': 20},
+                    legend={
+                        'orientation': 'h',
+                        'bgcolor': '#010915',
+                        'xanchor': 'center', 'x': 0.5, 'y': -0.07},
+                    font=dict(
+                        family="sans-serif",
+                        size=12,
+                        color='white')
+              ),
 
-    }
+        }
+    ##
+    # Pocinje ECONOMY GDP
+    ##
+    elif (w_countries == 'Economy') & (w_countries1 == 'GDP – quarterly growth rate'):
+
+        valueEu1=0
+        if('European Union' in coun):
+            valueEu1=getPieGDP('European Union')
+
+        valueBel1 = 0
+        if ('Belgium' in coun):
+            valueBel1 = getPieGDP('Belgium')
+
+        valueSer1 = 0
+        if ('Serbia' in coun):
+            valueSer1 = getPieGDP('Serbia')
+
+        return {
+            'data': [go.Pie(labels=['EU', 'BE', 'SR'],
+                            values=[valueEu1, valueBel1, valueSer1],
+                            marker=dict(colors=colors),
+                            hoverinfo='label+value+percent',
+                            textinfo='label+value',
+                            textfont=dict(size=13)
+
+                            )],
+
+            'layout': go.Layout(
+                plot_bgcolor='#010915',
+                paper_bgcolor='#010915',
+                hovermode='closest',
+                title={
+                    'text': 'Economy: ' + (w_countries1) + '</br>',
+
+                    'y': 0.93,
+                    'x': 0.5,
+                    'xanchor': 'center',
+                    'yanchor': 'top'},
+                titlefont={
+                    'color': 'white',
+                    'size': 20},
+                legend={
+                    'orientation': 'h',
+                    'bgcolor': '#010915',
+                    'xanchor': 'center', 'x': 0.5, 'y': -0.07},
+                font=dict(
+                    family="sans-serif",
+                    size=12,
+                    color='white')
+            ),
+
+        }
+    #
+    # ECONOMY Monthly industrial production
+    #
+    elif (w_countries == 'Economy') & (w_countries1 == 'Monthly industrial production'):
+        valueEu1 = 0
+        if ('European Union' in coun):
+            valueEu1 = getPieMIP('European Union')
+
+        valueBel1 = 0
+        if ('Belgium' in coun):
+            valueBel1 = getPieMIP('Belgium')
+
+        valueSer1 = 0
+        if ('Serbia' in coun):
+            valueSer1 = getPieMIP('Serbia')
+
+        return {
+            'data': [go.Pie(labels=['EU', 'BE', 'SR'],
+                            values=[valueEu1, valueBel1, valueSer1],
+                            marker=dict(colors=colors),
+                            hoverinfo='label+value+percent',
+                            textinfo='label+value',
+                            textfont=dict(size=13)
+
+                            )],
+
+            'layout': go.Layout(
+                plot_bgcolor='#010915',
+                paper_bgcolor='#010915',
+                hovermode='closest',
+                title={
+                    'text': 'Economy: ' + (w_countries1) + '</br>',
+
+                    'y': 0.93,
+                    'x': 0.5,
+                    'xanchor': 'center',
+                    'yanchor': 'top'},
+                titlefont={
+                    'color': 'white',
+                    'size': 20},
+                legend={
+                    'orientation': 'h',
+                    'bgcolor': '#010915',
+                    'xanchor': 'center', 'x': 0.5, 'y': -0.07},
+                font=dict(
+                    family="sans-serif",
+                    size=12,
+                    color='white')
+            ),
+
+        }
+    # ECONOMY MV
+    #
+    elif (w_countries == 'Economy') & (w_countries1 == 'Monthly volume of retail trade'):
+        valueEu1 = 0
+        if ('European Union' in coun):
+            valueEu1 = getPieMV('European Union')
+
+        valueBel1 = 0
+        if ('Belgium' in coun):
+            valueBel1 = getPieMV('Belgium')
+
+        valueSer1 = 0
+        if ('Serbia' in coun):
+            valueSer1 = getPieMV('Serbia')
+
+        return {
+            'data': [go.Pie(labels=['EU', 'BE', 'SR'],
+                            values=[valueEu1, valueBel1, valueSer1],
+                            marker=dict(colors=colors),
+                            hoverinfo='label+value+percent',
+                            textinfo='label+value',
+                            textfont=dict(size=13)
+
+                            )],
+
+            'layout': go.Layout(
+                plot_bgcolor='#010915',
+                paper_bgcolor='#010915',
+                hovermode='closest',
+                title={
+                    'text': 'Economy: ' + (w_countries1) + '</br>',
+
+                    'y': 0.93,
+                    'x': 0.5,
+                    'xanchor': 'center',
+                    'yanchor': 'top'},
+                titlefont={
+                    'color': 'white',
+                    'size': 20},
+                legend={
+                    'orientation': 'h',
+                    'bgcolor': '#010915',
+                    'xanchor': 'center', 'x': 0.5, 'y': -0.07},
+                font=dict(
+                    family="sans-serif",
+                    size=12,
+                    color='white')
+            ),
+
+        }
+    # Pocinje Economy-Monthly production in construction
+    #
+    elif (w_countries == 'Economy') and (w_countries1 == 'Monthly production in construction'):
+        valueEu1 = 0
+        if ('European Union' in coun):
+            valueEu1 = getPieMPIC('European Union')
+
+        valueBel1 = 0
+        if ('Belgium' in coun):
+            valueBel1 = getPieMPIC('Belgium')
+
+        valueBul1 = 0
+        if ('Belgium' in coun):
+            valueBul1 = getPieMPIC('Bulgaria')
+
+        return {
+            'data': [go.Pie(labels=['EU', 'BE', 'BG'],
+                            values=[valueEu1, valueBel1, valueBul1],
+                            marker=dict(colors=colors),
+                            hoverinfo='label+value+percent',
+                            textinfo='label+value',
+                            textfont=dict(size=13)
+
+                            )],
+
+            'layout': go.Layout(
+                plot_bgcolor='#010915',
+                paper_bgcolor='#010915',
+                hovermode='closest',
+                title={
+                    'text': 'Economy: ' + (w_countries1) + '</br>',
+
+                    'y': 0.93,
+                    'x': 0.5,
+                    'xanchor': 'center',
+                    'yanchor': 'top'},
+                titlefont={
+                    'color': 'white',
+                    'size': 20},
+                legend={
+                    'orientation': 'h',
+                    'bgcolor': '#010915',
+                    'xanchor': 'center', 'x': 0.5, 'y': -0.07},
+                font=dict(
+                    family="sans-serif",
+                    size=12,
+                    color='white')
+            ),
+
+        }
+    #######################################
+###############################################
+###############################################
+    #Pocinje deo Population and health
+    #########################################
+    ###########################################
+    # POPULATION AND HEALTH-Monthly excess mortality
+    #
+    elif (w_countries == 'Population and health') & (w_countries1 == 'Monthly excess mortality'):
+
+        valueBel1 = 0
+        if ('Belgium' in coun):
+            valueBel1 = getPieNOD('Belgium')
+
+        valueBul1 = 0
+        if ('Belgium' in coun):
+            valueBul1 = getPieNOD('Bulgaria')
+
+        return {
+            'data': [go.Pie(labels=['BE', 'BG'],
+                            values=[valueBel1, valueBul1],
+                            marker=dict(colors=colors),
+                            hoverinfo='label+value+percent',
+                            textinfo='label+value',
+                            textfont=dict(size=13)
+
+                            )],
+
+            'layout': go.Layout(
+                plot_bgcolor='#010915',
+                paper_bgcolor='#010915',
+                hovermode='closest',
+                title={
+                    'text': 'Population: ' + (w_countries1) + '</br>',
+
+                    'y': 0.93,
+                    'x': 0.5,
+                    'xanchor': 'center',
+                    'yanchor': 'top'},
+                titlefont={
+                    'color': 'white',
+                    'size': 20},
+                legend={
+                    'orientation': 'h',
+                    'bgcolor': '#010915',
+                    'xanchor': 'center', 'x': 0.5, 'y': -0.07},
+                font=dict(
+                    family="sans-serif",
+                    size=12,
+                    color='white')
+            ),
+
+        }
+    #
+    # Pocinje Number of deaths by week
+    elif (w_countries == 'Population and health') & (w_countries1 == 'Number of deaths by week'):
+        valueEu1 = 0
+        if ('European Union' in coun):
+            valueEu1 = getPieNOD('European Union')
+
+        valueBel1 = 0
+        if ('Belgium' in coun):
+            valueBel1 = getPieNOD('Belgium')
+
+        valueBul1 = 0
+        if ('Belgium' in coun):
+            valueBul1 = getPieNOD('Bulgaria')
+
+        return {
+            'data': [go.Pie(labels=['EU', 'BE', 'BG'],
+                            values=[valueEu1, valueBel1, valueBul1],
+                            marker=dict(colors=colors),
+                            hoverinfo='label+value+percent',
+                            textinfo='label+value',
+                            textfont=dict(size=13)
+
+                            )],
+
+            'layout': go.Layout(
+                plot_bgcolor='#010915',
+                paper_bgcolor='#010915',
+                hovermode='closest',
+                title={
+                    'text': 'Population: ' + (w_countries1) + '</br>',
+
+                    'y': 0.93,
+                    'x': 0.5,
+                    'xanchor': 'center',
+                    'yanchor': 'top'},
+                titlefont={
+                    'color': 'white',
+                    'size': 20},
+                legend={
+                    'orientation': 'h',
+                    'bgcolor': '#010915',
+                    'xanchor': 'center', 'x': 0.5, 'y': -0.07},
+                font=dict(
+                    family="sans-serif",
+                    size=12,
+                    color='white')
+            ),
+
+        }
+    #####################Pocinje Polulation and healht-Monthly first-time asylum applicants
+    elif (w_countries == 'Population and health') & (w_countries1 == 'Monthly first-time asylum applicants'):
+
+        valueEu1 = 0
+        if ('European Union' in coun):
+            valueEu1 = getPieMFTA('European Union')
+
+        valueBel1 = 0
+        if ('Belgium' in coun):
+            valueBel1 = getPieMFTA('Belgium')
+
+        valueBul1 = 0
+        if ('Belgium' in coun):
+            valueBul1 = getPieMFTA('Bulgaria')
+
+        return {
+            'data': [go.Pie(labels=['EU', 'BE', 'BG'],
+                            values=[valueEu1, valueBel1, valueBul1],
+                            marker=dict(colors=colors),
+                            hoverinfo='label+value+percent',
+                            textinfo='label+value',
+                            textfont=dict(size=13)
+
+                            )],
+
+            'layout': go.Layout(
+                plot_bgcolor='#010915',
+                paper_bgcolor='#010915',
+                hovermode='closest',
+                title={
+                    'text': 'Population: ' + (w_countries1) + '</br>',
+
+                    'y': 0.93,
+                    'x': 0.5,
+                    'xanchor': 'center',
+                    'yanchor': 'top'},
+                titlefont={
+                    'color': 'white',
+                    'size': 20},
+                legend={
+                    'orientation': 'h',
+                    'bgcolor': '#010915',
+                    'xanchor': 'center', 'x': 0.5, 'y': -0.07},
+                font=dict(
+                    family="sans-serif",
+                    size=12,
+                    color='white')
+            ),
+
+        }
+
+
+    else:
+        return dash.no_update
+
 
 
 if __name__ == '__main__':
