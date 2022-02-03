@@ -3575,19 +3575,203 @@ def getPieMFTA(countryName):
     value2 = []
     value3 = []
 
-    for i in range(1, 150):
+    for i in range(1, 146):
         val = data2[0][i]
         value.append(val)
     value1 = np.array(value)
-    for i in range(1, 150):
+    for i in range(1, 145):
         val = float(value[i].replace(',', ''))
         value2.append(val)
     value3 = np.array(value2)
     suma = 0
-    for i in range(0, 149):
+    for i in range(0, 144):
         suma = suma + float(value3[i])
     return suma
+##############################################
+#############################################
+#Krece grupa: Society and work
+#####################################
+#Uzimanje podataka za podgrupu:Society and work-Monthly unemployment rate
+def getPieMUR(countryName):
 
+    data2 = dataSAWMUR.where(dataSAWMUR.GEOLABEL == countryName).collect()
+    suma = 0
+    formsuma = 0
+    for i in range(1, 35):
+        suma = suma + float(data2[0][i])
+    formsuma = suma / 35
+    formsuma = f"{formsuma:.2f}"
+    return formsuma
+
+#Uzimanje podataka za podgrupu:Society and work-Monthly youth unemployment rate
+def getPieMYUR(countryName):
+
+    data2 = dataSAWMYUR.where(dataSAWMYUR.GEOLABEL == countryName).collect()
+    suma = 0
+    formsuma=0
+    for i in range(1, 30):
+        suma = suma + float(data2[0][i])
+    formsuma=suma/30
+    formsuma=f"{formsuma:.2f}"
+    return formsuma
+#Uzimanje podataka za podgrupu:Society and work-Quarterly employment
+def getPieQE(countryName):
+
+    data2 = dataSAWQE.where(dataSAWQE.GEOLABEL == countryName).collect()
+    value = []
+    value1 = []
+    value2 = []
+    value3 = []
+    formsuma = 0
+    for i in range(1, 20):
+        val = data2[0][i]
+        value.append(val)
+    value1 = np.array(value)
+    for i in range(1, 19):
+        val = float(value[i].replace(',', ''))
+        value2.append(val)
+    value3 = np.array(value2)
+    suma = 0
+    for i in range(0, 18):
+        suma = suma + float(value3[i])
+    formsuma = suma / 18
+    formsuma = f"{formsuma:.2f}"
+    return formsuma
+
+#Uzimanje podataka za podgrupu:Society and work-Quarterly labour market slack
+def getPieQLMS(countryName):
+
+    data2 = dataSAWQLMS.where(dataSAWQLMS.GEOLABEL == countryName).collect()
+    suma = 0
+    formsuma=0
+    for i in range(1, 10):
+        suma = suma + float(data2[0][i])
+    formsuma=suma/10
+    formsuma=f"{formsuma:.2f}"
+    return formsuma
+
+#Uzimanje podataka za podgrupu:Society and work-Quarterly job vacancy rate
+def getPieQJVR(countryName):
+
+    data2 = dataSAWQJVR.where(dataSAWQJVR.GEOLABEL == countryName).collect()
+    suma = 0
+    formsuma=0
+    for i in range(1, 19):
+        suma = suma + float(data2[0][i])
+    formsuma=suma/19
+    formsuma=f"{formsuma:.2f}"
+    return formsuma
+
+#Uzimanje podataka za podgrupu:Society and work-Quarterly labour cost
+def getPieQLC(countryName):
+
+    data2 = dataSAWQLC.where(dataSAWQLC.GEOLABEL == countryName).collect()
+    suma = 0
+    formsuma=0
+    for i in range(1, 19):
+        suma = suma + float(data2[0][i])
+    formsuma=suma/19
+    formsuma=f"{formsuma:.2f}"
+    return formsuma
+##########################################
+##########################################
+#UZIMANJE PODATAKA ZA GRUPU:AGRICULTURE, ENERGY, TRANSPORT & TOURISM
+############################
+#Uzimanje podataka za: AGRICULTURE, ENERGY, TRANSPORT & TOURISM-Monthly air passenger transport
+
+def getPieMAPT(countryName):
+
+    data2 = dataAETTMAPT.where(dataAETTMAPT.GEOLABEL == countryName).collect()
+    value = []
+    value1 = []
+    value2 = []
+    value3 = []
+    formsuma = 0
+    for i in range(1, 30):
+        val = data2[0][i]
+        value.append(val)
+    value1 = np.array(value)
+    for i in range(1, 29):
+        val = float(value[i].replace(',', ''))
+        value2.append(val)
+    value3 = np.array(value2)
+    suma = 0
+    for i in range(0, 28):
+        suma = suma + float(value3[i])
+    formsuma = suma / 28
+    formsuma = f"{formsuma:.2f}"
+    return formsuma
+#AGRICULTURE, ENERGY, TRANSPORT & TOURISM-Monthly commercial air flights
+def getPieMCAF(countryName):
+
+    data2 = dataAETTMCAF.where(dataAETTMCAF.GEOLABEL == countryName).collect()
+    suma = 0
+    formsuma=0
+    for i in range(1, 24):
+        suma = suma + float(data2[0][i])
+    formsuma=suma/24
+    formsuma=f"{formsuma:.2f}"
+    return formsuma
+
+#AGRICULTURE, ENERGY, TRANSPORT & TOURISM-Monthly arrivals at tourist accommodation
+def getPieMATA(countryName):
+
+    data2 = dataAETTMATA.where(dataAETTMATA.GEOLABEL == countryName).collect()
+    value = []
+    value1 = []
+    value2 = []
+    value3 = []
+    formsuma = 0
+    for i in range(1, 20):
+        val = data2[0][i]
+        value.append(val)
+    value1 = np.array(value)
+    for i in range(1, 19):
+        val = float(value[i].replace(',', ''))
+        value2.append(val)
+    value3 = np.array(value2)
+    suma = 0
+    for i in range(0, 18):
+        suma = suma + float(value3[i])
+    formsuma = suma / 18
+    formsuma = f"{formsuma:.2f}"
+    return formsuma
+
+#AGRICULTURE, ENERGY, TRANSPORT & TOURISM-Monthly nights spent at tourist accommodation
+def getPieMNSTA(countryName):
+
+    data2 = dataAETTMNSTA.where(dataAETTMNSTA.GEOLABEL == countryName).collect()
+    value = []
+    value1 = []
+    value2 = []
+    value3 = []
+    formsuma = 0
+    for i in range(1, 20):
+        val = data2[0][i]
+        value.append(val)
+    value1 = np.array(value)
+    for i in range(1, 19):
+        val = float(value[i].replace(',', ''))
+        value2.append(val)
+    value3 = np.array(value2)
+    suma = 0
+    for i in range(0, 18):
+        suma = suma + float(value3[i])
+    formsuma = suma / 18
+    formsuma = f"{formsuma:.2f}"
+    return formsuma
+
+#AGRICULTURE, ENERGY, TRANSPORT & TOURISM-Monthly electricity consumed by end-users
+def getPieMEC(countryName):
+
+    data2 = dataAETTMEC.where(dataAETTMEC.GEOLABEL == countryName).collect()
+    suma = 0
+    formsuma=0
+    for i in range(1, 24):
+        suma = suma + float(data2[0][i])
+    formsuma=suma/24
+    formsuma=f"{formsuma:.2f}"
+    return formsuma
 
 @app.callback(Output('pie', 'figure'),
               [Input('w_countries', 'value')],
@@ -3907,9 +4091,6 @@ def display_content(w_countries, w_countries1, country_chosen):
     #
     # Pocinje Number of deaths by week
     elif (w_countries == 'Population and health') & (w_countries1 == 'Number of deaths by week'):
-        valueEu1 = 0
-        if ('European Union' in coun):
-            valueEu1 = getPieNOD('European Union')
 
         valueBel1 = 0
         if ('Belgium' in coun):
@@ -3920,8 +4101,8 @@ def display_content(w_countries, w_countries1, country_chosen):
             valueBul1 = getPieNOD('Bulgaria')
 
         return {
-            'data': [go.Pie(labels=['EU', 'BE', 'BG'],
-                            values=[valueEu1, valueBel1, valueBul1],
+            'data': [go.Pie(labels=['BE', 'BG'],
+                            values=[valueBel1, valueBul1],
                             marker=dict(colors=colors),
                             hoverinfo='label+value+percent',
                             textinfo='label+value',
@@ -4005,6 +4186,558 @@ def display_content(w_countries, w_countries1, country_chosen):
 
         }
 
+    #####################Pocinje Society and work-Monthly unemployment rate
+    elif (w_countries == 'Society and work') & (w_countries1 == 'Monthly unemployment rate'):
+
+        valueEu1 = 0
+        if ('European Union' in coun):
+            valueEu1 = getPieMUR('European Union')
+
+        valueBel1 = 0
+        if ('Belgium' in coun):
+            valueBel1 = getPieMUR('Belgium')
+
+        valueBul1 = 0
+        if ('Belgium' in coun):
+            valueBul1 = getPieMUR('Bulgaria')
+
+        return {
+            'data': [go.Pie(labels=['EU', 'BE', 'BG'],
+                            values=[valueEu1, valueBel1, valueBul1],
+                            marker=dict(colors=colors),
+                            hoverinfo='label+value+percent',
+                            textinfo='label+value',
+                            textfont=dict(size=13)
+
+                            )],
+
+            'layout': go.Layout(
+                plot_bgcolor='#010915',
+                paper_bgcolor='#010915',
+                hovermode='closest',
+                title={
+                    'text': 'Society: Average ' + (w_countries1) + '</br>',
+
+                    'y': 0.93,
+                    'x': 0.5,
+                    'xanchor': 'center',
+                    'yanchor': 'top'},
+                titlefont={
+                    'color': 'white',
+                    'size': 20},
+                legend={
+                    'orientation': 'h',
+                    'bgcolor': '#010915',
+                    'xanchor': 'center', 'x': 0.5, 'y': -0.07},
+                font=dict(
+                    family="sans-serif",
+                    size=12,
+                    color='white')
+            ),
+
+        }
+    #####################Society and work-Monthly youth unemployment rate
+    elif (w_countries == 'Society and work') & (w_countries1 == 'Monthly youth unemployment rate'):
+
+        valueEu1 = 0
+        if ('European Union' in coun):
+            valueEu1 = getPieMYUR('European Union')
+
+        valueBel1 = 0
+        if ('Belgium' in coun):
+            valueBel1 = getPieMYUR('Belgium')
+
+        valueBul1 = 0
+        if ('Belgium' in coun):
+            valueBul1 = getPieMYUR('Bulgaria')
+
+        return {
+            'data': [go.Pie(labels=['EU', 'BE', 'BG'],
+                            values=[valueEu1, valueBel1, valueBul1],
+                            marker=dict(colors=colors),
+                            hoverinfo='label+value+percent',
+                            textinfo='label+value',
+                            textfont=dict(size=13)
+
+                            )],
+
+            'layout': go.Layout(
+                plot_bgcolor='#010915',
+                paper_bgcolor='#010915',
+                hovermode='closest',
+                title={
+                    'text': 'Society: Average ' + (w_countries1) + '</br>',
+
+                    'y': 0.93,
+                    'x': 0.5,
+                    'xanchor': 'center',
+                    'yanchor': 'top'},
+                titlefont={
+                    'color': 'white',
+                    'size': 20},
+                legend={
+                    'orientation': 'h',
+                    'bgcolor': '#010915',
+                    'xanchor': 'center', 'x': 0.5, 'y': -0.07},
+                font=dict(
+                    family="sans-serif",
+                    size=12,
+                    color='white')
+            ),
+
+        }
+    #####################Society and work-Quarterly employment
+    elif (w_countries == 'Society and work') & (w_countries1 == 'Quarterly employment'):
+
+        valueEu1 = 0
+        if ('European Union' in coun):
+            valueEu1 = getPieQE('European Union')
+
+        valueBel1 = 0
+        if ('Belgium' in coun):
+            valueBel1 = getPieQE('Belgium')
+
+        valueBul1 = 0
+        if ('Belgium' in coun):
+            valueBul1 = getPieQE('Bulgaria')
+
+        return {
+            'data': [go.Pie(labels=['EU', 'BE', 'BG'],
+                            values=[valueEu1, valueBel1, valueBul1],
+                            marker=dict(colors=colors),
+                            hoverinfo='label+value+percent',
+                            textinfo='label+value',
+                            textfont=dict(size=13)
+
+                            )],
+
+            'layout': go.Layout(
+                plot_bgcolor='#010915',
+                paper_bgcolor='#010915',
+                hovermode='closest',
+                title={
+                    'text': 'Society: Average ' + (w_countries1) + '</br>',
+
+                    'y': 0.93,
+                    'x': 0.5,
+                    'xanchor': 'center',
+                    'yanchor': 'top'},
+                titlefont={
+                    'color': 'white',
+                    'size': 20},
+                legend={
+                    'orientation': 'h',
+                    'bgcolor': '#010915',
+                    'xanchor': 'center', 'x': 0.5, 'y': -0.07},
+                font=dict(
+                    family="sans-serif",
+                    size=12,
+                    color='white')
+            ),
+
+        }
+    #####################Society and work-Quarterly labour market slack
+    elif (w_countries == 'Society and work') & (w_countries1 == 'Quarterly labour market slack'):
+
+        valueEu1 = 0
+        if ('European Union' in coun):
+            valueEu1 = getPieQLMS('European Union')
+
+        valueBel1 = 0
+        if ('Belgium' in coun):
+            valueBel1 = getPieQLMS('Belgium')
+
+        valueBul1 = 0
+        if ('Belgium' in coun):
+            valueBul1 = getPieQLMS('Bulgaria')
+
+        return {
+            'data': [go.Pie(labels=['EU', 'BE', 'BG'],
+                            values=[valueEu1, valueBel1, valueBul1],
+                            marker=dict(colors=colors),
+                            hoverinfo='label+value+percent',
+                            textinfo='label+value',
+                            textfont=dict(size=13)
+
+                            )],
+
+            'layout': go.Layout(
+                plot_bgcolor='#010915',
+                paper_bgcolor='#010915',
+                hovermode='closest',
+                title={
+                    'text': 'Society: Average ' + (w_countries1) + '</br>',
+
+                    'y': 0.93,
+                    'x': 0.5,
+                    'xanchor': 'center',
+                    'yanchor': 'top'},
+                titlefont={
+                    'color': 'white',
+                    'size': 20},
+                legend={
+                    'orientation': 'h',
+                    'bgcolor': '#010915',
+                    'xanchor': 'center', 'x': 0.5, 'y': -0.07},
+                font=dict(
+                    family="sans-serif",
+                    size=12,
+                    color='white')
+            ),
+
+        }
+    #####################Society and work-Quarterly job vacancy rate
+    elif (w_countries == 'Society and work') & (w_countries1 == 'Quarterly job vacancy rate'):
+
+        valueEu1 = 0
+        if ('European Union' in coun):
+            valueEu1 = getPieQJVR('European Union')
+
+        valueBel1 = 0
+        if ('Belgium' in coun):
+            valueBel1 = getPieQJVR('Belgium')
+
+        valueBul1 = 0
+        if ('Belgium' in coun):
+            valueBul1 = getPieQJVR('Bulgaria')
+
+        return {
+            'data': [go.Pie(labels=['EU', 'BE', 'BG'],
+                            values=[valueEu1, valueBel1, valueBul1],
+                            marker=dict(colors=colors),
+                            hoverinfo='label+value+percent',
+                            textinfo='label+value',
+                            textfont=dict(size=13)
+
+                            )],
+
+            'layout': go.Layout(
+                plot_bgcolor='#010915',
+                paper_bgcolor='#010915',
+                hovermode='closest',
+                title={
+                    'text': 'Society: Average ' + (w_countries1) + '</br>',
+
+                    'y': 0.93,
+                    'x': 0.5,
+                    'xanchor': 'center',
+                    'yanchor': 'top'},
+                titlefont={
+                    'color': 'white',
+                    'size': 20},
+                legend={
+                    'orientation': 'h',
+                    'bgcolor': '#010915',
+                    'xanchor': 'center', 'x': 0.5, 'y': -0.07},
+                font=dict(
+                    family="sans-serif",
+                    size=12,
+                    color='white')
+            ),
+
+        }
+    #####################Society and work-Quarterly labour cost
+    elif (w_countries == 'Society and work') & (w_countries1 == 'Quarterly labour cost'):
+
+        valueEu1 = 0
+        if ('European Union' in coun):
+            valueEu1 = getPieQLC('European Union')
+
+        valueBel1 = 0
+        if ('Belgium' in coun):
+            valueBel1 = getPieQLC('Belgium')
+
+        valueBul1 = 0
+        if ('Belgium' in coun):
+            valueBul1 = getPieQLC('Bulgaria')
+
+        return {
+            'data': [go.Pie(labels=['EU', 'BE', 'BG'],
+                            values=[valueEu1, valueBel1, valueBul1],
+                            marker=dict(colors=colors),
+                            hoverinfo='label+value+percent',
+                            textinfo='label+value',
+                            textfont=dict(size=13)
+
+                            )],
+
+            'layout': go.Layout(
+                plot_bgcolor='#010915',
+                paper_bgcolor='#010915',
+                hovermode='closest',
+                title={
+                    'text': 'Society: Average ' + (w_countries1) + '</br>',
+
+                    'y': 0.93,
+                    'x': 0.5,
+                    'xanchor': 'center',
+                    'yanchor': 'top'},
+                titlefont={
+                    'color': 'white',
+                    'size': 20},
+                legend={
+                    'orientation': 'h',
+                    'bgcolor': '#010915',
+                    'xanchor': 'center', 'x': 0.5, 'y': -0.07},
+                font=dict(
+                    family="sans-serif",
+                    size=12,
+                    color='white')
+            ),
+
+        }
+    #KRece oblast AGRICULTURE, ENERGY, TRANSPORT & TOURISM
+    ######################################################
+    ######################AGRICULTURE, ENERGY, TRANSPORT & TOURISM-Monthly air passenger transport
+    elif (w_countries == 'Agriculture, energy, transport & tourism') & (w_countries1 == 'Monthly air passenger transport'):
+
+        valueEu1 = 0
+        if ('European Union' in coun):
+            valueEu1 = getPieMAPT('European Union')
+
+        valueBel1 = 0
+        if ('Belgium' in coun):
+            valueBel1 = getPieMAPT('Belgium')
+
+        valueBul1 = 0
+        if ('Belgium' in coun):
+            valueBul1 = getPieMAPT('Bulgaria')
+
+        return {
+            'data': [go.Pie(labels=['EU', 'BE', 'BG'],
+                            values=[valueEu1, valueBel1, valueBul1],
+                            marker=dict(colors=colors),
+                            hoverinfo='label+value+percent',
+                            textinfo='label+value',
+                            textfont=dict(size=13)
+
+                            )],
+
+            'layout': go.Layout(
+                plot_bgcolor='#010915',
+                paper_bgcolor='#010915',
+                hovermode='closest',
+                title={
+                    'text': 'Agriculture: Average ' + (w_countries1) + '</br>',
+
+                    'y': 0.93,
+                    'x': 0.5,
+                    'xanchor': 'center',
+                    'yanchor': 'top'},
+                titlefont={
+                    'color': 'white',
+                    'size': 20},
+                legend={
+                    'orientation': 'h',
+                    'bgcolor': '#010915',
+                    'xanchor': 'center', 'x': 0.5, 'y': -0.07},
+                font=dict(
+                    family="sans-serif",
+                    size=12,
+                    color='white')
+            ),
+
+        }
+    ######################AGRICULTURE, ENERGY, TRANSPORT & TOURISM-Monthly commercial air flights
+    elif (w_countries == 'Agriculture, energy, transport & tourism') & (w_countries1 == 'Monthly commercial air flights'):
+
+        valueEu1 = 0
+        if ('European Union' in coun):
+            valueEu1 = getPieMCAF('European Union')
+
+        valueBel1 = 0
+        if ('Belgium' in coun):
+            valueBel1 = getPieMCAF('Belgium')
+
+        valueBul1 = 0
+        if ('Belgium' in coun):
+            valueBul1 = getPieMCAF('Bulgaria')
+
+        return {
+            'data': [go.Pie(labels=['EU', 'BE', 'BG'],
+                            values=[valueEu1, valueBel1, valueBul1],
+                            marker=dict(colors=colors),
+                            hoverinfo='label+value+percent',
+                            textinfo='label+value',
+                            textfont=dict(size=13)
+
+                            )],
+
+            'layout': go.Layout(
+                plot_bgcolor='#010915',
+                paper_bgcolor='#010915',
+                hovermode='closest',
+                title={
+                    'text': 'Agriculture: Average ' + (w_countries1) + '</br>',
+
+                    'y': 0.93,
+                    'x': 0.5,
+                    'xanchor': 'center',
+                    'yanchor': 'top'},
+                titlefont={
+                    'color': 'white',
+                    'size': 20},
+                legend={
+                    'orientation': 'h',
+                    'bgcolor': '#010915',
+                    'xanchor': 'center', 'x': 0.5, 'y': -0.07},
+                font=dict(
+                    family="sans-serif",
+                    size=12,
+                    color='white')
+            ),
+
+        }
+    ######################AGRICULTURE, ENERGY, TRANSPORT & TOURISM-Monthly arrivals at tourist accommodation
+    elif (w_countries == 'Agriculture, energy, transport & tourism') & (w_countries1 == 'Monthly arrivals at tourist accommodation'):
+
+        valueEu1 = 0
+        if ('European Union' in coun):
+            valueEu1 = getPieMATA('European Union')
+
+        valueBel1 = 0
+        if ('Belgium' in coun):
+            valueBel1 = getPieMATA('Belgium')
+
+        valueBul1 = 0
+        if ('Belgium' in coun):
+            valueBul1 = getPieMATA('Bulgaria')
+
+        return {
+            'data': [go.Pie(labels=['EU', 'BE', 'BG'],
+                            values=[valueEu1, valueBel1, valueBul1],
+                            marker=dict(colors=colors),
+                            hoverinfo='label+value+percent',
+                            textinfo='label+value',
+                            textfont=dict(size=13)
+
+                            )],
+
+            'layout': go.Layout(
+                plot_bgcolor='#010915',
+                paper_bgcolor='#010915',
+                hovermode='closest',
+                title={
+                    'text': 'Agriculture: Average ' + (w_countries1) + '</br>',
+
+                    'y': 0.93,
+                    'x': 0.5,
+                    'xanchor': 'center',
+                    'yanchor': 'top'},
+                titlefont={
+                    'color': 'white',
+                    'size': 20},
+                legend={
+                    'orientation': 'h',
+                    'bgcolor': '#010915',
+                    'xanchor': 'center', 'x': 0.5, 'y': -0.07},
+                font=dict(
+                    family="sans-serif",
+                    size=12,
+                    color='white')
+            ),
+
+        }
+    ######################AGRICULTURE, ENERGY, TRANSPORT & TOURISM-Monthly nights spent at tourist accommodation
+    elif (w_countries == 'Agriculture, energy, transport & tourism') & (w_countries1 == 'Monthly nights spent at tourist accommodation'):
+
+        valueEu1 = 0
+        if ('European Union' in coun):
+            valueEu1 = getPieMNSTA('European Union')
+
+        valueBel1 = 0
+        if ('Belgium' in coun):
+            valueBel1 = getPieMNSTA('Belgium')
+
+        valueBul1 = 0
+        if ('Belgium' in coun):
+            valueBul1 = getPieMNSTA('Bulgaria')
+
+        return {
+            'data': [go.Pie(labels=['EU', 'BE', 'BG'],
+                            values=[valueEu1, valueBel1, valueBul1],
+                            marker=dict(colors=colors),
+                            hoverinfo='label+value+percent',
+                            textinfo='label+value',
+                            textfont=dict(size=13)
+
+                            )],
+
+            'layout': go.Layout(
+                plot_bgcolor='#010915',
+                paper_bgcolor='#010915',
+                hovermode='closest',
+                title={
+                    'text': 'Agriculture: Average ' + (w_countries1) + '</br>',
+
+                    'y': 0.93,
+                    'x': 0.5,
+                    'xanchor': 'center',
+                    'yanchor': 'top'},
+                titlefont={
+                    'color': 'white',
+                    'size': 20},
+                legend={
+                    'orientation': 'h',
+                    'bgcolor': '#010915',
+                    'xanchor': 'center', 'x': 0.5, 'y': -0.07},
+                font=dict(
+                    family="sans-serif",
+                    size=12,
+                    color='white')
+            ),
+
+        }
+    ######################AGRICULTURE, ENERGY, TRANSPORT & TOURISM-Monthly electricity consumed by end-users
+    elif (w_countries == 'Agriculture, energy, transport & tourism') & (w_countries1 == 'Monthly electricity consumed by end-users'):
+
+        valueEu1 = 0
+        if ('European Union' in coun):
+            valueEu1 = getPieMEC('European Union')
+
+        valueBel1 = 0
+        if ('Belgium' in coun):
+            valueBel1 = getPieMEC('Belgium')
+
+        valueBul1 = 0
+        if ('Belgium' in coun):
+            valueBul1 = getPieMEC('Bulgaria')
+
+        return {
+            'data': [go.Pie(labels=['EU', 'BE', 'BG'],
+                            values=[valueEu1, valueBel1, valueBul1],
+                            marker=dict(colors=colors),
+                            hoverinfo='label+value+percent',
+                            textinfo='label+value',
+                            textfont=dict(size=13)
+
+                            )],
+
+            'layout': go.Layout(
+                plot_bgcolor='#010915',
+                paper_bgcolor='#010915',
+                hovermode='closest',
+                title={
+                    'text': 'Agriculture: Average ' + (w_countries1) + '</br>',
+
+                    'y': 0.93,
+                    'x': 0.5,
+                    'xanchor': 'center',
+                    'yanchor': 'top'},
+                titlefont={
+                    'color': 'white',
+                    'size': 20},
+                legend={
+                    'orientation': 'h',
+                    'bgcolor': '#010915',
+                    'xanchor': 'center', 'x': 0.5, 'y': -0.07},
+                font=dict(
+                    family="sans-serif",
+                    size=12,
+                    color='white')
+            ),
+
+        }
 
     else:
         return dash.no_update
