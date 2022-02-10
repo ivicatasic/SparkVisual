@@ -3785,31 +3785,167 @@ def display_content(w_countries, w_countries1, country_chosen):
 
     #Pocinje deo Economy- Inflation
     if (w_countries == 'Economy') & (w_countries1 == 'Inflation - annual growth rate'):
-        valueEu1=0
+        valueEu1= ''
         if('European Union' in coun):
            valueEu1 = getPieArr('European Union')
 
-        valueBel1=0
+        valueBel1= ''
         if('Belgium' in coun):
            valueBel1=getPieArr('Belgium')
 
-        valueSer1 = 0
+        valueSer1 = ''
         if ('Serbia' in coun):
             valueSer1 = getPieArr('Serbia')
 
+        valueBul1 = ''
+        if ('Bulgaria' in coun):
+            valueBul1 = getPieArr('Bulgaria')
+
+        valueChe1 = ''
+        if ('Czechia' in coun):
+            valueChe1 = getPieArr('Czechia')
+
+        valueDen1 = ''
+        if ('Denmark' in coun):
+            valueDen1 = getPieArr('Denmark')
+
+        valueGer1 = ''
+        if ('Germany' in coun):
+            valueGer1 = getPieArr('Germany')
+
+        valueEst1 = ''
+        if ('Estonia' in coun):
+            valueEst1 = getPieArr('Estonia')
+
+        valueIre1 = ''
+        if ('Ireland' in coun):
+            valueIre1 = getPieArr('Ireland')
+
+        valueGree1 = ''
+        if ('Greece' in coun):
+            valueGree1 = getPieArr('Greece')
+
+        valueSpa1 = ''
+        if ('Spain' in coun):
+            valueSpa1 = getPieArr('Spain')
+
+        valueFra1 = ''
+        if ('France' in coun):
+            valueFra1 = getPieArr('France')
+
+        valueCro1 = ''
+        if ('Croatia' in coun):
+            valueCro1 = getPieArr('Croatia')
+
+        valueIta1 = ''
+        if ('Italy' in coun):
+            valueIta1 = getPieArr('Italy')
+
+        valueCyp1 = ''
+        if ('Cyprus' in coun):
+            valueCyp1 = getPieArr('Cyprus')
+
+        valueLat1 = ''
+        if ('Latvia' in coun):
+            valueLat1 = getPieArr('Latvia')
+
+        valueLith1 = ''
+        if ('Lithuania' in coun):
+            valueLith1 = getPieArr('Lithuania')
+
+        valueLux1 = ''
+        if ('Luxembourg' in coun):
+            valueLux1 = getPieArr('Luxembourg')
+
+        valueHun1 = ''
+        if ('Hungary' in coun):
+            valueHun1 = getPieArr('Hungary')
+
+        valueMal1 = ''
+        if ('Malta' in coun):
+            valueMal1 = getPieArr('Malta')
+
+        valueNet1 = ''
+        if ('Netherlands' in coun):
+            valueNet1 = getPieArr('Netherlands')
+
+        valueAus1 = ''
+        if ('Austria' in coun):
+            valueAus1 = getPieArr('Austria')
+
+        valuePol1 = ''
+        if ('Poland' in coun):
+            valuePol1 = getPieArr('Poland')
+
+        valuePor1 = ''
+        if ('Portugal' in coun):
+            valuePor1 = getPieArr('Portugal')
+
+        valueRom1 = ''
+        if ('Romania' in coun):
+            valueRom1 = getPieArr('Romania')
+
+        valueSlo1 = ''
+        if ('Slovenia' in coun):
+            valueSlo1 = getPieArr('Slovenia')
+
+        valueSlovak1 = ''
+        if ('Slovakia' in coun):
+            valueSlovak1 = getPieArr('Slovakia')
+
+        valueFin1 = ''
+        if ('Finland' in coun):
+            valueFin1 = getPieArr('Finland')
+
+        valueSwe1 = ''
+        if ('Sweden' in coun):
+            valueSwe1 = getPieArr('Sweden')
+
+        valueUk1 = ''
+        if ('United Kingdom' in coun):
+            valueUk1 = getPieArr('United Kingdom')
+
+        valueEea1 = ''
+        if ('European Economic Area' in coun):
+            valueEea1 = getPieArr('European Economic Area')
+
+        valueIce1 = ''
+        if ('Iceland' in coun):
+            valueIce1 = getPieArr('Iceland')
+
+        valueNor1 = ''
+        if ('Norway' in coun):
+            valueNor1 = getPieArr('Norway')
+
+        valueSwi1 = ''
+        if ('Switzerland' in coun):
+            valueSwi1 = getPieArr('Switzerland')
+
+        valueMake1 = ''
+        if ('North Macedonia' in coun):
+            valueMake1 = getPieArr('North Macedonia')
+
+        valueTur1 = ''
+        if ('Turkey' in coun):
+            valueTur1 = getPieArr('Turkey')
+
+        valueUs1 = ''
+        if ('United States' in coun):
+            valueUs1 = getPieArr('United States')
+
         return {
-            'data': [go.Pie(labels=['EU','BE','SR'],
-                        values=[valueEu1, valueBel1,valueSer1],
+            'data': [go.Pie(labels=['EU','BE','RS','BG','CZ','DK','DE','EE','IE','El','ES','FR','HR','IT','CY','LV','LT','LU','HU','MT','NL','AT','PL','PT','RO','SI','SK','FI','SE','UK','EEA','IS','NO','CH','MK','TR','US'],
+                        values=[valueEu1, valueBel1,valueSer1,valueBul1,valueChe1,valueDen1,valueGer1,valueEst1,valueIre1,valueGree1,valueSpa1,valueFra1,valueCro1,valueIta1,valueCyp1,valueLat1,valueLith1,valueLux1,valueHun1,
+                                valueMal1,valueNet1,valueAus1,valuePol1,valuePor1,valueRom1,valueSlo1,valueSlovak1,valueFin1,valueSwe1,valueUk1,valueEea1,valueIce1,valueNor1,valueSwi1,valueMake1,valueTur1,valueUs1],
                         marker=dict(colors=colors),
                         hoverinfo='label+value+percent',
                         textinfo='label+value',
                         textfont=dict(size=13)
 
                         )],
-
             'layout': go.Layout(
-                    plot_bgcolor='#010915',
-                    paper_bgcolor='#010915',
+                    plot_bgcolor='#808080',
+                    paper_bgcolor='#A8A8A8',
                     hovermode='closest',
                     title={
                         'text': 'Economy: ' +(w_countries1) +'</br>',
@@ -3830,38 +3966,161 @@ def display_content(w_countries, w_countries1, country_chosen):
                         size=12,
                         color='white')
               ),
-
         }
     ##
     # Pocinje ECONOMY GDP
     ##
     elif (w_countries == 'Economy') & (w_countries1 == 'GDP – quarterly growth rate'):
 
-        valueEu1=0
+        valueEu1 = ''
         if('European Union' in coun):
             valueEu1=getPieGDP('European Union')
 
-        valueBel1 = 0
+        valueBel1 = ''
         if ('Belgium' in coun):
             valueBel1 = getPieGDP('Belgium')
 
-        valueSer1 = 0
+        valueSer1 = ''
         if ('Serbia' in coun):
             valueSer1 = getPieGDP('Serbia')
 
+        valueBul1 = ''
+        if ('Bulgaria' in coun):
+            valueBul1 = getPieGDP('Bulgaria')
+
+        valueChe1 = ''
+        if ('Czechia' in coun):
+            valueChe1 = getPieGDP('Czechia')
+
+        valueDen1 = ''
+        if ('Denmark' in coun):
+            valueDen1 = getPieGDP('Denmark')
+
+        valueGer1 = ''
+        if ('Germany' in coun):
+            valueGer1 = getPieGDP('Germany')
+
+        valueEst1 = ''
+        if ('Estonia' in coun):
+            valueEst1 = getPieGDP('Estonia')
+
+        valueIre1 = ''
+        if ('Ireland' in coun):
+            valueIre1 = getPieGDP('Ireland')
+
+        valueGree1 = ''
+        if ('Greece' in coun):
+            valueGree1 = getPieGDP('Greece')
+
+        valueSpa1 = ''
+        if ('Spain' in coun):
+            valueSpa1 = getPieGDP('Spain')
+
+        valueFra1 = ''
+        if ('France' in coun):
+            valueFra1 = getPieGDP('France')
+
+        valueCro1 = ''
+        if ('Croatia' in coun):
+            valueCro1 = getPieGDP('Croatia')
+
+        valueIta1 = ''
+        if ('Italy' in coun):
+            valueIta1 = getPieGDP('Italy')
+
+        valueCyp1 = ''
+        if ('Cyprus' in coun):
+            valueCyp1 = getPieGDP('Cyprus')
+
+        valueLat1 = ''
+        if ('Latvia' in coun):
+            valueLat1 = getPieGDP('Latvia')
+
+        valueLith1 = ''
+        if ('Lithuania' in coun):
+            valueLith1 = getPieGDP('Lithuania')
+
+        valueLux1 = ''
+        if ('Luxembourg' in coun):
+            valueLux1 = getPieGDP('Luxembourg')
+
+        valueHun1 = ''
+        if ('Hungary' in coun):
+            valueHun1 = getPieGDP('Hungary')
+
+        valueMal1 = ''
+        if ('Malta' in coun):
+            valueMal1 = getPieGDP('Malta')
+
+        valueNet1 = ''
+        if ('Netherlands' in coun):
+            valueNet1 = getPieGDP('Netherlands')
+
+        valueAus1 = ''
+        if ('Austria' in coun):
+            valueAus1 = getPieGDP('Austria')
+
+        valuePol1 = ''
+        if ('Poland' in coun):
+            valuePol1 = getPieGDP('Poland')
+
+        valuePor1 = ''
+        if ('Portugal' in coun):
+            valuePor1 = getPieGDP('Portugal')
+
+        valueRom1 = ''
+        if ('Romania' in coun):
+            valueRom1 = getPieGDP('Romania')
+
+        valueSlo1 = ''
+        if ('Slovenia' in coun):
+            valueSlo1 = getPieGDP('Slovenia')
+
+        valueSlovak1 = ''
+        if ('Slovakia' in coun):
+            valueSlovak1 = getPieGDP('Slovakia')
+
+        valueFin1 = ''
+        if ('Finland' in coun):
+            valueFin1 = getPieGDP('Finland')
+
+        valueSwe1 = ''
+        if ('Sweden' in coun):
+            valueSwe1 = getPieGDP('Sweden')
+
+        valueUk1 = ''
+        if ('United Kingdom' in coun):
+            valueUk1 = getPieGDP('United Kingdom')
+
+        valueNor1 = ''
+        if ('Norway' in coun):
+            valueNor1 = getPieGDP('Norway')
+
+        valueSwi1 = ''
+        if ('Switzerland' in coun):
+            valueSwi1 = getPieGDP('Switzerland')
+
+        valueMake1 = ''
+        if ('North Macedonia' in coun):
+            valueMake1 = getPieGDP('North Macedonia')
+
+        valueTur1 = ''
+        if ('Turkey' in coun):
+            valueTur1 = getPieGDP('Turkey')
+
         return {
-            'data': [go.Pie(labels=['EU', 'BE', 'SR'],
-                            values=[valueEu1, valueBel1, valueSer1],
+            'data': [go.Pie(labels=['EU', 'BE', 'SR','BG','CZ','DK','DE','EE','IE','El','ES','FR','HR','IT','CY','LV','LT','LU','HU','MT','NL','AT','PL','PT','RO','SI','SK','FI','SE','UK','NO','CH','MK','TR'],
+                            values=[valueEu1, valueBel1, valueSer1,valueBul1,valueChe1,valueDen1,valueGer1,valueEst1,valueIre1,valueGree1,valueSpa1,valueFra1,valueCro1,valueIta1,valueCyp1,valueLat1,valueLith1,valueLux1,valueHun1,
+                                valueMal1,valueNet1,valueAus1,valuePol1,valuePor1,valueRom1,valueSlo1,valueSlovak1,valueFin1,valueSwe1,valueUk1,valueNor1,valueSwi1,valueMake1,valueTur1],
                             marker=dict(colors=colors),
                             hoverinfo='label+value+percent',
                             textinfo='label+value',
                             textfont=dict(size=13)
 
                             )],
-
             'layout': go.Layout(
-                plot_bgcolor='#010915',
-                paper_bgcolor='#010915',
+                plot_bgcolor='#808080',
+                paper_bgcolor='#A8A8A8',
                 hovermode='closest',
                 title={
                     'text': 'Economy: ' + (w_countries1) + '</br>',
@@ -3882,37 +4141,160 @@ def display_content(w_countries, w_countries1, country_chosen):
                     size=12,
                     color='white')
             ),
-
         }
     #
     # ECONOMY Monthly industrial production
     #
     elif (w_countries == 'Economy') & (w_countries1 == 'Monthly industrial production'):
-        valueEu1 = 0
+        valueEu1 = ''
         if ('European Union' in coun):
             valueEu1 = getPieMIP('European Union')
 
-        valueBel1 = 0
+        valueBel1 = ''
         if ('Belgium' in coun):
             valueBel1 = getPieMIP('Belgium')
 
-        valueSer1 = 0
+        valueSer1 = ''
         if ('Serbia' in coun):
             valueSer1 = getPieMIP('Serbia')
 
+        valueBul1 = ''
+        if ('Bulgaria' in coun):
+            valueBul1 = getPieMIP('Bulgaria')
+
+        valueChe1 = ''
+        if ('Czechia' in coun):
+            valueChe1 = getPieMIP('Czechia')
+
+        valueDen1 = ''
+        if ('Denmark' in coun):
+            valueDen1 = getPieMIP('Denmark')
+
+        valueGer1 = ''
+        if ('Germany' in coun):
+            valueGer1 = getPieMIP('Germany')
+
+        valueEst1 = ''
+        if ('Estonia' in coun):
+            valueEst1 = getPieMIP('Estonia')
+
+        valueIre1 = ''
+        if ('Ireland' in coun):
+            valueIre1 = getPieMIP('Ireland')
+
+        valueGree1 = ''
+        if ('Greece' in coun):
+            valueGree1 = getPieMIP('Greece')
+
+        valueSpa1 = ''
+        if ('Spain' in coun):
+            valueSpa1 = getPieMIP('Spain')
+
+        valueFra1 = ''
+        if ('France' in coun):
+            valueFra1 = getPieMIP('France')
+
+        valueCro1 = ''
+        if ('Croatia' in coun):
+            valueCro1 = getPieMIP('Croatia')
+
+        valueIta1 = ''
+        if ('Italy' in coun):
+            valueIta1 = getPieMIP('Italy')
+
+        valueCyp1 = ''
+        if ('Cyprus' in coun):
+            valueCyp1 = getPieMIP('Cyprus')
+
+        valueLat1 = ''
+        if ('Latvia' in coun):
+            valueLat1 = getPieMIP('Latvia')
+
+        valueLith1 = ''
+        if ('Lithuania' in coun):
+            valueLith1 = getPieMIP('Lithuania')
+
+        valueLux1 = ''
+        if ('Luxembourg' in coun):
+            valueLux1 = getPieMIP('Luxembourg')
+
+        valueHun1 = ''
+        if ('Hungary' in coun):
+            valueHun1 = getPieMIP('Hungary')
+
+        valueMal1 = ''
+        if ('Malta' in coun):
+            valueMal1 = getPieMIP('Malta')
+
+        valueNet1 = ''
+        if ('Netherlands' in coun):
+            valueNet1 = getPieMIP('Netherlands')
+
+        valueAus1 = ''
+        if ('Austria' in coun):
+            valueAus1 = getPieMIP('Austria')
+
+        valuePol1 = ''
+        if ('Poland' in coun):
+            valuePol1 = getPieMIP('Poland')
+
+        valuePor1 = ''
+        if ('Portugal' in coun):
+            valuePor1 = getPieMIP('Portugal')
+
+        valueRom1 = ''
+        if ('Romania' in coun):
+            valueRom1 = getPieMIP('Romania')
+
+        valueSlo1 = ''
+        if ('Slovenia' in coun):
+            valueSlo1 = getPieMIP('Slovenia')
+
+        valueSlovak1 = ''
+        if ('Slovakia' in coun):
+            valueSlovak1 = getPieMIP('Slovakia')
+
+        valueFin1 = ''
+        if ('Finland' in coun):
+            valueFin1 = getPieMIP('Finland')
+
+        valueSwe1 = ''
+        if ('Sweden' in coun):
+            valueSwe1 = getPieMIP('Sweden')
+
+        valueUk1 = ''
+        if ('United Kingdom' in coun):
+            valueUk1 = getPieMIP('United Kingdom')
+
+        valueNor1 = ''
+        if ('Norway' in coun):
+            valueNor1 = getPieMIP('Norway')
+
+        valueSwi1 = ''
+        if ('Switzerland' in coun):
+            valueSwi1 = getPieMIP('Switzerland')
+
+        valueMake1 = ''
+        if ('North Macedonia' in coun):
+            valueMake1 = getPieMIP('North Macedonia')
+
+        valueTur1 = ''
+        if ('Turkey' in coun):
+            valueTur1 = getPieMIP('Turkey')
+
         return {
-            'data': [go.Pie(labels=['EU', 'BE', 'SR'],
-                            values=[valueEu1, valueBel1, valueSer1],
+            'data': [go.Pie(labels=['EU', 'BE', 'SR','BG','CZ','DK','DE','EE','IE','El','ES','FR','HR','IT','CY','LV','LT','LU','HU','MT','NL','AT','PL','PT','RO','SI','SK','FI','SE','UK','NO','CH','MK','TR'],
+                            values=[valueEu1, valueBel1, valueSer1,valueBul1,valueChe1,valueDen1,valueGer1,valueEst1,valueIre1,valueGree1,valueSpa1,valueFra1,valueCro1,valueIta1,valueCyp1,valueLat1,valueLith1,valueLux1,valueHun1,
+                                valueMal1,valueNet1,valueAus1,valuePol1,valuePor1,valueRom1,valueSlo1,valueSlovak1,valueFin1,valueSwe1,valueUk1,valueNor1,valueSwi1,valueMake1,valueTur1],
                             marker=dict(colors=colors),
                             hoverinfo='label+value+percent',
                             textinfo='label+value',
                             textfont=dict(size=13)
 
                             )],
-
             'layout': go.Layout(
-                plot_bgcolor='#010915',
-                paper_bgcolor='#010915',
+                plot_bgcolor='#808080',
+                paper_bgcolor='#A8A8A8',
                 hovermode='closest',
                 title={
                     'text': 'Economy: ' + (w_countries1) + '</br>',
@@ -3933,36 +4315,166 @@ def display_content(w_countries, w_countries1, country_chosen):
                     size=12,
                     color='white')
             ),
-
         }
     # ECONOMY MV
     #
     elif (w_countries == 'Economy') & (w_countries1 == 'Monthly volume of retail trade'):
-        valueEu1 = 0
+        valueEu1 = ''
         if ('European Union' in coun):
             valueEu1 = getPieMV('European Union')
 
-        valueBel1 = 0
+        valueBel1 = ''
         if ('Belgium' in coun):
             valueBel1 = getPieMV('Belgium')
 
-        valueSer1 = 0
+        valueSer1 = ''
         if ('Serbia' in coun):
             valueSer1 = getPieMV('Serbia')
 
+        valueBul1 = ''
+        if ('Bulgaria' in coun):
+            valueBul1 = getPieMV('Bulgaria')
+
+        valueChe1 = ''
+        if ('Czechia' in coun):
+            valueChe1 = getPieMV('Czechia')
+
+        valueDen1 = ''
+        if ('Denmark' in coun):
+            valueDen1 = getPieMV('Denmark')
+
+        valueGer1 = ''
+        if ('Germany' in coun):
+            valueGer1 = getPieMV('Germany')
+
+        valueEst1 = ''
+        if ('Estonia' in coun):
+            valueEst1 = getPieMV('Estonia')
+
+        valueIre1 = ''
+        if ('Ireland' in coun):
+            valueIre1 = getPieMV('Ireland')
+
+        valueGree1 = ''
+        if ('Greece' in coun):
+            valueGree1 = getPieMV('Greece')
+
+        valueSpa1 = ''
+        if ('Spain' in coun):
+            valueSpa1 = getPieMV('Spain')
+
+        valueFra1 = ''
+        if ('France' in coun):
+            valueFra1 = getPieMV('France')
+
+        valueCro1 = ''
+        if ('Croatia' in coun):
+            valueCro1 = getPieMV('Croatia')
+
+        valueIta1 = ''
+        if ('Italy' in coun):
+            valueIta1 = getPieMV('Italy')
+
+        valueCyp1 = ''
+        if ('Cyprus' in coun):
+            valueCyp1 = getPieMV('Cyprus')
+
+        valueLat1 = ''
+        if ('Latvia' in coun):
+            valueLat1 = getPieMV('Latvia')
+
+        valueLith1 = ''
+        if ('Lithuania' in coun):
+            valueLith1 = getPieMV('Lithuania')
+
+        valueLux1 = ''
+        if ('Luxembourg' in coun):
+            valueLux1 = getPieMV('Luxembourg')
+
+        valueHun1 = ''
+        if ('Hungary' in coun):
+            valueHun1 = getPieMV('Hungary')
+
+        valueMal1 = ''
+        if ('Malta' in coun):
+            valueMal1 = getPieMV('Malta')
+
+        valueNet1 = ''
+        if ('Netherlands' in coun):
+            valueNet1 = getPieMV('Netherlands')
+
+        valueAus1 = ''
+        if ('Austria' in coun):
+            valueAus1 = getPieMV('Austria')
+
+        valuePol1 = ''
+        if ('Poland' in coun):
+            valuePol1 = getPieMV('Poland')
+
+        valuePor1 = ''
+        if ('Portugal' in coun):
+            valuePor1 = getPieMV('Portugal')
+
+        valueRom1 = ''
+        if ('Romania' in coun):
+            valueRom1 = getPieMV('Romania')
+
+        valueSlo1 = ''
+        if ('Slovenia' in coun):
+            valueSlo1 = getPieMV('Slovenia')
+
+        valueSlovak1 = ''
+        if ('Slovakia' in coun):
+            valueSlovak1 = getPieMV('Slovakia')
+
+        valueFin1 = ''
+        if ('Finland' in coun):
+            valueFin1 = getPieMV('Finland')
+
+        valueSwe1 = ''
+        if ('Sweden' in coun):
+            valueSwe1 = getPieMV('Sweden')
+
+        valueUk1 = ''
+        if ('United Kingdom' in coun):
+            valueUk1 = getPieMV('United Kingdom')
+
+        valueEea1 = ''
+        if ('European Economic Area' in coun):
+            valueEea1 = getPieMV('European Economic Area')
+
+        valueIce1 = ''
+        if ('Iceland' in coun):
+            valueIce1 = getPieMV('Iceland')
+
+        valueNor1 = ''
+        if ('Norway' in coun):
+            valueNor1 = getPieMV('Norway')
+
+        valueSwi1 = ''
+        if ('Switzerland' in coun):
+            valueSwi1 = getPieMV('Switzerland')
+
+        valueMake1 = ''
+        if ('North Macedonia' in coun):
+            valueMake1 = getPieMV('North Macedonia')
+
+        valueTur1 = ''
+        if ('Turkey' in coun):
+            valueTur1 = getPieMV('Turkey')
+
         return {
-            'data': [go.Pie(labels=['EU', 'BE', 'SR'],
-                            values=[valueEu1, valueBel1, valueSer1],
+            'data': [go.Pie(labels=['EU', 'BE', 'SR','BG','CZ','DK','DE','EE','IE','El','ES','FR','HR','IT','CY','LV','LT','LU','HU','MT','NL','AT','PL','PT','RO','SI','SK','FI','SE','UK','NO','CH','MK','TR'],
+                            values=[valueEu1, valueBel1, valueSer1,valueBul1,valueChe1,valueDen1,valueGer1,valueEst1,valueIre1,valueGree1,valueSpa1,valueFra1,valueCro1,valueIta1,valueCyp1,valueLat1,valueLith1,valueLux1,valueHun1,
+                                valueMal1,valueNet1,valueAus1,valuePol1,valuePor1,valueRom1,valueSlo1,valueSlovak1,valueFin1,valueSwe1,valueUk1,valueNor1,valueSwi1,valueMake1,valueTur1],
                             marker=dict(colors=colors),
                             hoverinfo='label+value+percent',
                             textinfo='label+value',
                             textfont=dict(size=13)
-
                             )],
-
             'layout': go.Layout(
-                plot_bgcolor='#010915',
-                paper_bgcolor='#010915',
+                plot_bgcolor='#808080',
+                paper_bgcolor='#A8A8A8',
                 hovermode='closest',
                 title={
                     'text': 'Economy: ' + (w_countries1) + '</br>',
@@ -3983,26 +4495,106 @@ def display_content(w_countries, w_countries1, country_chosen):
                     size=12,
                     color='white')
             ),
-
         }
     # Pocinje Economy-Monthly production in construction
     #
     elif (w_countries == 'Economy') and (w_countries1 == 'Monthly production in construction'):
-        valueEu1 = 0
+        valueEu1 = ''
         if ('European Union' in coun):
             valueEu1 = getPieMPIC('European Union')
 
-        valueBel1 = 0
+        valueBel1 = ''
         if ('Belgium' in coun):
             valueBel1 = getPieMPIC('Belgium')
 
-        valueBul1 = 0
-        if ('Belgium' in coun):
+        valueBul1 = ''
+        if ('Bulgaria' in coun):
             valueBul1 = getPieMPIC('Bulgaria')
 
+        valueChe1 = ''
+        if ('Czechia' in coun):
+            valueChe1 = getPieMPIC('Czechia')
+
+        valueDen1 = ''
+        if ('Denmark' in coun):
+            valueDen1 = getPieMPIC('Denmark')
+
+        valueGer1 = ''
+        if ('Germany' in coun):
+            valueGer1 = getPieMPIC('Germany')
+
+        valueSpa1 = ''
+        if ('Spain' in coun):
+            valueSpa1 = getPieMPIC('Spain')
+
+        valueFra1 = ''
+        if ('France' in coun):
+            valueFra1 = getPieMPIC('France')
+
+        valueCro1 = ''
+        if ('Croatia' in coun):
+            valueCro1 = getPieMPIC('Croatia')
+
+        valueIta1 = ''
+        if ('Italy' in coun):
+            valueIta1 = getPieMPIC('Italy')
+
+        valueLux1 = ''
+        if ('Luxembourg' in coun):
+            valueLux1 = getPieMPIC('Luxembourg')
+
+        valueHun1 = ''
+        if ('Hungary' in coun):
+            valueHun1 = getPieMPIC('Hungary')
+
+        valueNet1 = ''
+        if ('Netherlands' in coun):
+            valueNet1 = getPieMPIC('Netherlands')
+
+        valueAus1 = ''
+        if ('Austria' in coun):
+            valueAus1 = getPieMPIC('Austria')
+
+        valuePol1 = ''
+        if ('Poland' in coun):
+            valuePol1 = getPieMPIC('Poland')
+
+        valuePor1 = ''
+        if ('Portugal' in coun):
+            valuePor1 = getPieMPIC('Portugal')
+
+        valueRom1 = ''
+        if ('Romania' in coun):
+            valueRom1 = getPieMPIC('Romania')
+
+        valueSlo1 = ''
+        if ('Slovenia' in coun):
+            valueSlo1 = getPieMPIC('Slovenia')
+
+        valueSlovak1 = ''
+        if ('Slovakia' in coun):
+            valueSlovak1 = getPieMPIC('Slovakia')
+
+        valueFin1 = ''
+        if ('Finland' in coun):
+            valueFin1 = getPieMPIC('Finland')
+
+        valueSwe1 = ''
+        if ('Sweden' in coun):
+            valueSwe1 = getPieMPIC('Sweden')
+
+        valueUk1 = ''
+        if ('United Kingdom' in coun):
+            valueUk1 = getPieMPIC('United Kingdom')
+
+        valueMake1 = ''
+        if ('North Macedonia' in coun):
+            valueMake1 = getPieMPIC('North Macedonia')
+
         return {
-            'data': [go.Pie(labels=['EU', 'BE', 'BG'],
-                            values=[valueEu1, valueBel1, valueBul1],
+            'data': [go.Pie(labels=['EU', 'BE', 'BG','CZ','DK','DE''ES','FR','HR','IT','LU','HU','NL','AT','PL','PT','RO','SI','SK','FI','SE','UK','MK'],
+                            values=[valueEu1, valueBel1, valueBul1,valueChe1,valueDen1,valueGer1,valueSpa1,valueFra1,valueCro1,valueIta1,valueLux1,valueHun1,
+                                valueNet1,valueAus1,valuePol1,valuePor1,valueRom1,valueSlo1,valueSlovak1,valueFin1,valueSwe1,valueUk1,valueMake1],
                             marker=dict(colors=colors),
                             hoverinfo='label+value+percent',
                             textinfo='label+value',
@@ -4011,8 +4603,8 @@ def display_content(w_countries, w_countries1, country_chosen):
                             )],
 
             'layout': go.Layout(
-                plot_bgcolor='#010915',
-                paper_bgcolor='#010915',
+                plot_bgcolor='#808080',
+                paper_bgcolor='#A8A8A8',
                 hovermode='closest',
                 title={
                     'text': 'Economy: ' + (w_countries1) + '</br>',
@@ -4035,7 +4627,7 @@ def display_content(w_countries, w_countries1, country_chosen):
             ),
 
         }
-    #######################################
+
 ###############################################
 ###############################################
     #Pocinje deo Population and health
@@ -4045,17 +4637,130 @@ def display_content(w_countries, w_countries1, country_chosen):
     #
     elif (w_countries == 'Population and health') & (w_countries1 == 'Monthly excess mortality'):
 
-        valueBel1 = 0
-        if ('Belgium' in coun):
-            valueBel1 = getPieNOD('Belgium')
+        valueEu1 = ''
+        if ('European Union' in coun):
+            valueEu1 = getPieMEM('European Union')
 
-        valueBul1 = 0
+        valueBel1 = ''
         if ('Belgium' in coun):
-            valueBul1 = getPieNOD('Bulgaria')
+            valueBel1 = getPieMEM('Belgium')
+
+        valueBul1 = ''
+        if ('Bulgaria' in coun):
+            valueBul1 = getPieMEM('Bulgaria')
+
+        valueChe1 = ''
+        if ('Czechia' in coun):
+            valueChe1 = getPieMEM('Czechia')
+
+        valueDen1 = ''
+        if ('Denmark' in coun):
+            valueDen1 = getPieMEM('Denmark')
+
+        valueGer1 = ''
+        if ('Germany' in coun):
+            valueGer1 = getPieMEM('Germany')
+
+        valueEst1 = ''
+        if ('Estonia' in coun):
+            valueEst1 = getPieMEM('Estonia')
+
+        valueGree1 = ''
+        if ('Greece' in coun):
+            valueGree1 = getPieMEM('Greece')
+
+        valueSpa1 = ''
+        if ('Spain' in coun):
+            valueSpa1 = getPieMEM('Spain')
+
+        valueFra1 = ''
+        if ('France' in coun):
+            valueFra1 = getPieMEM('France')
+
+        valueCro1 = ''
+        if ('Croatia' in coun):
+            valueCro1 = getPieMEM('Croatia')
+
+        valueIta1 = ''
+        if ('Italy' in coun):
+            valueIta1 = getPieMEM('Italy')
+
+        valueCyp1 = ''
+        if ('Cyprus' in coun):
+            valueCyp1 = getPieMEM('Cyprus')
+
+        valueLat1 = ''
+        if ('Latvia' in coun):
+            valueLat1 = getPieMEM('Latvia')
+
+        valueLith1 = ''
+        if ('Lithuania' in coun):
+            valueLith1 = getPieMEM('Lithuania')
+
+        valueLux1 = ''
+        if ('Luxembourg' in coun):
+            valueLux1 = getPieMEM('Luxembourg')
+
+        valueHun1 = ''
+        if ('Hungary' in coun):
+            valueHun1 = getPieMEM('Hungary')
+
+        valueMal1 = ''
+        if ('Malta' in coun):
+            valueMal1 = getPieMEM('Malta')
+
+        valueNet1 = ''
+        if ('Netherlands' in coun):
+            valueNet1 = getPieMEM('Netherlands')
+
+        valueAus1 = ''
+        if ('Austria' in coun):
+            valueAus1 = getPieMEM('Austria')
+
+        valuePol1 = ''
+        if ('Poland' in coun):
+            valuePol1 = getPieMEM('Poland')
+
+        valuePor1 = ''
+        if ('Portugal' in coun):
+            valuePor1 = getPieMEM('Portugal')
+
+        valueRom1 = ''
+        if ('Romania' in coun):
+            valueRom1 = getPieMEM('Romania')
+
+        valueSlo1 = ''
+        if ('Slovenia' in coun):
+            valueSlo1 = getPieMEM('Slovenia')
+
+        valueSlovak1 = ''
+        if ('Slovakia' in coun):
+            valueSlovak1 = getPieMEM('Slovakia')
+
+        valueFin1 = ''
+        if ('Finland' in coun):
+            valueFin1 = getPieMEM('Finland')
+
+        valueSwe1 = ''
+        if ('Sweden' in coun):
+            valueSwe1 = getPieMEM('Sweden')
+
+        valueIce1 = ''
+        if ('Iceland' in coun):
+            valueIce1 = getPieMEM('Iceland')
+
+        valueNor1 = ''
+        if ('Norway' in coun):
+            valueNor1 = getPieMEM('Norway')
+
+        valueSwi1 = ''
+        if ('Switzerland' in coun):
+            valueSwi1 = getPieMEM('Switzerland')
 
         return {
-            'data': [go.Pie(labels=['BE', 'BG'],
-                            values=[valueBel1, valueBul1],
+            'data': [go.Pie(labels=['EU','BE', 'BG','CZ','DK','DE','EE','IE','El','ES','FR','HR','IT','CY','LV','LT','LU','HU','MT','NL','AT','PL','PT','RO','SI','SK','FI','SE','IS','NO','CH'],
+                            values=[valueEu1,valueBel1, valueBul1,valueChe1,valueDen1,valueGer1,valueEst1,valueGree1,valueSpa1,valueFra1,valueCro1,valueIta1,valueCyp1,valueLat1,valueLith1,valueLux1,valueHun1,
+                                valueMal1,valueNet1,valueAus1,valuePol1,valuePor1,valueRom1,valueSlo1,valueSlovak1,valueFin1,valueSwe1,valueIce1,valueNor1,valueSwi1],
                             marker=dict(colors=colors),
                             hoverinfo='label+value+percent',
                             textinfo='label+value',
@@ -4064,8 +4769,8 @@ def display_content(w_countries, w_countries1, country_chosen):
                             )],
 
             'layout': go.Layout(
-                plot_bgcolor='#010915',
-                paper_bgcolor='#010915',
+                plot_bgcolor='#808080',
+                paper_bgcolor='#A8A8A8',
                 hovermode='closest',
                 title={
                     'text': 'Population: ' + (w_countries1) + '</br>',
@@ -4092,17 +4797,134 @@ def display_content(w_countries, w_countries1, country_chosen):
     # Pocinje Number of deaths by week
     elif (w_countries == 'Population and health') & (w_countries1 == 'Number of deaths by week'):
 
-        valueBel1 = 0
+        valueBel1 = ''
         if ('Belgium' in coun):
             valueBel1 = getPieNOD('Belgium')
 
-        valueBul1 = 0
-        if ('Belgium' in coun):
+        valueBul1 = ''
+        if ('Bulgaria' in coun):
             valueBul1 = getPieNOD('Bulgaria')
 
+        valueSer1 = ''
+        if ('Serbia' in coun):
+            valueSer1 = getPieNOD('Serbia')
+
+        valueChe1 = ''
+        if ('Czechia' in coun):
+            valueChe1 = getPieNOD('Czechia')
+
+        valueDen1 = ''
+        if ('Denmark' in coun):
+            valueDen1 = getPieNOD('Denmark')
+
+        valueGer1 = ''
+        if ('Germany' in coun):
+            valueGer1 = getPieNOD('Germany')
+
+        valueEst1 = ''
+        if ('Estonia' in coun):
+            valueEst1 = getPieNOD('Estonia')
+
+        valueGree1 = ''
+        if ('Greece' in coun):
+            valueGree1 = getPieNOD('Greece')
+
+        valueSpa1 = ''
+        if ('Spain' in coun):
+            valueSpa1 = getPieNOD('Spain')
+
+        valueFra1 = ''
+        if ('France' in coun):
+            valueFra1 = getPieNOD('France')
+
+        valueCro1 = ''
+        if ('Croatia' in coun):
+            valueCro1 = getPieNOD('Croatia')
+
+        valueIta1 = ''
+        if ('Italy' in coun):
+            valueIta1 = getPieNOD('Italy')
+
+        valueCyp1 = ''
+        if ('Cyprus' in coun):
+            valueCyp1 = getPieNOD('Cyprus')
+
+        valueLat1 = ''
+        if ('Latvia' in coun):
+            valueLat1 = getPieNOD('Latvia')
+
+        valueLith1 = ''
+        if ('Lithuania' in coun):
+            valueLith1 = getPieNOD('Lithuania')
+
+        valueLux1 = ''
+        if ('Luxembourg' in coun):
+            valueLux1 = getPieNOD('Luxembourg')
+
+        valueHun1 = ''
+        if ('Hungary' in coun):
+            valueHun1 = getPieNOD('Hungary')
+
+        valueMal1 = ''
+        if ('Malta' in coun):
+            valueMal1 = getPieNOD('Malta')
+
+        valueNet1 = ''
+        if ('Netherlands' in coun):
+            valueNet1 = getPieNOD('Netherlands')
+
+        valueAus1 = ''
+        if ('Austria' in coun):
+            valueAus1 = getPieNOD('Austria')
+
+        valuePol1 = ''
+        if ('Poland' in coun):
+            valuePol1 = getPieNOD('Poland')
+
+        valuePor1 = ''
+        if ('Portugal' in coun):
+            valuePor1 = getPieNOD('Portugal')
+
+        valueRom1 = ''
+        if ('Romania' in coun):
+            valueRom1 = getPieNOD('Romania')
+
+        valueSlo1 = ''
+        if ('Slovenia' in coun):
+            valueSlo1 = getPieNOD('Slovenia')
+
+        valueSlovak1 = ''
+        if ('Slovakia' in coun):
+            valueSlovak1 = getPieNOD('Slovakia')
+
+        valueFin1 = ''
+        if ('Finland' in coun):
+            valueFin1 = getPieNOD('Finland')
+
+        valueSwe1 = ''
+        if ('Sweden' in coun):
+            valueSwe1 = getPieNOD('Sweden')
+
+        valueIce1 = ''
+        if ('Iceland' in coun):
+            valueIce1 = getPieNOD('Iceland')
+
+        valueUk1 = ''
+        if ('United Kingdom' in coun):
+            valueUk1 = getPieNOD('United Kingdom')
+
+        valueNor1 = ''
+        if ('Norway' in coun):
+            valueNor1 = getPieNOD('Norway')
+
+        valueSwi1 = ''
+        if ('Switzerland' in coun):
+            valueSwi1 = getPieNOD('Switzerland')
+
         return {
-            'data': [go.Pie(labels=['BE', 'BG'],
-                            values=[valueBel1, valueBul1],
+            'data': [go.Pie(labels=['BE', 'BG', 'SR','CZ','DK','DE','EE','IE','El','ES','FR','HR','IT','CY','LV','LT','LU','HU','MT','NL','AT','PL','PT','RO','SI','SK','FI','SE','UK','NO','CH'],
+                            values=[valueBel1, valueBul1, valueSer1,valueChe1,valueDen1,valueGer1,valueEst1,valueGree1,valueSpa1,valueFra1,valueCro1,valueIta1,valueCyp1,valueLat1,valueLith1,valueLux1,valueHun1,
+                                valueMal1,valueNet1,valueAus1,valuePol1,valuePor1,valueRom1,valueSlo1,valueSlovak1,valueFin1,valueSwe1,valueUk1,valueNor1,valueSwi1],
                             marker=dict(colors=colors),
                             hoverinfo='label+value+percent',
                             textinfo='label+value',
@@ -4111,8 +4933,8 @@ def display_content(w_countries, w_countries1, country_chosen):
                             )],
 
             'layout': go.Layout(
-                plot_bgcolor='#010915',
-                paper_bgcolor='#010915',
+                plot_bgcolor='#808080',
+                paper_bgcolor='#A8A8A8',
                 hovermode='closest',
                 title={
                     'text': 'Population: ' + (w_countries1) + '</br>',
@@ -4138,31 +4960,142 @@ def display_content(w_countries, w_countries1, country_chosen):
     #####################Pocinje Polulation and healht-Monthly first-time asylum applicants
     elif (w_countries == 'Population and health') & (w_countries1 == 'Monthly first-time asylum applicants'):
 
-        valueEu1 = 0
+        valueEu1 = ''
         if ('European Union' in coun):
             valueEu1 = getPieMFTA('European Union')
 
-        valueBel1 = 0
+        valueBel1 = ''
         if ('Belgium' in coun):
             valueBel1 = getPieMFTA('Belgium')
 
-        valueBul1 = 0
+        valueBul1 = ''
         if ('Belgium' in coun):
             valueBul1 = getPieMFTA('Bulgaria')
 
+        valueChe1 = ''
+        if ('Czechia' in coun):
+            valueChe1 = getPieMFTA('Czechia')
+
+        valueDen1 = ''
+        if ('Denmark' in coun):
+            valueDen1 = getPieMFTA('Denmark')
+
+        valueGer1 = ''
+        if ('Germany' in coun):
+            valueGer1 = getPieMFTA('Germany')
+
+        valueEst1 = ''
+        if ('Estonia' in coun):
+            valueEst1 = getPieMFTA('Estonia')
+
+        valueIre1 = ''
+        if ('Ireland' in coun):
+            valueIre1 = getPieMFTA('Ireland')
+
+        valueGree1 = ''
+        if ('Greece' in coun):
+            valueGree1 = getPieMFTA('Greece')
+
+        valueSpa1 = ''
+        if ('Spain' in coun):
+            valueSpa1 = getPieMFTA('Spain')
+
+        valueFra1 = ''
+        if ('France' in coun):
+            valueFra1 = getPieMFTA('France')
+
+        valueCro1 = ''
+        if ('Croatia' in coun):
+            valueCro1 = getPieMFTA('Croatia')
+
+        valueIta1 = ''
+        if ('Italy' in coun):
+            valueIta1 = getPieMFTA('Italy')
+
+        valueCyp1 = ''
+        if ('Cyprus' in coun):
+            valueCyp1 = getPieMFTA('Cyprus')
+
+        valueLat1 = ''
+        if ('Latvia' in coun):
+            valueLat1 = getPieMFTA('Latvia')
+
+        valueLith1 = ''
+        if ('Lithuania' in coun):
+            valueLith1 = getPieMFTA('Lithuania')
+
+        valueLux1 = ''
+        if ('Luxembourg' in coun):
+            valueLux1 = getPieMFTA('Luxembourg')
+
+        valueHun1 = ''
+        if ('Hungary' in coun):
+            valueHun1 = getPieMFTA('Hungary')
+
+        valueMal1 = ''
+        if ('Malta' in coun):
+            valueMal1 = getPieMFTA('Malta')
+
+        valueNet1 = ''
+        if ('Netherlands' in coun):
+            valueNet1 = getPieMFTA('Netherlands')
+
+        valueAus1 = ''
+        if ('Austria' in coun):
+            valueAus1 = getPieMFTA('Austria')
+
+        valuePol1 = ''
+        if ('Poland' in coun):
+            valuePol1 = getPieMFTA('Poland')
+
+        valuePor1 = ''
+        if ('Portugal' in coun):
+            valuePor1 = getPieMFTA('Portugal')
+
+        valueRom1 = ''
+        if ('Romania' in coun):
+            valueRom1 = getPieMFTA('Romania')
+
+        valueSlo1 = ''
+        if ('Slovenia' in coun):
+            valueSlo1 = getPieMFTA('Slovenia')
+
+        valueSlovak1 = ''
+        if ('Slovakia' in coun):
+            valueSlovak1 = getPieMFTA('Slovakia')
+
+        valueFin1 = ''
+        if ('Finland' in coun):
+            valueFin1 = getPieMFTA('Finland')
+
+        valueSwe1 = ''
+        if ('Sweden' in coun):
+            valueSwe1 = getPieMFTA('Sweden')
+
+        valueUk1 = ''
+        if ('United Kingdom' in coun):
+            valueUk1 = getPieMFTA('United Kingdom')
+
+        valueNor1 = ''
+        if ('Norway' in coun):
+            valueNor1 = getPieMFTA('Norway')
+
+        valueSwi1 = ''
+        if ('Switzerland' in coun):
+            valueSwi1 = getPieMFTA('Switzerland')
+
         return {
-            'data': [go.Pie(labels=['EU', 'BE', 'BG'],
-                            values=[valueEu1, valueBel1, valueBul1],
+            'data': [go.Pie(labels=['EU', 'BE', 'BG','CZ','DK','DE','EE','IE','El','ES','FR','HR','IT','CY','LV','LT','LU','HU','MT','NL','AT','PL','PT','RO','SI','SK','FI','SE','UK','NO','CH'],
+                            values=[valueEu1, valueBel1, valueBul1,valueChe1,valueDen1,valueGer1,valueEst1,valueIre1,valueGree1,valueSpa1,valueFra1,valueCro1,valueIta1,valueCyp1,valueLat1,valueLith1,valueLux1,valueHun1,
+                                valueMal1,valueNet1,valueAus1,valuePol1,valuePor1,valueRom1,valueSlo1,valueSlovak1,valueFin1,valueSwe1,valueUk1,valueNor1,valueSwi1],
                             marker=dict(colors=colors),
                             hoverinfo='label+value+percent',
                             textinfo='label+value',
                             textfont=dict(size=13)
-
                             )],
-
             'layout': go.Layout(
-                plot_bgcolor='#010915',
-                paper_bgcolor='#010915',
+                plot_bgcolor='#808080',
+                paper_bgcolor='#A8A8A8',
                 hovermode='closest',
                 title={
                     'text': 'Population: ' + (w_countries1) + '</br>',
@@ -4189,21 +5122,138 @@ def display_content(w_countries, w_countries1, country_chosen):
     #####################Pocinje Society and work-Monthly unemployment rate
     elif (w_countries == 'Society and work') & (w_countries1 == 'Monthly unemployment rate'):
 
-        valueEu1 = 0
+        valueEu1 = ''
         if ('European Union' in coun):
             valueEu1 = getPieMUR('European Union')
 
-        valueBel1 = 0
+        valueBel1 = ''
         if ('Belgium' in coun):
             valueBel1 = getPieMUR('Belgium')
 
-        valueBul1 = 0
-        if ('Belgium' in coun):
+        valueBul1 = ''
+        if ('Bulgaria' in coun):
             valueBul1 = getPieMUR('Bulgaria')
 
+        valueChe1 = ''
+        if ('Czechia' in coun):
+            valueChe1 = getPieMUR('Czechia')
+
+        valueDen1 = ''
+        if ('Denmark' in coun):
+            valueDen1 = getPieMUR('Denmark')
+
+        valueGer1 = ''
+        if ('Germany' in coun):
+            valueGer1 = getPieMUR('Germany')
+
+        valueEst1 = ''
+        if ('Estonia' in coun):
+            valueEst1 = getPieMUR('Estonia')
+
+        valueIre1 = ''
+        if ('Ireland' in coun):
+            valueIre1 = getPieMUR('Ireland')
+
+        valueGree1 = ''
+        if ('Greece' in coun):
+            valueGree1 = getPieMUR('Greece')
+
+        valueSpa1 = ''
+        if ('Spain' in coun):
+            valueSpa1 = getPieMUR('Spain')
+
+        valueFra1 = ''
+        if ('France' in coun):
+            valueFra1 = getPieMUR('France')
+
+        valueCro1 = ''
+        if ('Croatia' in coun):
+            valueCro1 = getPieMUR('Croatia')
+
+        valueIta1 = ''
+        if ('Italy' in coun):
+            valueIta1 = getPieMUR('Italy')
+
+        valueCyp1 = ''
+        if ('Cyprus' in coun):
+            valueCyp1 = getPieMUR('Cyprus')
+
+        valueLat1 = ''
+        if ('Latvia' in coun):
+            valueLat1 = getPieMUR('Latvia')
+
+        valueLith1 = ''
+        if ('Lithuania' in coun):
+            valueLith1 = getPieMUR('Lithuania')
+
+        valueLux1 = ''
+        if ('Luxembourg' in coun):
+            valueLux1 = getPieMUR('Luxembourg')
+
+        valueHun1 = ''
+        if ('Hungary' in coun):
+            valueHun1 = getPieMUR('Hungary')
+
+        valueMal1 = ''
+        if ('Malta' in coun):
+            valueMal1 = getPieMUR('Malta')
+
+        valueNet1 = ''
+        if ('Netherlands' in coun):
+            valueNet1 = getPieMUR('Netherlands')
+
+        valueAus1 = ''
+        if ('Austria' in coun):
+            valueAus1 = getPieMUR('Austria')
+
+        valuePol1 = ''
+        if ('Poland' in coun):
+            valuePol1 = getPieMUR('Poland')
+
+        valuePor1 = ''
+        if ('Portugal' in coun):
+            valuePor1 = getPieMUR('Portugal')
+
+        valueRom1 = ''
+        if ('Romania' in coun):
+            valueRom1 = getPieMUR('Romania')
+
+        valueSlo1 = ''
+        if ('Slovenia' in coun):
+            valueSlo1 = getPieMUR('Slovenia')
+
+        valueSlovak1 = ''
+        if ('Slovakia' in coun):
+            valueSlovak1 = getPieMUR('Slovakia')
+
+        valueFin1 = ''
+        if ('Finland' in coun):
+            valueFin1 = getPieMUR('Finland')
+
+        valueSwe1 = ''
+        if ('Sweden' in coun):
+            valueSwe1 = getPieMUR('Sweden')
+
+        valueUk1 = ''
+        if ('United Kingdom' in coun):
+            valueUk1 = getPieMUR('United Kingdom')
+
+        valueNor1 = ''
+        if ('Norway' in coun):
+            valueNor1 = getPieMUR('Norway')
+
+        valueSwi1 = ''
+        if ('Switzerland' in coun):
+            valueSwi1 = getPieMIP('Switzerland')
+
+        valueTur1 = ''
+        if ('Turkey' in coun):
+            valueTur1 = getPieMUR('Turkey')
+
         return {
-            'data': [go.Pie(labels=['EU', 'BE', 'BG'],
-                            values=[valueEu1, valueBel1, valueBul1],
+            'data': [go.Pie(labels=['EU', 'BE', 'BG','CZ','DK','DE','EE','IE','El','ES','FR','HR','IT','CY','LV','LT','LU','HU','MT','NL','AT','PL','PT','RO','SI','SK','FI','SE','UK','NO','CH','TR'],
+                            values=[valueEu1, valueBel1, valueBul1,valueChe1,valueDen1,valueGer1,valueEst1,valueIre1,valueGree1,valueSpa1,valueFra1,valueCro1,valueIta1,valueCyp1,valueLat1,valueLith1,valueLux1,valueHun1,
+                                valueMal1,valueNet1,valueAus1,valuePol1,valuePor1,valueRom1,valueSlo1,valueSlovak1,valueFin1,valueSwe1,valueUk1,valueNor1,valueSwi1,valueTur1],
                             marker=dict(colors=colors),
                             hoverinfo='label+value+percent',
                             textinfo='label+value',
@@ -4212,8 +5262,8 @@ def display_content(w_countries, w_countries1, country_chosen):
                             )],
 
             'layout': go.Layout(
-                plot_bgcolor='#010915',
-                paper_bgcolor='#010915',
+                plot_bgcolor='#808080',
+                paper_bgcolor='#A8A8A8',
                 hovermode='closest',
                 title={
                     'text': 'Society: Average ' + (w_countries1) + '</br>',
@@ -4239,21 +5289,138 @@ def display_content(w_countries, w_countries1, country_chosen):
     #####################Society and work-Monthly youth unemployment rate
     elif (w_countries == 'Society and work') & (w_countries1 == 'Monthly youth unemployment rate'):
 
-        valueEu1 = 0
+        valueEu1 = ''
         if ('European Union' in coun):
             valueEu1 = getPieMYUR('European Union')
 
-        valueBel1 = 0
+        valueBel1 = ''
         if ('Belgium' in coun):
             valueBel1 = getPieMYUR('Belgium')
 
-        valueBul1 = 0
-        if ('Belgium' in coun):
+        valueBul1 = ''
+        if ('Bulgaria' in coun):
             valueBul1 = getPieMYUR('Bulgaria')
 
+        valueChe1 = ''
+        if ('Czechia' in coun):
+            valueChe1 = getPieMYUR('Czechia')
+
+        valueDen1 = ''
+        if ('Denmark' in coun):
+            valueDen1 = getPieMYUR('Denmark')
+
+        valueGer1 = ''
+        if ('Germany' in coun):
+            valueGer1 = getPieMYUR('Germany')
+
+        valueEst1 = ''
+        if ('Estonia' in coun):
+            valueEst1 = getPieMYUR('Estonia')
+
+        valueIre1 = ''
+        if ('Ireland' in coun):
+            valueIre1 = getPieMYUR('Ireland')
+
+        valueGree1 = ''
+        if ('Greece' in coun):
+            valueGree1 = getPieMYUR('Greece')
+
+        valueSpa1 = ''
+        if ('Spain' in coun):
+            valueSpa1 = getPieMYUR('Spain')
+
+        valueFra1 = ''
+        if ('France' in coun):
+            valueFra1 = getPieMYUR('France')
+
+        valueCro1 = ''
+        if ('Croatia' in coun):
+            valueCro1 = getPieMYUR('Croatia')
+
+        valueIta1 = ''
+        if ('Italy' in coun):
+            valueIta1 = getPieMYUR('Italy')
+
+        valueCyp1 = ''
+        if ('Cyprus' in coun):
+            valueCyp1 = getPieMYUR('Cyprus')
+
+        valueLat1 = ''
+        if ('Latvia' in coun):
+            valueLat1 = getPieMYUR('Latvia')
+
+        valueLith1 = ''
+        if ('Lithuania' in coun):
+            valueLith1 = getPieMYUR('Lithuania')
+
+        valueLux1 = ''
+        if ('Luxembourg' in coun):
+            valueLux1 = getPieMYUR('Luxembourg')
+
+        valueHun1 = ''
+        if ('Hungary' in coun):
+            valueHun1 = getPieMYUR('Hungary')
+
+        valueMal1 = ''
+        if ('Malta' in coun):
+            valueMal1 = getPieMYUR('Malta')
+
+        valueNet1 = ''
+        if ('Netherlands' in coun):
+            valueNet1 = getPieMYUR('Netherlands')
+
+        valueAus1 = ''
+        if ('Austria' in coun):
+            valueAus1 = getPieMYUR('Austria')
+
+        valuePol1 = ''
+        if ('Poland' in coun):
+            valuePol1 = getPieMYUR('Poland')
+
+        valuePor1 = ''
+        if ('Portugal' in coun):
+            valuePor1 = getPieMYUR('Portugal')
+
+        valueRom1 = ''
+        if ('Romania' in coun):
+            valueRom1 = getPieMYUR('Romania')
+
+        valueSlo1 = ''
+        if ('Slovenia' in coun):
+            valueSlo1 = getPieMYUR('Slovenia')
+
+        valueSlovak1 = ''
+        if ('Slovakia' in coun):
+            valueSlovak1 = getPieMYUR('Slovakia')
+
+        valueFin1 = ''
+        if ('Finland' in coun):
+            valueFin1 = getPieMYUR('Finland')
+
+        valueSwe1 = ''
+        if ('Sweden' in coun):
+            valueSwe1 = getPieMYUR('Sweden')
+
+        valueUk1 = ''
+        if ('United Kingdom' in coun):
+            valueUk1 = getPieMYUR('United Kingdom')
+
+        valueNor1 = ''
+        if ('Norway' in coun):
+            valueNor1 = getPieMYUR('Norway')
+
+        valueSwi1 = ''
+        if ('Switzerland' in coun):
+            valueSwi1 = getPieMYUR('Switzerland')
+
+        valueTur1 = ''
+        if ('Turkey' in coun):
+            valueTur1 = getPieMYUR('Turkey')
+
         return {
-            'data': [go.Pie(labels=['EU', 'BE', 'BG'],
-                            values=[valueEu1, valueBel1, valueBul1],
+            'data': [go.Pie(labels=['EU', 'BE', 'BG','CZ','DK','DE','EE','IE','El','ES','FR','HR','IT','CY','LV','LT','LU','HU','MT','NL','AT','PL','PT','RO','SI','SK','FI','SE','UK','NO','CH','TR'],
+                            values=[valueEu1, valueBel1, valueBul1,valueChe1,valueDen1,valueGer1,valueEst1,valueIre1,valueGree1,valueSpa1,valueFra1,valueCro1,valueIta1,valueCyp1,valueLat1,valueLith1,valueLux1,valueHun1,
+                                valueMal1,valueNet1,valueAus1,valuePol1,valuePor1,valueRom1,valueSlo1,valueSlovak1,valueFin1,valueSwe1,valueUk1,valueNor1,valueSwi1,valueTur1],
                             marker=dict(colors=colors),
                             hoverinfo='label+value+percent',
                             textinfo='label+value',
@@ -4262,8 +5429,8 @@ def display_content(w_countries, w_countries1, country_chosen):
                             )],
 
             'layout': go.Layout(
-                plot_bgcolor='#010915',
-                paper_bgcolor='#010915',
+                plot_bgcolor='#808080',
+                paper_bgcolor='#A8A8A8',
                 hovermode='closest',
                 title={
                     'text': 'Society: Average ' + (w_countries1) + '</br>',
@@ -4289,21 +5456,106 @@ def display_content(w_countries, w_countries1, country_chosen):
     #####################Society and work-Quarterly employment
     elif (w_countries == 'Society and work') & (w_countries1 == 'Quarterly employment'):
 
-        valueEu1 = 0
+        valueEu1 = ''
         if ('European Union' in coun):
             valueEu1 = getPieQE('European Union')
 
-        valueBel1 = 0
+        valueBel1 = ''
         if ('Belgium' in coun):
             valueBel1 = getPieQE('Belgium')
 
-        valueBul1 = 0
-        if ('Belgium' in coun):
+        valueBul1 = ''
+        if ('Bulgaria' in coun):
             valueBul1 = getPieQE('Bulgaria')
 
+        valueDen1 = ''
+        if ('Denmark' in coun):
+            valueDen1 = getPieQE('Denmark')
+
+        valueGer1 = ''
+        if ('Germany' in coun):
+            valueGer1 = getPieQE('Germany')
+
+        valueEst1 = ''
+        if ('Estonia' in coun):
+            valueEst1 = getPieQE('Estonia')
+
+        valueIre1 = ''
+        if ('Ireland' in coun):
+            valueIre1 = getPieQE('Ireland')
+
+        valueSpa1 = ''
+        if ('Spain' in coun):
+            valueSpa1 = getPieQE('Spain')
+
+        valueCro1 = ''
+        if ('Croatia' in coun):
+            valueCro1 = getPieQE('Croatia')
+
+        valueIta1 = ''
+        if ('Italy' in coun):
+            valueIta1 = getPieQE('Italy')
+
+        valueCyp1 = ''
+        if ('Cyprus' in coun):
+            valueCyp1 = getPieQE('Cyprus')
+
+        valueLat1 = ''
+        if ('Latvia' in coun):
+            valueLat1 = getPieQE('Latvia')
+
+        valueLith1 = ''
+        if ('Lithuania' in coun):
+            valueLith1 = getPieQE('Lithuania')
+
+        valueLux1 = ''
+        if ('Luxembourg' in coun):
+            valueLux1 = getPieQE('Luxembourg')
+
+        valueHun1 = ''
+        if ('Hungary' in coun):
+            valueHun1 = getPieQE('Hungary')
+
+        valueNet1 = ''
+        if ('Netherlands' in coun):
+            valueNet1 = getPieQE('Netherlands')
+
+        valueAus1 = ''
+        if ('Austria' in coun):
+            valueAus1 = getPieQE('Austria')
+
+        valueRom1 = ''
+        if ('Romania' in coun):
+            valueRom1 = getPieQE('Romania')
+
+        valueSlo1 = ''
+        if ('Slovenia' in coun):
+            valueSlo1 = getPieQE('Slovenia')
+
+        valueSlovak1 = ''
+        if ('Slovakia' in coun):
+            valueSlovak1 = getPieQE('Slovakia')
+
+        valueFin1 = ''
+        if ('Finland' in coun):
+            valueFin1 = getPieQE('Finland')
+
+        valueSwe1 = ''
+        if ('Sweden' in coun):
+            valueSwe1 = getPieQE('Sweden')
+
+        valueUk1 = ''
+        if ('United Kingdom' in coun):
+            valueUk1 = getPieQE('United Kingdom')
+
+        valueNor1 = ''
+        if ('Norway' in coun):
+            valueNor1 = getPieQE('Norway')
+
         return {
-            'data': [go.Pie(labels=['EU', 'BE', 'BG'],
-                            values=[valueEu1, valueBel1, valueBul1],
+            'data': [go.Pie(labels=['EU', 'BE', 'BG','DK','DE','EE','IE','ES','HR','IT','CY','LV','LT','LU','HU','NL','AT','RO','SI','SK','FI','SE','UK','NO'],
+                            values=[valueEu1, valueBel1, valueBul1,valueDen1,valueGer1,valueEst1,valueIre1,valueSpa1,valueCro1,valueIta1,valueCyp1,valueLat1,valueLith1,valueLux1,valueHun1,
+                                valueNet1,valueAus1,valueRom1,valueSlo1,valueSlovak1,valueFin1,valueSwe1,valueUk1,valueNor1],
                             marker=dict(colors=colors),
                             hoverinfo='label+value+percent',
                             textinfo='label+value',
@@ -4312,8 +5564,8 @@ def display_content(w_countries, w_countries1, country_chosen):
                             )],
 
             'layout': go.Layout(
-                plot_bgcolor='#010915',
-                paper_bgcolor='#010915',
+                plot_bgcolor='#808080',
+                paper_bgcolor='#A8A8A8',
                 hovermode='closest',
                 title={
                     'text': 'Society: Average ' + (w_countries1) + '</br>',
@@ -4339,21 +5591,138 @@ def display_content(w_countries, w_countries1, country_chosen):
     #####################Society and work-Quarterly labour market slack
     elif (w_countries == 'Society and work') & (w_countries1 == 'Quarterly labour market slack'):
 
-        valueEu1 = 0
+        valueEu1 = ''
         if ('European Union' in coun):
             valueEu1 = getPieQLMS('European Union')
 
-        valueBel1 = 0
+        valueBel1 = ''
         if ('Belgium' in coun):
             valueBel1 = getPieQLMS('Belgium')
 
-        valueBul1 = 0
-        if ('Belgium' in coun):
+        valueBul1 = ''
+        if ('Bulgaria' in coun):
             valueBul1 = getPieQLMS('Bulgaria')
 
+        valueChe1 = ''
+        if ('Czechia' in coun):
+            valueChe1 = getPieQLMS('Czechia')
+
+        valueDen1 = ''
+        if ('Denmark' in coun):
+            valueDen1 = getPieQLMS('Denmark')
+
+        valueGer1 = ''
+        if ('Germany' in coun):
+            valueGer1 = getPieQLMS('Germany')
+
+        valueEst1 = ''
+        if ('Estonia' in coun):
+            valueEst1 = getPieQLMS('Estonia')
+
+        valueIre1 = ''
+        if ('Ireland' in coun):
+            valueIre1 = getPieQLMS('Ireland')
+
+        valueGree1 = ''
+        if ('Greece' in coun):
+            valueGree1 = getPieQLMS('Greece')
+
+        valueSpa1 = ''
+        if ('Spain' in coun):
+            valueSpa1 = getPieQLMS('Spain')
+
+        valueFra1 = ''
+        if ('France' in coun):
+            valueFra1 = getPieQLMS('France')
+
+        valueCro1 = ''
+        if ('Croatia' in coun):
+            valueCro1 = getPieQLMS('Croatia')
+
+        valueIta1 = ''
+        if ('Italy' in coun):
+            valueIta1 = getPieQLMS('Italy')
+
+        valueCyp1 = ''
+        if ('Cyprus' in coun):
+            valueCyp1 = getPieQLMS('Cyprus')
+
+        valueLat1 = ''
+        if ('Latvia' in coun):
+            valueLat1 = getPieQLMS('Latvia')
+
+        valueLith1 = ''
+        if ('Lithuania' in coun):
+            valueLith1 = getPieQLMS('Lithuania')
+
+        valueLux1 = ''
+        if ('Luxembourg' in coun):
+            valueLux1 = getPieQLMS('Luxembourg')
+
+        valueHun1 = ''
+        if ('Hungary' in coun):
+            valueHun1 = getPieQLMS('Hungary')
+
+        valueMal1 = ''
+        if ('Malta' in coun):
+            valueMal1 = getPieQLMS('Malta')
+
+        valueNet1 = ''
+        if ('Netherlands' in coun):
+            valueNet1 = getPieQLMS('Netherlands')
+
+        valueAus1 = ''
+        if ('Austria' in coun):
+            valueAus1 = getPieQLMS('Austria')
+
+        valuePol1 = ''
+        if ('Poland' in coun):
+            valuePol1 = getPieQLMS('Poland')
+
+        valuePor1 = ''
+        if ('Portugal' in coun):
+            valuePor1 = getPieQLMS('Portugal')
+
+        valueRom1 = ''
+        if ('Romania' in coun):
+            valueRom1 = getPieQLMS('Romania')
+
+        valueSlo1 = ''
+        if ('Slovenia' in coun):
+            valueSlo1 = getPieQLMS('Slovenia')
+
+        valueSlovak1 = ''
+        if ('Slovakia' in coun):
+            valueSlovak1 = getPieQLMS('Slovakia')
+
+        valueFin1 = ''
+        if ('Finland' in coun):
+            valueFin1 = getPieQLMS('Finland')
+
+        valueSwe1 = ''
+        if ('Sweden' in coun):
+            valueSwe1 = getPieQLMS('Sweden')
+
+        valueNor1 = ''
+        if ('Norway' in coun):
+            valueNor1 = getPieQLMS('Norway')
+
+        valueSwi1 = ''
+        if ('Switzerland' in coun):
+            valueSwi1 = getPieQLMS('Switzerland')
+
+        valueSer1 = ''
+        if ('Serbia' in coun):
+            valueSer1 = getPieQLMS('Serbia')
+
+        valueTur1 = ''
+        if ('Turkey' in coun):
+            valueTur1 = getPieQLMS('Turkey')
+
         return {
-            'data': [go.Pie(labels=['EU', 'BE', 'BG'],
-                            values=[valueEu1, valueBel1, valueBul1],
+            'data': [go.Pie(labels=['EU', 'BE', 'BG','CZ','DK','DE','EE','IE','El','ES','FR','HR','IT','CY','LV','LT','LU','HU','MT','NL','AT','PL','PT','RO','SI','SK','FI','SE','NO','CH','RS','TR'],
+                            values=[valueEu1, valueBel1, valueBul1,valueChe1,valueDen1,valueGer1,valueEst1,valueIre1,valueGree1,valueSpa1,valueFra1,valueCro1,valueIta1,valueCyp1,valueLat1,valueLith1,valueLux1,valueHun1,
+                                valueMal1,valueNet1,valueAus1,valuePol1,valuePor1,valueRom1,valueSlo1,valueSlovak1,valueFin1,valueSwe1,valueNor1,valueSwi1,valueSer1,valueTur1],
                             marker=dict(colors=colors),
                             hoverinfo='label+value+percent',
                             textinfo='label+value',
@@ -4362,8 +5731,8 @@ def display_content(w_countries, w_countries1, country_chosen):
                             )],
 
             'layout': go.Layout(
-                plot_bgcolor='#010915',
-                paper_bgcolor='#010915',
+                plot_bgcolor='#808080',
+                paper_bgcolor='#A8A8A8',
                 hovermode='closest',
                 title={
                     'text': 'Society: Average ' + (w_countries1) + '</br>',
@@ -4389,21 +5758,126 @@ def display_content(w_countries, w_countries1, country_chosen):
     #####################Society and work-Quarterly job vacancy rate
     elif (w_countries == 'Society and work') & (w_countries1 == 'Quarterly job vacancy rate'):
 
-        valueEu1 = 0
+        valueEu1 = ''
         if ('European Union' in coun):
             valueEu1 = getPieQJVR('European Union')
 
-        valueBel1 = 0
+        valueBel1 = ''
         if ('Belgium' in coun):
             valueBel1 = getPieQJVR('Belgium')
 
-        valueBul1 = 0
-        if ('Belgium' in coun):
+        valueBul1 = ''
+        if ('Bulgaria' in coun):
             valueBul1 = getPieQJVR('Bulgaria')
 
+        valueChe1 = ''
+        if ('Czechia' in coun):
+            valueChe1 = getPieQJVR('Czechia')
+
+        valueGer1 = ''
+        if ('Germany' in coun):
+            valueGer1 = getPieQJVR('Germany')
+
+        valueEst1 = ''
+        if ('Estonia' in coun):
+            valueEst1 = getPieQJVR('Estonia')
+
+        valueIre1 = ''
+        if ('Ireland' in coun):
+            valueIre1 = getPieQJVR('Ireland')
+
+        valueGree1 = ''
+        if ('Greece' in coun):
+            valueGree1 = getPieQJVR('Greece')
+
+        valueSpa1 = ''
+        if ('Spain' in coun):
+            valueSpa1 = getPieQJVR('Spain')
+
+        valueCyp1 = ''
+        if ('Cyprus' in coun):
+            valueCyp1 = getPieQJVR('Cyprus')
+
+        valueLat1 = ''
+        if ('Latvia' in coun):
+            valueLat1 = getPieQJVR('Latvia')
+
+        valueLith1 = ''
+        if ('Lithuania' in coun):
+            valueLith1 = getPieQJVR('Lithuania')
+
+        valueLux1 = ''
+        if ('Luxembourg' in coun):
+            valueLux1 = getPieQJVR('Luxembourg')
+
+        valueHun1 = ''
+        if ('Hungary' in coun):
+            valueHun1 = getPieQJVR('Hungary')
+
+        valueMal1 = ''
+        if ('Malta' in coun):
+            valueMal1 = getPieQJVR('Malta')
+
+        valueNet1 = ''
+        if ('Netherlands' in coun):
+            valueNet1 = getPieQJVR('Netherlands')
+
+        valueAus1 = ''
+        if ('Austria' in coun):
+            valueAus1 = getPieQJVR('Austria')
+
+        valuePol1 = ''
+        if ('Poland' in coun):
+            valuePol1 = getPieQJVR('Poland')
+
+        valuePor1 = ''
+        if ('Portugal' in coun):
+            valuePor1 = getPieQJVR('Portugal')
+
+        valueRom1 = ''
+        if ('Romania' in coun):
+            valueRom1 = getPieQJVR('Romania')
+
+        valueSlo1 = ''
+        if ('Slovenia' in coun):
+            valueSlo1 = getPieQJVR('Slovenia')
+
+        valueSlovak1 = ''
+        if ('Slovakia' in coun):
+            valueSlovak1 = getPieQJVR('Slovakia')
+
+        valueFin1 = ''
+        if ('Finland' in coun):
+            valueFin1 = getPieQJVR('Finland')
+
+        valueSwe1 = ''
+        if ('Sweden' in coun):
+            valueSwe1 = getPieQJVR('Sweden')
+
+        valueUk1 = ''
+        if ('United Kingdom' in coun):
+            valueUk1 = getPieMUR('United Kingdom')
+
+        valueNor1 = ''
+        if ('Norway' in coun):
+            valueNor1 = getPieQJVR('Norway')
+
+        valueSwi1 = ''
+        if ('Switzerland' in coun):
+            valueSwi1 = getPieQJVR('Switzerland')
+
+        valueUk1 = ''
+        if ('North Macedonia' in coun):
+            valueUk1 = getPieQJVR('United Kingdom')
+
+        valueMake1 = ''
+        if ('North Macedonia' in coun):
+            valueMake1 = getPieQJVR('North Macedonia')
+
         return {
-            'data': [go.Pie(labels=['EU', 'BE', 'BG'],
-                            values=[valueEu1, valueBel1, valueBul1],
+            'data': [go.Pie(labels=['EU', 'BE', 'BG','CZ','DE','EE','IE','El','ES','CY','LV','LT','LU','HU','MT','NL','AT','PL','PT','RO','SI','SK','FI','SE','NO','CH','UK','NM'],
+                            values=[valueEu1, valueBel1, valueBul1,valueChe1,valueGer1,valueEst1,valueIre1,valueGree1,valueSpa1,valueCyp1,valueLat1,valueLith1,valueLux1,valueHun1,
+                                valueMal1,valueNet1,valueAus1,valuePol1,valuePor1,valueRom1,valueSlo1,valueSlovak1,valueFin1,valueSwe1,valueNor1,valueSwi1,valueUk1,valueMake1],
                             marker=dict(colors=colors),
                             hoverinfo='label+value+percent',
                             textinfo='label+value',
@@ -4412,8 +5886,8 @@ def display_content(w_countries, w_countries1, country_chosen):
                             )],
 
             'layout': go.Layout(
-                plot_bgcolor='#010915',
-                paper_bgcolor='#010915',
+                plot_bgcolor='#808080',
+                paper_bgcolor='#A8A8A8',
                 hovermode='closest',
                 title={
                     'text': 'Society: Average ' + (w_countries1) + '</br>',
@@ -4439,21 +5913,134 @@ def display_content(w_countries, w_countries1, country_chosen):
     #####################Society and work-Quarterly labour cost
     elif (w_countries == 'Society and work') & (w_countries1 == 'Quarterly labour cost'):
 
-        valueEu1 = 0
+        valueEu1 = ''
         if ('European Union' in coun):
             valueEu1 = getPieQLC('European Union')
 
-        valueBel1 = 0
+        valueBel1 = ''
         if ('Belgium' in coun):
             valueBel1 = getPieQLC('Belgium')
 
-        valueBul1 = 0
-        if ('Belgium' in coun):
+        valueBul1 = ''
+        if ('Bulgaria' in coun):
             valueBul1 = getPieQLC('Bulgaria')
 
+        valueChe1 = ''
+        if ('Czechia' in coun):
+            valueChe1 = getPieQLC('Czechia')
+
+        valueDen1 = ''
+        if ('Denmark' in coun):
+            valueDen1 = getPieQLC('Denmark')
+
+        valueGer1 = ''
+        if ('Germany' in coun):
+            valueGer1 = getPieQLC('Germany')
+
+        valueEst1 = ''
+        if ('Estonia' in coun):
+            valueEst1 = getPieQLC('Estonia')
+
+        valueIre1 = ''
+        if ('Ireland' in coun):
+            valueIre1 = getPieQLC('Ireland')
+
+        valueGree1 = ''
+        if ('Greece' in coun):
+            valueGree1 = getPieQLC('Greece')
+
+        valueSpa1 = ''
+        if ('Spain' in coun):
+            valueSpa1 = getPieQLC('Spain')
+
+        valueFra1 = ''
+        if ('France' in coun):
+            valueFra1 = getPieQLC('France')
+
+        valueCro1 = ''
+        if ('Croatia' in coun):
+            valueCro1 = getPieQLC('Croatia')
+
+        valueIta1 = ''
+        if ('Italy' in coun):
+            valueIta1 = getPieQLC('Italy')
+
+        valueCyp1 = ''
+        if ('Cyprus' in coun):
+            valueCyp1 = getPieQLC('Cyprus')
+
+        valueLat1 = ''
+        if ('Latvia' in coun):
+            valueLat1 = getPieQLC('Latvia')
+
+        valueLith1 = ''
+        if ('Lithuania' in coun):
+            valueLith1 = getPieQLC('Lithuania')
+
+        valueLux1 = ''
+        if ('Luxembourg' in coun):
+            valueLux1 = getPieQLC('Luxembourg')
+
+        valueHun1 = ''
+        if ('Hungary' in coun):
+            valueHun1 = getPieQLC('Hungary')
+
+        valueMal1 = ''
+        if ('Malta' in coun):
+            valueMal1 = getPieQLC('Malta')
+
+        valueNet1 = ''
+        if ('Netherlands' in coun):
+            valueNet1 = getPieQLC('Netherlands')
+
+        valueAus1 = ''
+        if ('Austria' in coun):
+            valueAus1 = getPieQLC('Austria')
+
+        valuePol1 = ''
+        if ('Poland' in coun):
+            valuePol1 = getPieQLC('Poland')
+
+        valuePor1 = ''
+        if ('Portugal' in coun):
+            valuePor1 = getPieQLC('Portugal')
+
+        valueRom1 = ''
+        if ('Romania' in coun):
+            valueRom1 = getPieQLC('Romania')
+
+        valueSlo1 = ''
+        if ('Slovenia' in coun):
+            valueSlo1 = getPieQLC('Slovenia')
+
+        valueSlovak1 = ''
+        if ('Slovakia' in coun):
+            valueSlovak1 = getPieQLC('Slovakia')
+
+        valueFin1 = ''
+        if ('Finland' in coun):
+            valueFin1 = getPieQLC('Finland')
+
+        valueSwe1 = ''
+        if ('Sweden' in coun):
+            valueSwe1 = getPieQLC('Sweden')
+
+        valueNor1 = ''
+        if ('Norway' in coun):
+            valueNor1 = getPieQLC('Norway')
+
+        valueUk1 = ''
+        if ('North Macedonia' in coun):
+            valueUk1 = getPieQLC('United Kingdom')
+
+        valueSer1 = ''
+        if ('Serbia' in coun):
+            valueSer1 = getPieQLC('Serbia')
+
         return {
-            'data': [go.Pie(labels=['EU', 'BE', 'BG'],
-                            values=[valueEu1, valueBel1, valueBul1],
+            'data': [go.Pie(labels=['EU', 'BE', 'BG','CZ','DK','DE','EE','IE','El','ES','FR','HR','IT','CY','LV','LT','LU','HU','MT','NL','AT','PL','PT','RO','SI','SK','FI','SE','NO','UK','RS'],
+                            values=[valueEu1, valueBel1, valueBul1,valueChe1,valueDen1,valueGer1,valueEst1,valueIre1,valueGree1,valueSpa1,valueFra1,valueCro1,valueIta1,valueCyp1,valueLat1,valueLith1,valueLux1,valueHun1,
+                                valueMal1,valueNet1,valueAus1,valuePol1,valuePor1,valueRom1,valueSlo1,valueSlovak1,valueFin1,valueSwe1,valueNor1,valueUk1,valueSer1],
                             marker=dict(colors=colors),
                             hoverinfo='label+value+percent',
                             textinfo='label+value',
@@ -4462,8 +6049,8 @@ def display_content(w_countries, w_countries1, country_chosen):
                             )],
 
             'layout': go.Layout(
-                plot_bgcolor='#010915',
-                paper_bgcolor='#010915',
+                plot_bgcolor='#808080',
+                paper_bgcolor='#A8A8A8',
                 hovermode='closest',
                 title={
                     'text': 'Society: Average ' + (w_countries1) + '</br>',
@@ -4514,8 +6101,8 @@ def display_content(w_countries, w_countries1, country_chosen):
                             )],
 
             'layout': go.Layout(
-                plot_bgcolor='#010915',
-                paper_bgcolor='#010915',
+                plot_bgcolor='#808080',
+                paper_bgcolor='#A8A8A8',
                 hovermode='closest',
                 title={
                     'text': 'Agriculture: Average ' + (w_countries1) + '</br>',
@@ -4564,8 +6151,8 @@ def display_content(w_countries, w_countries1, country_chosen):
                             )],
 
             'layout': go.Layout(
-                plot_bgcolor='#010915',
-                paper_bgcolor='#010915',
+                plot_bgcolor='#808080',
+                paper_bgcolor='#A8A8A8',
                 hovermode='closest',
                 title={
                     'text': 'Agriculture: Average ' + (w_countries1) + '</br>',
@@ -4664,8 +6251,8 @@ def display_content(w_countries, w_countries1, country_chosen):
                             )],
 
             'layout': go.Layout(
-                plot_bgcolor='#010915',
-                paper_bgcolor='#010915',
+                plot_bgcolor='#808080',
+                paper_bgcolor='#A8A8A8',
                 hovermode='closest',
                 title={
                     'text': 'Agriculture: Average ' + (w_countries1) + '</br>',
@@ -4714,8 +6301,8 @@ def display_content(w_countries, w_countries1, country_chosen):
                             )],
 
             'layout': go.Layout(
-                plot_bgcolor='#010915',
-                paper_bgcolor='#010915',
+                plot_bgcolor='#808080',
+                paper_bgcolor='#A8A8A8',
                 hovermode='closest',
                 title={
                     'text': 'Agriculture: Average ' + (w_countries1) + '</br>',
