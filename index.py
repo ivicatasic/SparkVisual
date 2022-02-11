@@ -4,10 +4,8 @@ import dash_html_components as html
 from dash.dependencies import Input, Output
 import plotly.graph_objs as go
 import pandas as pd
-import plotly.express as px
 from pyspark import SparkContext, SparkConf
 from pyspark.sql import SQLContext
-from pyspark.sql import SparkSession
 import numpy as np
 
 app = dash.Dash(__name__, )
@@ -44,8 +42,6 @@ dataMV = sqlContext.read.format("csv").options(header='true').load(csv_EMV)
 # upload Economy montly production in construction
 csv_EMPIC = 'C:/Users/Korisnik/Desktop/SparkVisual/data/Economy-Monthly production in construction.csv'
 dataMPIC = sqlContext.read.format("csv").options(header='true').load(csv_EMPIC)
-
-####################################
 ####################################
 # Upload Population and Health
 
@@ -60,8 +56,6 @@ dataPAHDBW = sqlContext.read.format("csv").options(header='true').load(csv_PAHDB
 #Ucitavanje fajla: Population and health-Monthly first-time asylum applicants
 csv_PAHMFTA = 'C:/Users/Korisnik/Desktop/SparkVisual/data/Population and health-Monthly first-time asylum applicants.csv'
 dataPAHMFTA = sqlContext.read.format("csv").options(header='true').load(csv_PAHMFTA)
-
-##############################################
 #############################################
 #Krece grupa: Society and work
 
@@ -90,7 +84,6 @@ csv_SAWQLC = 'C:/Users/Korisnik/Desktop/SparkVisual/data/Society and work-Quarte
 dataSAWQLC = sqlContext.read.format("csv").options(header='true').load(csv_SAWQLC)
 ######################################
 ######################################
-
 #KRECE OBLAST AGRICULTURE, ENERGY, TRANSPORT & TOURISM
 
 #Ucitavanje fajla Agriculture, energy, transport & tourism-Monthly air passenger transport
@@ -112,8 +105,6 @@ dataAETTMNSTA = sqlContext.read.format("csv").options(header='true').load(csv_AE
 #Ucitavanje fajla: Agriculture, energy, transport & tourism-Monthly electricity consumed by end-users
 csv_AETTMEC = 'C:/Users/Korisnik/Desktop/SparkVisual/data/Agriculture, energy, transport & tourism-Monthly electricity consumed by end-users.csv'
 dataAETTMEC = sqlContext.read.format("csv").options(header='true').load(csv_AETTMEC)
-
-
 ############################################
 ############################################
 # labels for Economy inflation
@@ -121,13 +112,11 @@ labels = ["6-2019", "7-2019", "8-2019", "9-2019", "10-2019", "11-2019", "12-2019
           "4-2020", "5-2020", "6-2020", "7-2020", "8-2020", "9-2020", "10-2020", "11-2020", "12-2020", "1-2021",
           "2-2021", "3-2021", "4-2021", "5-2021", "6-2021", "7-2021", "8-2021", "9-2021", "10-2021", "11-2021", ]
 lab = np.array(labels)
-
 # labels for Economy GDP
 labelsGDP = ["Q1-2017", "Q2-2017", "Q3-2017", "Q4-2017", "Q1-2018", "Q2-2018", "Q3-2018", "Q4-2018", "Q1-2019",
              "Q2-2019", "Q3-2019", "Q4-2019", "Q1-2020", "Q2-2020", "Q3-2020", "Q4-2020", "Q1-2021", "Q2-2021",
              "Q3-2021", "Q4-2021"]
 labGDP = np.array(labelsGDP)
-
 # labels for Economy Montly volume
 labelsMV = ["1-2015", "2-2015", "3-2015", "4-2015", "5-2015", "6-2015", "7-2015", "8-2015", "9-2015", "10-2015",
             "11-2015", "12-2015", "1-2016", "2-2016", "3-2016", "4-2016", "5-2016", "6-2016", "7-2016", "8-2016",
@@ -142,22 +131,18 @@ labMV = np.array(labelsMV)
 #######################################
 #######################################
 # LABELS FOR POPULATION AND HEALTH
-
 # labels population and health-montly excess mortality
 labelsPAHMEM = ["1-2020", "2-2020", "3-2020",
                 "4-2020", "5-2020", "6-2020", "7-2020", "8-2020", "9-2020", "10-2020", "11-2020", "12-2020", "1-2021",
                 "2-2021", "3-2021", "4-2021", "5-2021", "6-2021", "7-2021", "8-2021", "9-2021", "10-2021"]
 labPAHMEM = np.array(labelsPAHMEM)
-
 # labela za population and health-Number of deaths by week
 csv_PAHDBW2 = 'C:/Users/Korisnik/Desktop/SparkVisual/data/Population and health-Number of deaths by week.csv'
 dataPAHDBW2 = sqlContext.read.format("csv").options(header='false').load(csv_PAHDBW)
-
 #Labela za population and health-Monthly first-time asylum applicants
 csv_PAHMFTA2 = 'C:/Users/Korisnik/Desktop/SparkVisual/data/Population and health-Monthly first-time asylum applicants.csv'
 dataPAHMFTA2 = sqlContext.read.format("csv").options(header='false').load(csv_PAHMFTA2)
 labelPAHMFTA2=["I-2015","II-2015","I-2016","II-2016","I-2017","II-2017","I-2018","II-2018","I-2019","II-2019","I-2020","II-2020","I-2021","II-2021","2022"]
-
 #Labele za fajl Population and health-Number of deaths by week
 def getLabelPAHDBW2():
     value = []
@@ -177,16 +162,11 @@ def getLabelPAHMFTA2():
         value.append(data2[i])
     value1 = np.array(value)
     return value1
-
-
-
 ##############################################
 #Labele za Society and work
-
 #Society and work-Monthly unemployment rate
 csv_SAWMUR2 = 'C:/Users/Korisnik/Desktop/SparkVisual/data/Society and work-Monthly unemployment rate.csv'
 dataSAWMUR2 = sqlContext.read.format("csv").options(header='false').load(csv_SAWMUR2)
-
 def getLabelSAWMUR2():
     value = []
     value1 = []
@@ -198,18 +178,14 @@ def getLabelSAWMUR2():
 labelSAWMUR=["01-2019","02-2019","03-2019","04-2019","05-2019","06-2019","07-2019","08-2019","09-2019","10-2019","11-2019","12-2019",
 "01-2020","02-2020","03-2020","04-2020","05-2020","06-2020","07-2020","08-2020","09-2020","10-2020","11-2020","12-2020","01-2021",
 "02-2021","03-2021","04-2021","05-2021","06-2021","07-2021","08-2021","09-2021","10-2021","11-2021","12-2021"]
-
 #Labele za Society work-Monthly youth unemployment rate
-
 labelSAWMYUR = ["01-2019", "02-2019", "03-2019", "04-2019", "05-2019", "06-2019", "07-2019", "08-2019", "09-2019",
 "10-2019", "11-2019", "12-2019", "01-2020", "02-2020", "03-2020", "04-2020", "05-2020", "06-2020", "07-2020",
 "08-2020", "09-2020","10-2020", "11-2020", "12-2020", "01-2021","02-2021", "03-2021", "04-2021", "05-2021", "06-2021",
                "07-2021", "08-2021", "09-2021", "10-2021","11-2021", "12-2021"]
-
 #Labele za Society and work-Quarterly employment
 labelSAWQE=["Q1-2017","Q2-2017","Q3-2017","Q4-2017","Q1-2018","Q2-2018","Q3-2018","Q4-2018","Q1-2019","Q2-2019","Q3-2019","Q4-2019",
             "Q1-2020","Q2-2020","Q3-2020","Q4-2020","Q1-2021","Q2-2021","Q3-2021","Q3-2021"]
-
 #Labele za Society and work-Quarterly labour market slack
 labelSAWQLMS=["Q2-2019","Q3-2019","Q4-2019","Q1-2020","Q2-2020","Q3-2020","Q4-2020","Q1-2021","Q2-2021","Q3-2021","Q3-2021"]
 ############################
@@ -221,35 +197,24 @@ labelSAWQLMS=["Q2-2019","Q3-2019","Q4-2019","Q1-2020","Q2-2020","Q3-2020","Q4-20
 labelsAETTMAPT = ["1-2019","2-2019","3-2019","4-2019","5-2019","6-2019", "7-2019", "8-2019", "9-2019", "10-2019", "11-2019", "12-2019", "1-2020", "2-2020", "3-2020",
           "4-2020", "5-2020", "6-2020", "7-2020", "8-2020", "9-2020", "10-2020", "11-2020", "12-2020", "1-2021",
           "2-2021", "3-2021", "4-2021", "5-2021"]
-
 #LAbele za: Agriculture,energy, transport & tourism-Monthly commercial air flights
 labelsAETTMCAF=["1-2020","2-2020","3-2020","4-2020","5-2020","6-2020","7-2020","8-2020","9-2020","10-2020","11-2020","12-2020",
                 "1-2021","2-2021", "3-2021", "4-2021", "5-2021","6-2021","7-2021","8-2021","9-2021","10-2021","11-2021","12-2021"]
-
-
-################################################
 ################################################
 app.layout = html.Div([
-
     html.Div([
         html.Div([
             html.Div([
                 html.H3('Spark Visual app(Interactive data visualisation)', style={"margin-bottom": "0px", 'color': 'white'}),
-
             ]),
         ], className="six column", id="title")
-
     ], id="header", className="row flex-display", style={"margin-bottom": "25px"}),
-
     html.Div([
         html.Div([
             dcc.Graph(id='map_1',
                       config={'displayModeBar': 'hover'}),
-
         ], className="create_container 12 columns"),
-
     ], className="row flex-display"),
-
     html.Div([
         html.Div([
             html.P('Izaberi kategoriju:', className='fix_label', style={'color': 'white'}),
@@ -262,7 +227,6 @@ app.layout = html.Div([
                          placeholder='Select category',
                          options=[{'label': c, 'value': c}
                                   for c in region], className='dcc_compon'),
-
             html.P('Izaberi podkategoriju:', className='fix_label', style={'color': 'white'}),
             dcc.Dropdown(id='w_countries1',
                          multi=False,
@@ -271,7 +235,6 @@ app.layout = html.Div([
                          style={'display': True},
                          placeholder='Select subcategory',
                          options=[], className='dcc_compon'),
-
             html.P('Izaberi zemlju:', className='fix_label', style={'color': 'white'}),
             dcc.Dropdown(id='w_countries2',
                          multi=True,
@@ -282,12 +245,8 @@ app.layout = html.Div([
                          placeholder='Select country',
                          options=[{'label': c, 'value': c}
                                   for c in countries], className='dcc_compon'),
-
-
         ], className="create_container three columns"),
-
         html.Div([
-
             dcc.Graph(id='bar_line_1', figure={}, clickData=None, hoverData=None,
                       # I assigned None for tutorial purposes. By defualt, these are None, unless you specify otherwise.
                       config={
@@ -300,25 +259,18 @@ app.layout = html.Div([
                           # 'modeBarButtonsToRemove': ['pan2d','select2d'],
                       })
         ]),
-
         html.Div([
             dcc.Graph(id='pie',
                       config={'displayModeBar': 'hover'}),
-
         ], className="create_container three columns"),
-
     ], className="row flex-display"),
-
 ], id="mainContainer", style={"display": "flex", "flex-direction": "column"})
-
-
 @app.callback(
     Output('w_countries1', 'options'),
     Input('w_countries', 'value'))
 def get_country_options(w_countries):
     terr3 = terr2[terr2['products'] == w_countries]
     return [{'label': i, 'value': i} for i in terr3['subproducts'].unique()]
-
 
 @app.callback(
     Output('w_countries1', 'value'),
@@ -378,15 +330,10 @@ def update_graph(w_countries, w_countries1):
                 center=go.layout.mapbox.Center(lat=zoom_lat, lon=zoom_lon),
                 # style='open-street-map',
                 style='dark',
-                zoom=zoom
-            ),
+                zoom=zoom),
             autosize=True,
-
         )
-
     }
-
-
 ####################################
 ############# LINE CHART ###########
 ####################################
@@ -399,9 +346,6 @@ def getArr(countryName):
         value.append(float(data2[0][i]))
     value1 = np.array(value)
     return value1
-
-
-#
 # get Data for Economy GDP
 def getGDP(countryName):
     value = []
@@ -411,9 +355,6 @@ def getGDP(countryName):
         value.append(float(data2[0][i]))
     value1 = np.array(value)
     return value1
-
-
-#
 # get Data for Economy Monthly industrial production
 def getMIN(countryName):
     value = []
@@ -423,9 +364,6 @@ def getMIN(countryName):
         value.append(float(data2[0][i]))
     value1 = np.array(value)
     return value1
-
-
-#
 # get Data for Economy Monthly volume
 def getMV(countryName):
     value = []
@@ -435,9 +373,6 @@ def getMV(countryName):
         value.append(float(data2[0][i]))
     value1 = np.array(value)
     return value1
-
-
-#
 # get Data for Economy Monthly production in contruction
 def getMPIC(countryName):
     value = []
@@ -447,10 +382,7 @@ def getMPIC(countryName):
         value.append(float(data2[0][i]))
     value1 = np.array(value)
     return value1
-
-
-#
-######################################
+#######################################
 ######################################
 # Get data for population and health
 def getPAHMEM(countryName):
@@ -461,10 +393,7 @@ def getPAHMEM(countryName):
         value.append(float(data2[0][i]))
     value1 = np.array(value)
     return value1
-
-
-#
-###################
+####################
 ###Uzimanje podataka iz fajla Population and health-number of deaths by week
 def getPAHDBW(countryName):
     value = []
@@ -481,10 +410,8 @@ def getPAHDBW(countryName):
         value2.append(val)
     value3=np.array(value2)
     return value3
-
 ##########################
 ###Uzimanje podataka iz fajle: POpulation and health-Monthly first-time asylum
-
 def getPAHMFTA(countryName):
     value = []
     value1 = []
@@ -500,13 +427,10 @@ def getPAHMFTA(countryName):
         value2.append(val)
     value3=np.array(value2)
     return value3
-
 ############################################
 #############################################
 #UZIMANJE PODATAKA ZA GRUPU: SOCIETY AND WOKR
-
 #Society and work-Monthly unemployment rate
-
 def getSAWMUR(countryName):
     value = []
     value1 = []
@@ -515,7 +439,6 @@ def getSAWMUR(countryName):
         value.append(float(data2[0][i]))
     value1 = np.array(value)
     return value1
-
 #Society and work-Monthly youth unemployment rate
 def getSAWMYUR(countryName):
     value = []
@@ -525,7 +448,6 @@ def getSAWMYUR(countryName):
         value.append(float(data2[0][i]))
     value1 = np.array(value)
     return value1
-
 #Society and work-Quarterly employment
 def getSAWQE(countryName):
     value = []
@@ -542,7 +464,6 @@ def getSAWQE(countryName):
         value2.append(val)
     value3=np.array(value2)
     return value3
-
 #Society and work-Quarterly labour market slack
 def getSAWQLMS(countryName):
     value = []
@@ -552,7 +473,6 @@ def getSAWQLMS(countryName):
         value.append(float(data2[0][i]))
     value1 = np.array(value)
     return value1
-
 #Society and work-Quarterly job vacancy rate
 def getSAWQJVR(countryName):
     value = []
@@ -562,7 +482,6 @@ def getSAWQJVR(countryName):
         value.append(float(data2[0][i]))
     value1 = np.array(value)
     return value1
-
 #Society and work-Quarterly labour cost
 def getSAWQLC(countryName):
     value = []
@@ -575,7 +494,6 @@ def getSAWQLC(countryName):
 ##########################################
 ##########################################
 #UZIMANJE PODATAKA ZA GRUPU:AGRICULTURE, ENERGY, TRANSPORT & TOURISM
-
 #AGRICULTURE, ENERGY, TRANSPORT & TOURISM-Monthly air passenger transport
 def getAETTMAPT(countryName):
     value = []
@@ -592,7 +510,6 @@ def getAETTMAPT(countryName):
         value2.append(val)
     value3=np.array(value2)
     return value3
-
 #AGRICULTURE, ENERGY, TRANSPORT & TOURISM-Monthly commercial air flights
 def getAETTMCAF(countryName):
     value = []
@@ -602,7 +519,6 @@ def getAETTMCAF(countryName):
         value.append(float(data2[0][i]))
     value1 = np.array(value)
     return value1
-
 #AGRICULTURE, ENERGY, TRANSPORT & TOURISM-Monthly arrivals at tourist accommodation
 def getAETTMATA(countryName):
     value = []
@@ -619,7 +535,6 @@ def getAETTMATA(countryName):
         value2.append(val)
     value3=np.array(value2)
     return value3
-
 #AGRICULTURE, ENERGY, TRANSPORT & TOURISM-Monthly nights spent at tourist accommodation
 def getAETTMNSTA(countryName):
     value = []
@@ -645,7 +560,6 @@ def getAETTMEC(countryName):
         value.append(float(data2[0][i]))
     value1 = np.array(value)
     return value1
-
 # Create line  chart
 @app.callback(Output('bar_line_1', 'figure'),
               [Input('w_countries', 'value')],
@@ -653,7 +567,6 @@ def getAETTMEC(countryName):
               [Input('w_countries2', 'value')])
 def update_graph(w_countries, w_countries1, country_chosen):
     # Data for line
-
     mon = np.array(terr2)
     mon1 = mon[5][1]
 
@@ -823,424 +736,350 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 name='EU',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#E6D1D1'),
                                 marker=dict(size=5, symbol='circle', color='lightblue',
-                                            line=dict(color='#E6D1D1', width=2)
-                                            ),
+                                            line=dict(color='#E6D1D1', width=2)),
                                 hoverinfo='text',
                                 hovertext=
-                                '<b>Country</b>: ' + 'European Union' + '<br>'
-
-                                ),
-
+                                '<b>Country</b>: ' + 'European Union' + '<br>'),
                      go.Scatter(x=lab,
                                 y=valueBel1,
                                 mode='lines+markers',
                                 name='BE',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#FF00FF'),
                                 marker=dict(size=5, symbol='circle', color='lightblue',
-                                            line=dict(color='#FF00FF', width=2)
-                                            ),
+                                            line=dict(color='#FF00FF', width=2)),
                                 hoverinfo='text',
                                 hovertext=
-                                '<b>Country</b>: ' + 'Belgium' + '<br>'
-
-                                ),
+                                '<b>Country</b>: ' + 'Belgium' + '<br>'),
                      go.Scatter(x=lab,
                                 y=valueSer1,
                                 mode='lines+markers',
                                 name='RS',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#FF0000'),
                                 marker=dict(size=5, symbol='circle', color='lightblue',
-                                            line=dict(color='#FF0000', width=2)
-                                            ),
+                                            line=dict(color='#FF0000', width=2)),
                                 hoverinfo='text',
                                 hovertext=
-                                '<b>Country</b>: ' + 'Serbia' + '<br>'
-                                ),
+                                '<b>Country</b>: ' + 'Serbia' + '<br>'),
                      go.Scatter(x=lab,
                                 y=valueMal1,
                                 mode='lines+markers',
                                 name='MT',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#FF00FF'),
                                 marker=dict(size=5, symbol='circle', color='lightblue',
-                                            line=dict(color='#FF00FF', width=2)
-                                            ),
+                                            line=dict(color='#FF00FF', width=2)),
                                 hoverinfo='text',
                                 hovertext=
-                                '<b>Country</b>: ' + 'Malta' + '<br>'
-
-                                ),
+                                '<b>Country</b>: ' + 'Malta' + '<br>'),
                      go.Scatter(x=lab,
                                 y=valueEa1,
                                 mode='lines+markers',
                                 name='EA',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#472727'),
                                 marker=dict(size=5, symbol='circle', color='lightblue',
-                                            line=dict(color='#472727', width=2)
-                                            ),
+                                            line=dict(color='#472727', width=2)),
                                 hoverinfo='text',
                                 hovertext=
-                                '<b>Country</b>: ' + 'Euro area' + '<br>'
-                                ),
+                                '<b>Country</b>: ' + 'Euro area' + '<br>' ),
                      go.Scatter(x=lab,
                                 y=valueBul1,
                                 mode='lines+markers',
                                 name='BG',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#353131'),
                                 marker=dict(size=5, symbol='circle', color='lightblue',
-                                            line=dict(color='#353131', width=2)
-                                            ),
+                                            line=dict(color='#353131', width=2)),
                                 hoverinfo='text',
                                 hovertext=
-                                '<b>Country</b>: ' + 'Bulgaria' + '<br>'
-                                ),
+                                '<b>Country</b>: ' + 'Bulgaria' + '<br>'),
                      go.Scatter(x=lab,
                                 y=valueChe1,
                                 mode='lines+markers',
                                 name='CZ',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#49AF30'),
                                 marker=dict(size=5, symbol='circle', color='lightblue',
-                                            line=dict(color='#49AF30', width=2)
-                                            ),
+                                            line=dict(color='#49AF30', width=2)),
                                 hoverinfo='text',
                                 hovertext=
-                                '<b>Country</b>: ' + 'Czechia' + '<br>'
-                                ),
+                                '<b>Country</b>: ' + 'Czechia' + '<br>'),
                      go.Scatter(x=lab,
                                 y=valueDen1,
                                 mode='lines+markers',
                                 name='DK',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#2A4623'),
                                 marker=dict(size=5, symbol='circle', color='lightblue',
-                                            line=dict(color='#2A4623', width=2)
-                                            ),
+                                            line=dict(color='#2A4623', width=2)),
                                 hoverinfo='text',
                                 hovertext=
-                                '<b>Country</b>: ' + 'Denmark' + '<br>'
-                                ),
+                                '<b>Country</b>: ' + 'Denmark' + '<br>'),
                      go.Scatter(x=lab,
                                 y=valueGer1,
                                 mode='lines+markers',
                                 name='DE',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#7B7D7B'),
                                 marker=dict(size=5, symbol='circle', color='lightblue',
-                                            line=dict(color='#7B7D7B', width=2)
-                                            ),
+                                            line=dict(color='#7B7D7B', width=2)),
                                 hoverinfo='text',
                                 hovertext=
-                                '<b>Country</b>: ' + 'Germany' + '<br>'
-                                ),
+                                '<b>Country</b>: ' + 'Germany' + '<br>'),
                      go.Scatter(x=lab,
                                 y=valueEst1,
                                 mode='lines+markers',
                                 name='EE',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#C4C048'),
                                 marker=dict(size=5, symbol='circle', color='lightblue',
-                                            line=dict(color='#C4C048', width=2)
-                                            ),
+                                            line=dict(color='#C4C048', width=2)),
                                 hoverinfo='text',
                                 hovertext=
-                                '<b>Country</b>: ' + 'Estonia' + '<br>'
-                                ),
+                                '<b>Country</b>: ' + 'Estonia' + '<br>'),
                      go.Scatter(x=lab,
                                 y=valueIre1,
                                 mode='lines+markers',
                                 name='IE',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#9E9D7B'),
                                 marker=dict(size=5, symbol='circle', color='lightblue',
-                                            line=dict(color='#9E9D7B', width=2)
-                                            ),
+                                            line=dict(color='#9E9D7B', width=2)),
                                 hoverinfo='text',
                                 hovertext=
-                                '<b>Country</b>: ' + 'Ireland' + '<br>'
-                                ),
+                                '<b>Country</b>: ' + 'Ireland' + '<br>'),
                      go.Scatter(x=lab,
                                 y=valueGree1,
                                 mode='lines+markers',
                                 name='EL',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#1A46C0'),
                                 marker=dict(size=5, symbol='circle', color='lightblue',
-                                            line=dict(color='#1A46C0', width=2)
-                                            ),
+                                            line=dict(color='#1A46C0', width=2)),
                                 hoverinfo='text',
                                 hovertext=
-                                '<b>Country</b>: ' + 'Greece' + '<br>'
-                                ),
+                                '<b>Country</b>: ' + 'Greece' + '<br>'),
                      go.Scatter(x=lab,
                                 y=valueSpa1,
                                 mode='lines+markers',
                                 name='ES',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#2E063A'),
                                 marker=dict(size=5, symbol='circle', color='lightblue',
-                                            line=dict(color='#2E063A', width=2)
-                                            ),
+                                            line=dict(color='#2E063A', width=2)),
                                 hoverinfo='text',
                                 hovertext=
-                                '<b>Country</b>: ' + 'Spain' + '<br>'
-                                ),
+                                '<b>Country</b>: ' + 'Spain' + '<br>'),
                      go.Scatter(x=lab,
                                 y=valueFra1,
                                 mode='lines+markers',
                                 name='FR',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#39313C'),
                                 marker=dict(size=5, symbol='circle', color='lightblue',
-                                            line=dict(color='#39313C', width=2)
-                                            ),
+                                            line=dict(color='#39313C', width=2)),
                                 hoverinfo='text',
                                 hovertext=
-                                '<b>Country</b>: ' + 'France' + '<br>'
-                                ),
+                                '<b>Country</b>: ' + 'France' + '<br>'),
                      go.Scatter(x=lab,
                                 y=valueCro1,
                                 mode='lines+markers',
                                 name='HR',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#189F96'),
                                 marker=dict(size=5, symbol='circle', color='lightblue',
-                                            line=dict(color='#189F96', width=2)
-                                            ),
+                                            line=dict(color='#189F96', width=2)),
                                 hoverinfo='text',
                                 hovertext=
-                                '<b>Country</b>: ' + 'Croatia' + '<br>'
-                                ),
+                                '<b>Country</b>: ' + 'Croatia' + '<br>'),
                      go.Scatter(x=lab,
                                 y=valueIta1,
                                 mode='lines+markers',
                                 name='IT',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#94A4A3'),
                                 marker=dict(size=5, symbol='circle', color='lightblue',
-                                            line=dict(color='#94A4A3', width=2)
-                                            ),
+                                            line=dict(color='#94A4A3', width=2)),
                                 hoverinfo='text',
                                 hovertext=
-                                '<b>Country</b>: ' + 'Italy' + '<br>'
-                                ),
+                                '<b>Country</b>: ' + 'Italy' + '<br>'),
                      go.Scatter(x=lab,
                                 y=valueCyp1,
                                 mode='lines+markers',
                                 name='CY',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#ff3399'),
                                 marker=dict(size=5, symbol='circle', color='lightblue',
-                                            line=dict(color='#ff3399', width=2)
-                                            ),
+                                            line=dict(color='#ff3399', width=2)),
                                 hoverinfo='text',
                                 hovertext=
-                                '<b>Country</b>: ' + 'Cyprus' + '<br>'
-                                ),
+                                '<b>Country</b>: ' + 'Cyprus' + '<br>'),
                      go.Scatter(x=lab,
                                 y=valueLat1,
                                 mode='lines+markers',
                                 name='LV',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#aaaa55'),
                                 marker=dict(size=5, symbol='circle', color='lightblue',
-                                            line=dict(color='#aaaa55', width=2)
-                                            ),
+                                            line=dict(color='#aaaa55', width=2)),
                                 hoverinfo='text',
                                 hovertext=
-                                '<b>Country</b>: ' + 'Latvia' + '<br>'
-                                ),
+                                '<b>Country</b>: ' + 'Latvia' + '<br>'),
                      go.Scatter(x=lab,
                                 y=valueLith1,
                                 mode='lines+markers',
                                 name='LT',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#ffff00'),
                                 marker=dict(size=5, symbol='circle', color='lightblue',
-                                            line=dict(color='#ffff00', width=2)
-                                            ),
+                                            line=dict(color='#ffff00', width=2)),
                                 hoverinfo='text',
                                 hovertext=
-                                '<b>Country</b>: ' + 'Lithuania' + '<br>'
-                                ),
+                                '<b>Country</b>: ' + 'Lithuania' + '<br>'),
                      go.Scatter(x=lab,
                                 y=valueLux1,
                                 mode='lines+markers',
                                 name='LU',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#007399'),
                                 marker=dict(size=5, symbol='circle', color='lightblue',
-                                            line=dict(color='#007399', width=2)
-                                            ),
+                                            line=dict(color='#007399', width=2)),
                                 hoverinfo='text',
                                 hovertext=
-                                '<b>Country</b>: ' + 'Luxembourg' + '<br>'
-                                ),
+                                '<b>Country</b>: ' + 'Luxembourg' + '<br>'),
                      go.Scatter(x=lab,
                                 y=valueHun1,
                                 mode='lines+markers',
                                 name='HU',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#ff3300'),
                                 marker=dict(size=5, symbol='circle', color='lightblue',
-                                            line=dict(color='#ff3300', width=2)
-                                            ),
+                                            line=dict(color='#ff3300', width=2)),
                                 hoverinfo='text',
                                 hovertext=
-                                '<b>Country</b>: ' + 'Hungary' + '<br>'
-                                ),
+                                '<b>Country</b>: ' + 'Hungary' + '<br>' ),
                      go.Scatter(x=lab,
                                 y=valueNet1,
                                 mode='lines+markers',
                                 name='NL',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#00e600'),
                                 marker=dict(size=5, symbol='circle', color='lightblue',
-                                            line=dict(color='#00e600', width=2)
-                                            ),
+                                            line=dict(color='#00e600', width=2)),
                                 hoverinfo='text',
                                 hovertext=
-                                '<b>Country</b>: ' + 'Netherlands' + '<br>'
-                                ),
+                                '<b>Country</b>: ' + 'Netherlands' + '<br>' ),
                      go.Scatter(x=lab,
                                 y=valueAus1,
                                 mode='lines+markers',
                                 name='AT',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#4dff4d'),
                                 marker=dict(size=5, symbol='circle', color='lightblue',
-                                            line=dict(color='#4dff4d', width=2)
-                                            ),
+                                            line=dict(color='#4dff4d', width=2) ),
                                 hoverinfo='text',
                                 hovertext=
-                                '<b>Country</b>: ' + 'Austria' + '<br>'
-                                ),
+                                '<b>Country</b>: ' + 'Austria' + '<br>' ),
                      go.Scatter(x=lab,
                                 y=valuePol1,
                                 mode='lines+markers',
                                 name='PL',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#003300'),
                                 marker=dict(size=5, symbol='circle', color='lightblue',
-                                            line=dict(color='#003300', width=2)
-                                            ),
+                                            line=dict(color='#003300', width=2)),
                                 hoverinfo='text',
                                 hovertext=
-                                '<b>Country</b>: ' + 'Poland' + '<br>'
-                                ),
+                                '<b>Country</b>: ' + 'Poland' + '<br>'),
                      go.Scatter(x=lab,
                                 y=valuePor1,
                                 mode='lines+markers',
                                 name='PT',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#662900'),
                                 marker=dict(size=5, symbol='circle', color='lightblue',
-                                            line=dict(color='#662900', width=2)
-                                            ),
+                                            line=dict(color='#662900', width=2)),
                                 hoverinfo='text',
                                 hovertext=
-                                '<b>Country</b>: ' + 'Portugal' + '<br>'
-                                ),
+                                '<b>Country</b>: ' + 'Portugal' + '<br>'),
                      go.Scatter(x=lab,
                                 y=valueRom1,
                                 mode='lines+markers',
                                 name='RO',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#993399'),
                                 marker=dict(size=5, symbol='circle', color='lightblue',
-                                            line=dict(color='#993399', width=2)
-                                            ),
+                                            line=dict(color='#993399', width=2)),
                                 hoverinfo='text',
                                 hovertext=
-                                '<b>Country</b>: ' + 'Romania' + '<br>'
-                                ),
+                                '<b>Country</b>: ' + 'Romania' + '<br>'),
                      go.Scatter(x=lab,
                                 y=valueSlo1,
                                 mode='lines+markers',
                                 name='SI',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#d98cd9'),
                                 marker=dict(size=5, symbol='circle', color='lightblue',
-                                            line=dict(color='#d98cd9', width=2)
-                                            ),
+                                            line=dict(color='#d98cd9', width=2)),
                                 hoverinfo='text',
                                 hovertext=
-                                '<b>Country</b>: ' + 'Slovenia' + '<br>'
-                                ),
+                                '<b>Country</b>: ' + 'Slovenia' + '<br>'),
                      go.Scatter(x=lab,
                                 y=valueSlovak1,
                                 mode='lines+markers',
                                 name='SK',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#0033cc'),
                                 marker=dict(size=5, symbol='circle', color='lightblue',
-                                            line=dict(color='#0033cc', width=2)
-                                            ),
+                                            line=dict(color='#0033cc', width=2)),
                                 hoverinfo='text',
                                 hovertext=
-                                '<b>Country</b>: ' + 'Slovakia' + '<br>'
-                                ),
+                                '<b>Country</b>: ' + 'Slovakia' + '<br>'),
                      go.Scatter(x=lab,
                                 y=valueFin1,
                                 mode='lines+markers',
                                 name='FI',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#99b3ff'),
                                 marker=dict(size=5, symbol='circle', color='lightblue',
-                                            line=dict(color='#99b3ff', width=2)
-                                            ),
+                                            line=dict(color='#99b3ff', width=2)),
                                 hoverinfo='text',
                                 hovertext=
-                                '<b>Country</b>: ' + 'Finland' + '<br>'
-                                ),
+                                '<b>Country</b>: ' + 'Finland' + '<br>'),
                      go.Scatter(x=lab,
                                 y=valueSwe1,
                                 mode='lines+markers',
                                 name='SE',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#001a66'),
                                 marker=dict(size=5, symbol='circle', color='lightblue',
-                                            line=dict(color='#001a66', width=2)
-                                            ),
+                                            line=dict(color='#001a66', width=2)),
                                 hoverinfo='text',
                                 hovertext=
-                                '<b>Country</b>: ' + 'Sweden' + '<br>'
-                                ),
+                                '<b>Country</b>: ' + 'Sweden' + '<br>'),
                      go.Scatter(x=lab,
                                 y=valueUk1,
                                 mode='lines+markers',
                                 name='UK',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#00cc99'),
                                 marker=dict(size=5, symbol='circle', color='lightblue',
-                                            line=dict(color='#00cc99', width=2)
-                                            ),
+                                            line=dict(color='#00cc99', width=2)),
                                 hoverinfo='text',
                                 hovertext=
-                                '<b>Country</b>: ' + 'United Kingdom' + '<br>'
-                                ),
+                                '<b>Country</b>: ' + 'United Kingdom' + '<br>'),
                      go.Scatter(x=lab,
                                 y=valueIce1,
                                 mode='lines+markers',
                                 name='IS',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#336600'),
                                 marker=dict(size=5, symbol='circle', color='lightblue',
-                                            line=dict(color='#336600', width=2)
-                                            ),
+                                            line=dict(color='#336600', width=2)),
                                 hoverinfo='text',
                                 hovertext=
-                                '<b>Country</b>: ' + 'Iceland' + '<br>'
-                                ),
+                                '<b>Country</b>: ' + 'Iceland' + '<br>'),
                      go.Scatter(x=lab,
                                 y=valueNor1,
                                 mode='lines+markers',
                                 name='NO',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#73e600'),
                                 marker=dict(size=5, symbol='circle', color='lightblue',
-                                            line=dict(color='#73e600', width=2)
-                                            ),
+                                            line=dict(color='#73e600', width=2) ),
                                 hoverinfo='text',
                                 hovertext=
-                                '<b>Country</b>: ' + 'Norway' + '<br>'
-                                ),
+                                '<b>Country</b>: ' + 'Norway' + '<br>'),
                      go.Scatter(x=lab,
                                 y=valueSwi1,
                                 mode='lines+markers',
                                 name='CH',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#bfff80'),
                                 marker=dict(size=5, symbol='circle', color='lightblue',
-                                            line=dict(color='#bfff80', width=2)
-                                            ),
+                                            line=dict(color='#bfff80', width=2)),
                                 hoverinfo='text',
                                 hovertext=
-                                '<b>Country</b>: ' + 'Switzerland' + '<br>'
-                                ),
+                                '<b>Country</b>: ' + 'Switzerland' + '<br>'),
                      go.Scatter(x=lab,
                                 y=valueMake1,
                                 mode='lines+markers',
                                 name='MK',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#ffa366'),
                                 marker=dict(size=5, symbol='circle', color='lightblue',
-                                            line=dict(color='#ffa366', width=2)
-                                            ),
+                                            line=dict(color='#ffa366', width=2)),
                                 hoverinfo='text',
                                 hovertext=
-                                '<b>Country</b>: ' + 'North Macedonia' + '<br>'
-                                ),
+                                '<b>Country</b>: ' + 'North Macedonia' + '<br>'),
                      go.Scatter(x=lab,
                                 y=valueTur1,
                                 mode='lines+markers',
@@ -1251,23 +1090,18 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                             ),
                                 hoverinfo='text',
                                 hovertext=
-                                '<b>Country</b>: ' + 'Turkey' + '<br>'
-                                ),
+                                '<b>Country</b>: ' + 'Turkey' + '<br>'),
                      go.Scatter(x=lab,
                                 y=valueUs1,
                                 mode='lines+markers',
                                 name='US',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#4dc3ff'),
                                 marker=dict(size=5, symbol='circle', color='lightblue',
-                                            line=dict(color='#4dc3ff', width=2)
-                                            ),
+                                            line=dict(color='#4dc3ff', width=2) ),
                                 hoverinfo='text',
                                 hovertext=
                                 '<b>Country</b>: ' + 'United States' + '<br>'
-                                ),
-
-                     ],
-
+                                ), ],
             'layout': go.Layout(
                 barmode='stack',
                 plot_bgcolor='#808080',
@@ -1275,7 +1109,6 @@ def update_graph(w_countries, w_countries1, country_chosen):
                 title={
                     'text': 'Inflation - annual growth rate' + '  ' + '<br>' +
                             "(change compared with same month of previous year)" + '</br>',
-
                     'y': 0.93,
                     'x': 0.5,
                     'xanchor': 'center',
@@ -1283,10 +1116,8 @@ def update_graph(w_countries, w_countries1, country_chosen):
                 titlefont={
                     'color': 'white',
                     'size': 20},
-
                 hovermode='closest',
                 showlegend=True,
-
                 xaxis=dict(title='<b>Year</b>',
                            spikemode='toaxis+across',
                            spikedash='solid',
@@ -1302,11 +1133,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                            tickfont=dict(
                                family='Arial',
                                size=12,
-                               color='white'
-                           )
-
-                           ),
-
+                               color='white')),
                 yaxis=dict(title='<b>%</b>',
                            color='white',
                            showline=True,
@@ -1319,10 +1146,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                family='Arial',
                                size=12,
                                color='white'
-                           )
-
-                           ),
-
+                           )),
                 legend={
                     'orientation': 'h',
                     'bgcolor': '#010915',
@@ -1331,17 +1155,12 @@ def update_graph(w_countries, w_countries1, country_chosen):
                     family="sans-serif",
                     size=12,
                     color='white'),
-
             )
-
         }
-    #
     #Kraj ECONOMY INFLATION
     #############################
     #Pocinje ECONOMY GDP
-    #
     elif (w_countries == 'Economy') & (w_countries1 == 'GDP – quarterly growth rate'):
-
         valueEu1 = []
         if ('European Union' in coun):
             valueEu1 = getGDP('European Union')
@@ -1493,26 +1312,21 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 name='EU',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#E6D1D1'),
                                 marker=dict(size=5, symbol='circle', color='lightblue',
-                                            line=dict(color='#E6D1D1', width=2)
-                                            ),
+                                            line=dict(color='#E6D1D1', width=2)),
                                 hoverinfo='text',
                                 hovertext=
-                                '<b>Country</b>: ' + 'European Union' + '<br>'
-                                ),
+                                '<b>Country</b>: ' + 'European Union' + '<br>' ),
                      go.Scatter(x=labGDP,
                                 y=valueBel1,
                                 mode='lines+markers',
                                 name='BE',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#FF0000'),
                                 marker=dict(size=5, symbol='circle', color='lightblue',
-                                            line=dict(color='#FF0000', width=2)
-                                            ),
+                                            line=dict(color='#FF0000', width=2)),
                                 hoverinfo='text',
                                 hovertext=
                                 '<b>Country</b>: ' + 'Belgium' + '<br>'
-                                )
-                     ],
-
+                                )],
             'layout': go.Layout(
                 barmode='stack',
                 plot_bgcolor='#808080',
@@ -1520,7 +1334,6 @@ def update_graph(w_countries, w_countries1, country_chosen):
                 title={
                     'text': 'GDP – quarterly growth rate' + '  ' + '<br>' +
                             "(% change compared with previous quarter)" + '</br>',
-
                     'y': 0.93,
                     'x': 0.5,
                     'xanchor': 'center',
@@ -1528,10 +1341,8 @@ def update_graph(w_countries, w_countries1, country_chosen):
                 titlefont={
                     'color': 'white',
                     'size': 20},
-
                 hovermode='closest',
                 showlegend=True,
-
                 xaxis=dict(title='<b>Quartal</b>',
                            spikemode='toaxis+across',
                            spikedash='solid',
@@ -1548,10 +1359,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                family='Arial',
                                size=12,
                                color='white'
-                           )
-
-                           ),
-
+                           )),
                 yaxis=dict(title='<b>%</b>',
                            color='white',
                            showline=True,
@@ -1564,10 +1372,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                family='Arial',
                                size=12,
                                color='white'
-                           )
-
-                           ),
-
+                           )),
                 legend={
                     'orientation': 'h',
                     'bgcolor': '#010915',
@@ -1576,20 +1381,13 @@ def update_graph(w_countries, w_countries1, country_chosen):
                     family="sans-serif",
                     size=12,
                     color='white'),
-
             )
-
         }
-
-
-    #
     # ECONOMY GDP
     #
-    #
     # ECONOMY MIN
-    #
-    elif (w_countries == 'Economy') & (w_countries1 == 'Monthly industrial production'):
 
+    elif (w_countries == 'Economy') & (w_countries1 == 'Monthly industrial production'):
         valueEu1 = []
         if ('European Union' in coun):
             valueEu1 = getMIN('European Union')
@@ -1634,9 +1432,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 hoverinfo='text',
                                 hovertext=
                                 '<b>Country</b>: ' + 'Belgium' + '<br>'
-                                )
-                     ],
-
+                                )],
             'layout': go.Layout(
                 barmode='stack',
                 plot_bgcolor='#808080',
@@ -1644,7 +1440,6 @@ def update_graph(w_countries, w_countries1, country_chosen):
                 title={
                     'text': 'Monthly industrial production' + '  ' + '<br>' +
                             "(Index 2015=100)" + '</br>',
-
                     'y': 0.93,
                     'x': 0.5,
                     'xanchor': 'center',
@@ -1652,10 +1447,8 @@ def update_graph(w_countries, w_countries1, country_chosen):
                 titlefont={
                     'color': 'white',
                     'size': 20},
-
                 hovermode='closest',
                 showlegend=True,
-
                 xaxis=dict(title='<b>Quartal</b>',
                            spikemode='toaxis+across',
                            spikedash='solid',
@@ -1672,10 +1465,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                family='Arial',
                                size=12,
                                color='white'
-                           )
-
-                           ),
-
+                           )),
                 yaxis=dict(title='<b>%</b>',
                            color='white',
                            showline=True,
@@ -1688,10 +1478,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                family='Arial',
                                size=12,
                                color='white'
-                           )
-
-                           ),
-
+                           ) ),
                 legend={
                     'orientation': 'h',
                     'bgcolor': '#010915',
@@ -1700,17 +1487,13 @@ def update_graph(w_countries, w_countries1, country_chosen):
                     family="sans-serif",
                     size=12,
                     color='white'),
-
             )
-
         }
-    #
     # ECONOMY MIN
     #
     # ECONOMY MV
     #
     elif (w_countries == 'Economy') & (w_countries1 == 'Monthly volume of retail trade'):
-
         valueEu1 = []
         if ('European Union' in coun):
             valueEu1 = getMV('European Union')
@@ -1738,26 +1521,20 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 name='European Union',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#E6D1D1'),
                                 marker=dict(size=5, symbol='circle', color='lightblue',
-                                            line=dict(color='#E6D1D1', width=2)
-                                            ),
+                                            line=dict(color='#E6D1D1', width=2)),
                                 hoverinfo='text',
                                 hovertext=
-                                '<b>Country</b>: ' + 'European Union' + '<br>'
-                                ),
+                                '<b>Country</b>: ' + 'European Union' + '<br>'),
                      go.Scatter(x=labMV,
                                 y=valueBel1,
                                 mode='lines+markers',
                                 name='Belgium',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#FF0000'),
                                 marker=dict(size=5, symbol='circle', color='lightblue',
-                                            line=dict(color='#FF0000', width=2)
-                                            ),
+                                            line=dict(color='#FF0000', width=2)),
                                 hoverinfo='text',
                                 hovertext=
-                                '<b>Country</b>: ' + 'Belgium' + '<br>'
-                                )
-                     ],
-
+                                '<b>Country</b>: ' + 'Belgium' + '<br>')],
             'layout': go.Layout(
                 barmode='stack',
                 plot_bgcolor='#808080',
@@ -1765,7 +1542,6 @@ def update_graph(w_countries, w_countries1, country_chosen):
                 title={
                     'text': 'Monthly volume of retail trade' + '  ' + '<br>' +
                             "(Index 2015=100)" + '</br>',
-
                     'y': 0.93,
                     'x': 0.5,
                     'xanchor': 'center',
@@ -1773,10 +1549,8 @@ def update_graph(w_countries, w_countries1, country_chosen):
                 titlefont={
                     'color': 'white',
                     'size': 20},
-
                 hovermode='closest',
                 showlegend=True,
-
                 xaxis=dict(title='<b>Year</b>',
                            spikemode='toaxis+across',
                            spikedash='solid',
@@ -1793,10 +1567,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                family='Arial',
                                size=12,
                                color='white'
-                           )
-
-                           ),
-
+                           )),
                 yaxis=dict(title='<b>Index 2015=100</b>',
                            color='white',
                            showline=True,
@@ -1809,10 +1580,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                family='Arial',
                                size=12,
                                color='white'
-                           )
-
-                           ),
-
+                           ) ),
                 legend={
                     'orientation': 'h',
                     'bgcolor': '#010915',
@@ -1821,17 +1589,13 @@ def update_graph(w_countries, w_countries1, country_chosen):
                     family="sans-serif",
                     size=12,
                     color='white'),
-
             )
-
         }
-    #
     # End ECONOMY MV
     #
     # Strart Economy-Monthly production in construction
     #
     elif (w_countries == 'Economy') and (w_countries1 == 'Monthly production in construction'):
-
         valueEu1 = []
         if ('European Union' in coun):
             valueEu1 = getMPIC('European Union')
@@ -1876,9 +1640,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 hoverinfo='text',
                                 hovertext=
                                 '<b>Country</b>: ' + 'Belgium' + '<br>'
-                                )
-                     ],
-
+                                ) ],
             'layout': go.Layout(
                 barmode='stack',
                 plot_bgcolor='#808080',
@@ -1886,7 +1648,6 @@ def update_graph(w_countries, w_countries1, country_chosen):
                 title={
                     'text': 'Monthly production in construction' + '  ' + '<br>' +
                             "(Index 2015=100)" + '</br>',
-
                     'y': 0.93,
                     'x': 0.5,
                     'xanchor': 'center',
@@ -1894,10 +1655,8 @@ def update_graph(w_countries, w_countries1, country_chosen):
                 titlefont={
                     'color': 'white',
                     'size': 20},
-
                 hovermode='closest',
                 showlegend=True,
-
                 xaxis=dict(title='<b>Year</b>',
                            spikemode='toaxis+across',
                            spikedash='solid',
@@ -1914,10 +1673,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                family='Arial',
                                size=12,
                                color='white'
-                           )
-
-                           ),
-
+                           )),
                 yaxis=dict(title='<b>Index 2015=100</b>',
                            color='white',
                            showline=True,
@@ -1930,10 +1686,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                family='Arial',
                                size=12,
                                color='white'
-                           )
-
-                           ),
-
+                           )),
                 legend={
                     'orientation': 'h',
                     'bgcolor': '#010915',
@@ -1942,35 +1695,17 @@ def update_graph(w_countries, w_countries1, country_chosen):
                     family="sans-serif",
                     size=12,
                     color='white'),
-
             )
-
         }
-
-    #
     # END Economy-Monthly production in construction
     #
     # END of ECONOMY
     #
-    #
     # Start POPULATION AND HEALTH
-    #
     #
     # POPULATION AND HEALTH-Monthly excess mortality
     #
     elif (w_countries == 'Population and health') & (w_countries1 == 'Monthly excess mortality'):
-
-        # valueMal1=[]
-        # if ('Malta' in coun):
-        #   valueMal1=getPAHMEM('Malta')
-
-        # valueSer1=[]
-        # if ('Serbia' in coun):
-        #    valueSer1=getMPIC('Serbia')
-
-        # valueEa1=[]
-        # if ('Euro area' in coun):
-        #   valueEa1=getPAHMEM('Euro area')
         valueEu1 = []
         if ('European Union' in coun):
             valueEu1 = getPAHMEM('European Union')
@@ -1986,12 +1721,10 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 name='European Union',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#E6D1D1'),
                                 marker=dict(size=5, symbol='circle', color='lightblue',
-                                            line=dict(color='#E6D1D1', width=2)
-                                            ),
+                                            line=dict(color='#E6D1D1', width=2)),
                                 hoverinfo='text',
                                 hovertext=
-                                '<b>Country</b>: ' + 'European Union' + '<br>'
-                                ),
+                                '<b>Country</b>: ' + 'European Union' + '<br>'),
                      go.Scatter(x=labPAHMEM,
                                 y=valueBel1,
                                 mode='lines+markers',
@@ -2003,9 +1736,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 hoverinfo='text',
                                 hovertext=
                                 '<b>Country</b>: ' + 'Belgium' + '<br>'
-                                )
-                     ],
-
+                                )],
             'layout': go.Layout(
                 barmode='stack',
                 plot_bgcolor='#808080',
@@ -2013,7 +1744,6 @@ def update_graph(w_countries, w_countries1, country_chosen):
                 title={
                     'text': 'Monthly excess mortality' + '  ' + '<br>' +
                             "(% of additional deaths compared with average monthly deaths in 2016-2019)" + '</br>',
-
                     'y': 0.93,
                     'x': 0.5,
                     'xanchor': 'center',
@@ -2021,10 +1751,8 @@ def update_graph(w_countries, w_countries1, country_chosen):
                 titlefont={
                     'color': 'white',
                     'size': 20},
-
                 hovermode='closest',
                 showlegend=True,
-
                 xaxis=dict(title='<b>Year</b>',
                            spikemode='toaxis+across',
                            spikedash='solid',
@@ -2041,10 +1769,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                family='Arial',
                                size=12,
                                color='white'
-                           )
-
-                           ),
-
+                           )),
                 yaxis=dict(title='<b>% of additional deaths</b>',
                            color='white',
                            showline=True,
@@ -2057,10 +1782,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                family='Arial',
                                size=12,
                                color='white'
-                           )
-
-                           ),
-
+                           )),
                 legend={
                     'orientation': 'h',
                     'bgcolor': '#010915',
@@ -2069,18 +1791,11 @@ def update_graph(w_countries, w_countries1, country_chosen):
                     family="sans-serif",
                     size=12,
                     color='white'),
-
             )
-
         }
-
-
-    #
     # Zavrsava se POPULATION AND HEALTH-Monthly excess mortality
-    #
-    #Pocinje Number of deaths by week
+    ##Pocinje Number of deaths by week
     elif (w_countries == 'Population and health') &  (w_countries1 == 'Number of deaths by week'):
-
             valueBul1 = []
             if ('Bulgaria' in coun):
                 valueBul1 = getPAHDBW('Bulgaria')
@@ -2115,9 +1830,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                     hoverinfo='text',
                                     hovertext=
                                     '<b>Country</b>: ' + 'Belgium' + '<br>'
-                                    )
-                         ],
-
+                                    )],
                 'layout': go.Layout(
                     barmode='stack',
                     plot_bgcolor='#808080',
@@ -2125,7 +1838,6 @@ def update_graph(w_countries, w_countries1, country_chosen):
                     title={
                         'text': 'Number of deaths by week' + '  ' + '<br>' +
                                 "(absolute numbers)" + '</br>',
-
                         'y': 0.93,
                         'x': 0.5,
                         'xanchor': 'center',
@@ -2133,10 +1845,8 @@ def update_graph(w_countries, w_countries1, country_chosen):
                     titlefont={
                         'color': 'white',
                         'size': 20},
-
                     hovermode='closest',
                     showlegend=True,
-
                     xaxis=dict(title='<b>Year</b>',
                                spikemode='toaxis+across',
                                spikedash='solid',
@@ -2153,10 +1863,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                    family='Arial',
                                    size=12,
                                    color='white'
-                               )
-
-                               ),
-
+                               )),
                     yaxis=dict(title='<b>% of additional deaths</b>',
                                color='white',
                                showline=True,
@@ -2169,10 +1876,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                    family='Arial',
                                    size=12,
                                    color='white'
-                               )
-
-                               ),
-
+                               ) ),
                     legend={
                         'orientation': 'h',
                         'bgcolor': '#010915',
@@ -2181,16 +1885,10 @@ def update_graph(w_countries, w_countries1, country_chosen):
                         family="sans-serif",
                         size=12,
                         color='white'),
-
                 )
-
             }
-
-    ##################################
     ##################################Pocinje Polulation and healht-Monthly first-time asylum applicants
-
     elif (w_countries == 'Population and health') & (w_countries1 == 'Monthly first-time asylum applicants'):
-
         valueEu1 = []
         if ('European Union' in coun):
             valueEu1 = getPAHMFTA('European Union')
@@ -2225,9 +1923,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 hoverinfo='text',
                                 hovertext=
                                 '<b>Country</b>: ' + 'Belgium' + '<br>'
-                                )
-                     ],
-
+                                )],
             'layout': go.Layout(
                 barmode='stack',
                 plot_bgcolor='#808080',
@@ -2235,7 +1931,6 @@ def update_graph(w_countries, w_countries1, country_chosen):
                 title={
                     'text': 'Monthly first-time asylum applicants' + '  ' + '<br>' +
                             "(absolute numbers)" + '</br>',
-
                     'y': 0.93,
                     'x': 0.5,
                     'xanchor': 'center',
@@ -2243,10 +1938,8 @@ def update_graph(w_countries, w_countries1, country_chosen):
                 titlefont={
                     'color': 'white',
                     'size': 20},
-
                 hovermode='closest',
                 showlegend=True,
-
                 xaxis=dict(title='<b>Year</b>',
                            spikemode='toaxis+across',
                            spikedash='solid',
@@ -2263,10 +1956,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                family='Arial',
                                size=12,
                                color='white'
-                           )
-
-                           ),
-
+                           ) ),
                 yaxis=dict(title='<b>Number of first time asylum applicants</b>',
                            color='white',
                            showline=True,
@@ -2279,10 +1969,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                family='Arial',
                                size=12,
                                color='white'
-                           )
-
-                           ),
-
+                           )),
                 legend={
                     'orientation': 'h',
                     'bgcolor': '#010915',
@@ -2291,18 +1978,13 @@ def update_graph(w_countries, w_countries1, country_chosen):
                     family="sans-serif",
                     size=12,
                     color='white'),
-
             )
-
         }
 #####################################################
     ##################################################
     #KRECE SOCIETY AND WORK
-
     #Iscrtavanje oblasti: Society and work-Monthly unemployment rate
-
     elif (w_countries == 'Society and work') & (w_countries1 == 'Monthly unemployment rate'):
-
         valueEu1 = []
         if ('European Union' in coun):
             valueEu1 = getSAWMUR('European Union')
@@ -2324,8 +2006,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                             ),
                                 hoverinfo='text',
                                 hovertext=
-                                '<b>Country</b>: ' + 'European Union' + '<br>'
-                                ),
+                                '<b>Country</b>: ' + 'European Union' + '<br>' ),
                      go.Scatter(x=labelSAWMUR,
                                 y=valueBel1,
                                 mode='lines+markers',
@@ -2337,9 +2018,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 hoverinfo='text',
                                 hovertext=
                                 '<b>Country</b>: ' + 'Belgium' + '<br>'
-                                )
-                     ],
-
+                                )],
             'layout': go.Layout(
                 barmode='stack',
                 plot_bgcolor='#808080',
@@ -2347,7 +2026,6 @@ def update_graph(w_countries, w_countries1, country_chosen):
                 title={
                     'text': 'Monthly unemployment rate' + '  ' + '<br>' +
                             "(as % of active population aged 15 to 74 years)" + '</br>',
-
                     'y': 0.93,
                     'x': 0.5,
                     'xanchor': 'center',
@@ -2355,10 +2033,8 @@ def update_graph(w_countries, w_countries1, country_chosen):
                 titlefont={
                     'color': 'white',
                     'size': 20},
-
                 hovermode='closest',
                 showlegend=True,
-
                 xaxis=dict(title='<b>Seasonally adjusted</b>',
                            spikemode='toaxis+across',
                            spikedash='solid',
@@ -2375,10 +2051,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                family='Arial',
                                size=12,
                                color='white'
-                           )
-
-                           ),
-
+                           )),
                 yaxis=dict(title='<b>% of active population aged 15-74 years</b>',
                            color='white',
                            showline=True,
@@ -2391,10 +2064,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                family='Arial',
                                size=12,
                                color='white'
-                           )
-
-                           ),
-
+                           )),
                 legend={
                     'orientation': 'h',
                     'bgcolor': '#010915',
@@ -2403,13 +2073,9 @@ def update_graph(w_countries, w_countries1, country_chosen):
                     family="sans-serif",
                     size=12,
                     color='white'),
-
             )
-
         }
-
     elif (w_countries == 'Society and work') & (w_countries1 == 'Monthly youth unemployment rate'):
-
         valueEu1 = []
         if ('European Union' in coun):
             valueEu1 = getSAWMYUR('European Union')
@@ -2417,8 +2083,6 @@ def update_graph(w_countries, w_countries1, country_chosen):
         valueBel1 = []
         if ('Belgium' in coun):
             valueBel1 = getSAWMYUR('Belgium')
-
-
 
         return {
             'data': [go.Scatter(x=labelSAWMYUR,
@@ -2446,7 +2110,6 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Belgium' + '<br>'
                                 )
                      ],
-
             'layout': go.Layout(
                 barmode='stack',
                 plot_bgcolor='#808080',
@@ -2454,7 +2117,6 @@ def update_graph(w_countries, w_countries1, country_chosen):
                 title={
                     'text': 'Monthly youth unemployment rate' + '  ' + '<br>' +
                             "(as % of active population aged less than 25 years)" + '</br>',
-
                     'y': 0.93,
                     'x': 0.5,
                     'xanchor': 'center',
@@ -2462,10 +2124,8 @@ def update_graph(w_countries, w_countries1, country_chosen):
                 titlefont={
                     'color': 'white',
                     'size': 20},
-
                 hovermode='closest',
                 showlegend=True,
-
                 xaxis=dict(title='<b>Seasonally adjusted</b>',
                            spikemode='toaxis+across',
                            spikedash='solid',
@@ -2482,10 +2142,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                family='Arial',
                                size=12,
                                color='white'
-                           )
-
-                           ),
-
+                           )),
                 yaxis=dict(title='<b>% of active population aged > 25 years</b>',
                            color='white',
                            showline=True,
@@ -2498,10 +2155,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                family='Arial',
                                size=12,
                                color='white'
-                           )
-
-                           ),
-
+                           )),
                 legend={
                     'orientation': 'h',
                     'bgcolor': '#010915',
@@ -2510,13 +2164,10 @@ def update_graph(w_countries, w_countries1, country_chosen):
                     family="sans-serif",
                     size=12,
                     color='white'),
-
             )
-
         }
     #KRece podgrupa: Society and work-Quarterly employment
     elif (w_countries == 'Society and work') & (w_countries1 == 'Quarterly employment'):
-
         valueEu1 = []
         if ('European Union' in coun):
             valueEu1 = getSAWQE('European Union')
@@ -2524,8 +2175,6 @@ def update_graph(w_countries, w_countries1, country_chosen):
         valueBel1 = []
         if ('Belgium' in coun):
             valueBel1 = getSAWQE('Belgium')
-
-
 
         return {
             'data': [go.Scatter(x=labelSAWQE,
@@ -2553,7 +2202,6 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Belgium' + '<br>'
                                 )
                      ],
-
             'layout': go.Layout(
                 barmode='stack',
                 plot_bgcolor='#808080',
@@ -2561,7 +2209,6 @@ def update_graph(w_countries, w_countries1, country_chosen):
                 title={
                     'text': 'Quarterly employment' + '  ' + '<br>' +
                             "(1 000 persons)" + '</br>',
-
                     'y': 0.93,
                     'x': 0.5,
                     'xanchor': 'center',
@@ -2569,10 +2216,8 @@ def update_graph(w_countries, w_countries1, country_chosen):
                 titlefont={
                     'color': 'white',
                     'size': 20},
-
                 hovermode='closest',
                 showlegend=True,
-
                 xaxis=dict(title='<b>Calendar and seasonally adjusted</b>',
                            spikemode='toaxis+across',
                            spikedash='solid',
@@ -2589,10 +2234,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                family='Arial',
                                size=12,
                                color='white'
-                           )
-
-                           ),
-
+                           ) ),
                 yaxis=dict(title='<b>1 000 persons</b>',
                            color='white',
                            showline=True,
@@ -2606,9 +2248,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                size=12,
                                color='white'
                            )
-
                            ),
-
                 legend={
                     'orientation': 'h',
                     'bgcolor': '#010915',
@@ -2617,14 +2257,10 @@ def update_graph(w_countries, w_countries1, country_chosen):
                     family="sans-serif",
                     size=12,
                     color='white'),
-
             )
-
         }
-
     #Krece podgrupa Society and work-Quarterly labour market slack
     elif (w_countries == 'Society and work') & (w_countries1 == 'Quarterly labour market slack'):
-
         valueEu1 = []
         if ('European Union' in coun):
             valueEu1 = getSAWQLMS('European Union')
@@ -2632,8 +2268,6 @@ def update_graph(w_countries, w_countries1, country_chosen):
         valueBel1 = []
         if ('Belgium' in coun):
             valueBel1 = getSAWQLMS('Belgium')
-
-
 
         return {
             'data': [go.Scatter(x=labelSAWQLMS,
@@ -2661,7 +2295,6 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Belgium' + '<br>'
                                 )
                      ],
-
             'layout': go.Layout(
                 barmode='stack',
                 plot_bgcolor='#808080',
@@ -2669,7 +2302,6 @@ def update_graph(w_countries, w_countries1, country_chosen):
                 title={
                     'text': 'Quarterly labour market slack' + '  ' + '<br>' +
                             "(as % of extended labour force aged 15 to 74 years)" + '</br>',
-
                     'y': 0.93,
                     'x': 0.5,
                     'xanchor': 'center',
@@ -2677,10 +2309,8 @@ def update_graph(w_countries, w_countries1, country_chosen):
                 titlefont={
                     'color': 'white',
                     'size': 20},
-
                 hovermode='closest',
                 showlegend=True,
-
                 xaxis=dict(title='<b>Seasonally adjusted</b>',
                            spikemode='toaxis+across',
                            spikedash='solid',
@@ -2698,9 +2328,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                size=12,
                                color='white'
                            )
-
                            ),
-
                 yaxis=dict(title='<b>% of extended labour force aged 15-74 years</b>',
                            color='white',
                            showline=True,
@@ -2714,9 +2342,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                size=12,
                                color='white'
                            )
-
                            ),
-
                 legend={
                     'orientation': 'h',
                     'bgcolor': '#010915',
@@ -2725,14 +2351,10 @@ def update_graph(w_countries, w_countries1, country_chosen):
                     family="sans-serif",
                     size=12,
                     color='white'),
-
             )
-
         }
-
     #KRece podgrupa Society and work-Quarterly job vacancy rate
     elif (w_countries == 'Society and work') & (w_countries1 == 'Quarterly job vacancy rate'):
-
         valueEu1 = []
         if ('European Union' in coun):
             valueEu1 = getSAWQJVR('European Union')
@@ -2740,8 +2362,6 @@ def update_graph(w_countries, w_countries1, country_chosen):
         valueBel1 = []
         if ('Belgium' in coun):
             valueBel1 = getSAWQJVR('Belgium')
-
-
 
         return {
             'data': [go.Scatter(x=labelSAWQE,
@@ -2769,7 +2389,6 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Belgium' + '<br>'
                                 )
                      ],
-
             'layout': go.Layout(
                 barmode='stack',
                 plot_bgcolor='#808080',
@@ -2777,7 +2396,6 @@ def update_graph(w_countries, w_countries1, country_chosen):
                 title={
                     'text': 'Quarterly job vacancy rate' + '  ' + '<br>' +
                             "%" + '</br>',
-
                     'y': 0.93,
                     'x': 0.5,
                     'xanchor': 'center',
@@ -2785,10 +2403,8 @@ def update_graph(w_countries, w_countries1, country_chosen):
                 titlefont={
                     'color': 'white',
                     'size': 20},
-
                 hovermode='closest',
                 showlegend=True,
-
                 xaxis=dict(title='<b>Not seasonally adjusted</b>',
                            spikemode='toaxis+across',
                            spikedash='solid',
@@ -2806,9 +2422,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                size=12,
                                color='white'
                            )
-
                            ),
-
                 yaxis=dict(title='<b>%</b>',
                            color='white',
                            showline=True,
@@ -2822,9 +2436,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                size=12,
                                color='white'
                            )
-
                            ),
-
                 legend={
                     'orientation': 'h',
                     'bgcolor': '#010915',
@@ -2833,14 +2445,10 @@ def update_graph(w_countries, w_countries1, country_chosen):
                     family="sans-serif",
                     size=12,
                     color='white'),
-
             )
-
         }
-
         # KRece podgrupa Society and work-Quarterly labour cost
     elif (w_countries == 'Society and work') & (w_countries1 == 'Quarterly labour cost'):
-
         valueEu1 = []
         if ('European Union' in coun):
             valueEu1 = getSAWQLC('European Union')
@@ -2875,7 +2483,6 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Belgium' + '<br>'
                                 )
                      ],
-
             'layout': go.Layout(
                 barmode='stack',
                 plot_bgcolor='#808080',
@@ -2883,7 +2490,6 @@ def update_graph(w_countries, w_countries1, country_chosen):
                 title={
                     'text': 'Quarterly labour cost' + '  ' + '<br>' +
                             "(% change compared with the same quarter of the previous year)" + '</br>',
-
                     'y': 0.93,
                     'x': 0.5,
                     'xanchor': 'center',
@@ -2891,10 +2497,8 @@ def update_graph(w_countries, w_countries1, country_chosen):
                 titlefont={
                     'color': 'white',
                     'size': 20},
-
                 hovermode='closest',
                 showlegend=True,
-
                 xaxis=dict(title='<b>Calendar adjusted</b>',
                            spikemode='toaxis+across',
                            spikedash='solid',
@@ -2912,9 +2516,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                size=12,
                                color='white'
                            )
-
                            ),
-
                 yaxis=dict(title='<b>%</b>',
                            color='white',
                            showline=True,
@@ -2928,9 +2530,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                size=12,
                                color='white'
                            )
-
                            ),
-
                 legend={
                     'orientation': 'h',
                     'bgcolor': '#010915',
@@ -2939,18 +2539,14 @@ def update_graph(w_countries, w_countries1, country_chosen):
                     family="sans-serif",
                     size=12,
                     color='white'),
-
             )
-
         }
 #######################################################
     ###################################################
     #KRECE OBLAST AGRICULTURE,ENERGY, TRANSPORT & TOURISM
     ###################################################
-
     #Krece oblast Agriculture, energy, transport & tourism-Monthly air passenger transport
     elif (w_countries == 'Agriculture, energy, transport & tourism') & (w_countries1 == 'Monthly air passenger transport'):
-
         valueEu1 = []
         if ('European Union' in coun):
             valueEu1 = getAETTMAPT('European Union')
@@ -2985,7 +2581,6 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Belgium' + '<br>'
                                 )
                      ],
-
             'layout': go.Layout(
                 barmode='stack',
                 plot_bgcolor='#808080',
@@ -2993,7 +2588,6 @@ def update_graph(w_countries, w_countries1, country_chosen):
                 title={
                     'text': 'Monthly air passenger transport' + '  ' + '<br>' +
                             "(number of passengers)" + '</br>',
-
                     'y': 0.93,
                     'x': 0.5,
                     'xanchor': 'center',
@@ -3001,10 +2595,8 @@ def update_graph(w_countries, w_countries1, country_chosen):
                 titlefont={
                     'color': 'white',
                     'size': 20},
-
                 hovermode='closest',
                 showlegend=True,
-
                 xaxis=dict(title='<b>Year</b>',
                            spikemode='toaxis+across',
                            spikedash='solid',
@@ -3021,10 +2613,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                family='Arial',
                                size=12,
                                color='white'
-                           )
-
-                           ),
-
+                           )),
                 yaxis=dict(title='<b>number of passengers</b>',
                            color='white',
                            showline=True,
@@ -3037,10 +2626,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                family='Arial',
                                size=12,
                                color='white'
-                           )
-
-                           ),
-
+                           )),
                 legend={
                     'orientation': 'h',
                     'bgcolor': '#010915',
@@ -3049,14 +2635,10 @@ def update_graph(w_countries, w_countries1, country_chosen):
                     family="sans-serif",
                     size=12,
                     color='white'),
-
             )
-
         }
-
     # Krece oblast Agriculture, energy, transport & tourism-Monthly commercial air flights
     elif (w_countries == 'Agriculture, energy, transport & tourism') & (w_countries1 == 'Monthly commercial air flights'):
-
         valueEu1 = []
         if ('European Union' in coun):
             valueEu1 = getAETTMCAF('European Union')
@@ -3072,12 +2654,10 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 name='European Union',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#E6D1D1'),
                                 marker=dict(size=5, symbol='circle', color='lightblue',
-                                            line=dict(color='#E6D1D1', width=2)
-                                            ),
+                                            line=dict(color='#E6D1D1', width=2)),
                                 hoverinfo='text',
                                 hovertext=
-                                '<b>Country</b>: ' + 'European Union' + '<br>'
-                                ),
+                                '<b>Country</b>: ' + 'European Union' + '<br>'),
                      go.Scatter(x=labelsAETTMCAF,
                                 y=valueBel1,
                                 mode='lines+markers',
@@ -3089,9 +2669,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 hoverinfo='text',
                                 hovertext=
                                 '<b>Country</b>: ' + 'Belgium' + '<br>'
-                                )
-                     ],
-
+                                )],
             'layout': go.Layout(
                 barmode='stack',
                 plot_bgcolor='#808080',
@@ -3099,7 +2677,6 @@ def update_graph(w_countries, w_countries1, country_chosen):
                 title={
                     'text': 'Monthly commercial air flights' + '  ' + '<br>' +
                             "(% change compared with same period of previous year)" + '</br>',
-
                     'y': 0.93,
                     'x': 0.5,
                     'xanchor': 'center',
@@ -3107,10 +2684,8 @@ def update_graph(w_countries, w_countries1, country_chosen):
                 titlefont={
                     'color': 'white',
                     'size': 20},
-
                 hovermode='closest',
                 showlegend=True,
-
                 xaxis=dict(title='<b>Year</b>',
                            spikemode='toaxis+across',
                            spikedash='solid',
@@ -3127,10 +2702,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                family='Arial',
                                size=12,
                                color='white'
-                           )
-
-                           ),
-
+                           )),
                 yaxis=dict(title='<b>% changing</b>',
                            color='white',
                            showline=True,
@@ -3143,10 +2715,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                family='Arial',
                                size=12,
                                color='white'
-                           )
-
-                           ),
-
+                           )),
                 legend={
                     'orientation': 'h',
                     'bgcolor': '#010915',
@@ -3155,13 +2724,10 @@ def update_graph(w_countries, w_countries1, country_chosen):
                     family="sans-serif",
                     size=12,
                     color='white'),
-
             )
-
         }
     # Krece oblast Agriculture, energy, transport & tourism-Monthly arrivals at tourist accommodation
     elif (w_countries == 'Agriculture, energy, transport & tourism') & (w_countries1 == 'Monthly arrivals at tourist accommodation'):
-
         valueEu1 = []
         if ('European Union' in coun):
             valueEu1 = getAETTMATA('European Union')
@@ -3181,22 +2747,18 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                             ),
                                 hoverinfo='text',
                                 hovertext=
-                                '<b>Country</b>: ' + 'European Union' + '<br>'
-                                ),
+                                '<b>Country</b>: ' + 'European Union' + '<br>'),
                      go.Scatter(x=labelsAETTMCAF,
                                 y=valueBel1,
                                 mode='lines+markers',
                                 name='Belgium',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#FF0000'),
                                 marker=dict(size=5, symbol='circle', color='lightblue',
-                                            line=dict(color='#FF0000', width=2)
-                                            ),
+                                            line=dict(color='#FF0000', width=2)),
                                 hoverinfo='text',
                                 hovertext=
                                 '<b>Country</b>: ' + 'Belgium' + '<br>'
-                                )
-                     ],
-
+                                )],
             'layout': go.Layout(
                 barmode='stack',
                 plot_bgcolor='#808080',
@@ -3204,7 +2766,6 @@ def update_graph(w_countries, w_countries1, country_chosen):
                 title={
                     'text': 'Monthly arrivals at tourist accommodation establishments' + '  ' + '<br>' +
                             "(absolute numbers)" + '</br>',
-
                     'y': 0.93,
                     'x': 0.5,
                     'xanchor': 'center',
@@ -3212,10 +2773,8 @@ def update_graph(w_countries, w_countries1, country_chosen):
                 titlefont={
                     'color': 'white',
                     'size': 20},
-
                 hovermode='closest',
                 showlegend=True,
-
                 xaxis=dict(title='<b>Refers to arrivals at hotels, holiday and other short-stay accommodation; camping grounds, recreational vehicle parks and trailer parks.</b>',
                            spikemode='toaxis+across',
                            spikedash='solid',
@@ -3232,10 +2791,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                family='Arial',
                                size=12,
                                color='white'
-                           )
-
-                           ),
-
+                           )),
                 yaxis=dict(title='<b>Number of arrrivals</b>',
                            color='white',
                            showline=True,
@@ -3248,10 +2804,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                family='Arial',
                                size=12,
                                color='white'
-                           )
-
-                           ),
-
+                           )),
                 legend={
                     'orientation': 'h',
                     'bgcolor': '#010915',
@@ -3260,14 +2813,10 @@ def update_graph(w_countries, w_countries1, country_chosen):
                     family="sans-serif",
                     size=12,
                     color='white'),
-
             )
-
         }
-
     # Krece oblast Agriculture, energy, transport & tourism-Monthly arrivals at tourist accommodation
     elif (w_countries == 'Agriculture, energy, transport & tourism') & (w_countries1 == 'Monthly nights spent at tourist accommodation'):
-
         valueEu1 = []
         if ('European Union' in coun):
             valueEu1 = getAETTMNSTA('European Union')
@@ -3283,8 +2832,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 name='European Union',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#E6D1D1'),
                                 marker=dict(size=5, symbol='circle', color='lightblue',
-                                            line=dict(color='#E6D1D1', width=2)
-                                            ),
+                                            line=dict(color='#E6D1D1', width=2)),
                                 hoverinfo='text',
                                 hovertext=
                                 '<b>Country</b>: ' + 'European Union' + '<br>'
@@ -3295,14 +2843,11 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 name='Belgium',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#FF0000'),
                                 marker=dict(size=5, symbol='circle', color='lightblue',
-                                            line=dict(color='#FF0000', width=2)
-                                            ),
+                                            line=dict(color='#FF0000', width=2)),
                                 hoverinfo='text',
                                 hovertext=
                                 '<b>Country</b>: ' + 'Belgium' + '<br>'
-                                )
-                     ],
-
+                                )],
             'layout': go.Layout(
                 barmode='stack',
                 plot_bgcolor='#808080',
@@ -3310,7 +2855,6 @@ def update_graph(w_countries, w_countries1, country_chosen):
                 title={
                     'text': 'Monthly nights spent at tourist accommodation establishments' + '  ' + '<br>' +
                             "(absolute numbers)" + '</br>',
-
                     'y': 0.93,
                     'x': 0.5,
                     'xanchor': 'center',
@@ -3318,10 +2862,8 @@ def update_graph(w_countries, w_countries1, country_chosen):
                 titlefont={
                     'color': 'white',
                     'size': 20},
-
                 hovermode='closest',
                 showlegend=True,
-
                 xaxis=dict(
                     title='<b>Refers to nights spent at hotels, holiday and other short-stay accommodation; camping grounds, recreational vehicle parks and trailer parks.</b>',
                     spikemode='toaxis+across',
@@ -3339,10 +2881,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                         family='Arial',
                         size=12,
                         color='white'
-                    )
-
-                    ),
-
+                    )),
                 yaxis=dict(title='<b>Number of nights spent</b>',
                            color='white',
                            showline=True,
@@ -3355,10 +2894,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                family='Arial',
                                size=12,
                                color='white'
-                           )
-
-                           ),
-
+                           )),
                 legend={
                     'orientation': 'h',
                     'bgcolor': '#010915',
@@ -3367,13 +2903,10 @@ def update_graph(w_countries, w_countries1, country_chosen):
                     family="sans-serif",
                     size=12,
                     color='white'),
-
             )
-
         }
     # Krece oblast Agriculture, energy, transport & tourism-Monthly electricity consumed by end-users
     elif (w_countries == 'Agriculture, energy, transport & tourism') & (w_countries1 == 'Monthly electricity consumed by end-users'):
-
         valueEu1 = []
         if ('European Union' in coun):
             valueEu1 = getAETTMEC('European Union')
@@ -3406,9 +2939,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 hoverinfo='text',
                                 hovertext=
                                 '<b>Country</b>: ' + 'Belgium' + '<br>'
-                                )
-                     ],
-
+                                )],
             'layout': go.Layout(
                 barmode='stack',
                 plot_bgcolor='#808080',
@@ -3416,7 +2947,6 @@ def update_graph(w_countries, w_countries1, country_chosen):
                 title={
                     'text': 'Monthly electricity consumed by end-users' + '  ' + '<br>' +
                             "(% change compared with same period of previous year)" + '</br>',
-
                     'y': 0.93,
                     'x': 0.5,
                     'xanchor': 'center',
@@ -3424,10 +2954,8 @@ def update_graph(w_countries, w_countries1, country_chosen):
                 titlefont={
                     'color': 'white',
                     'size': 20},
-
                 hovermode='closest',
                 showlegend=True,
-
                 xaxis=dict(
                     title='<b></b>',
                     spikemode='toaxis+across',
@@ -3446,9 +2974,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                         size=12,
                         color='white'
                     )
-
                 ),
-
                 yaxis=dict(title='<b>% change</b>',
                            color='white',
                            showline=True,
@@ -3461,10 +2987,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                family='Arial',
                                size=12,
                                color='white'
-                           )
-
-                           ),
-
+                           )),
                 legend={
                     'orientation': 'h',
                     'bgcolor': '#010915',
@@ -3473,14 +2996,11 @@ def update_graph(w_countries, w_countries1, country_chosen):
                     family="sans-serif",
                     size=12,
                     color='white'),
-
             )
-
         }
 
     else:
         return dash.no_update
-
 #################################################
 #KRAJ LINE CHART GRAFIKA
 #################################################
@@ -3493,34 +3013,27 @@ def update_graph(w_countries, w_countries1, country_chosen):
 #################################################
 #Uzimanje podataka za Podgrupu Economy Inflation
 def getPieArr(countryName):
-
     data2 = data.where(data.GEOLABEL == countryName).collect()
     suma = 0
     for i in range(2, 31):
         suma = suma + float(data2[0][i])
     return suma
-
 #Uzimanje podataka za podgrupu:GDP – quarterly growth rate
 def getPieGDP(countryName):
-
     data2 = dataGDP.where(dataGDP.GEOLABEL == countryName).collect()
     suma = 0
     for i in range(1, 19):
         suma = suma + float(data2[0][i])
     return suma
-
 #Uzimanje podataka za podgrupu:Economy Monthly industrial production
 def getPieMIP(countryName):
-
     data2 = dataMIN.where(dataMIN.GEOLABEL == countryName).collect()
     suma = 0
     for i in range(1, 29):
         suma = suma + float(data2[0][i])
     return suma
-
 #Uzimanje podataka za podgrupu:Economy montly volume
 def getPieMV(countryName):
-
     data2 = dataMV.where(dataMV.GEOLABEL == countryName).collect()
     suma = 0
     for i in range(1, 83):
@@ -3528,31 +3041,25 @@ def getPieMV(countryName):
     return suma
 #Uzimanje podataka za podgrupu:Economy Monthly production in contruction
 def getPieMPIC(countryName):
-
     data2 = dataMPIC.where(dataMPIC.GEOLABEL == countryName).collect()
     suma = 0
     for i in range(1, 29):
         suma = suma + float(data2[0][i])
     return suma
-
 #Uzimanje podataka za podgrupu:Population and health-Monthly excess mortality
 def getPieMEM(countryName):
-
     data2 = dataPAHMEM.where(dataPAHMEM.GEOLABEL == countryName).collect()
     suma = 0
     for i in range(1, 22):
         suma = suma + float(data2[0][i])
     return suma
-
 #Uzimanje podataka za podgrupu:Population and health-Number of deaths by week
 def getPieNOD(countryName):
-
     data2 = dataPAHDBW.where(dataPAHDBW.GEOLABEL == countryName).collect()
     value = []
     value1 = []
     value2 = []
     value3 = []
-
     for i in range(1, 109):
         val = data2[0][i]
         value.append(val)
@@ -3568,7 +3075,6 @@ def getPieNOD(countryName):
 
 #Uzimanje podataka za podgrupu:Population and health-Monthly first-time asylum
 def getPieMFTA(countryName):
-
     data2 = dataPAHMFTA.where(dataPAHMFTA.GEOLABEL == countryName).collect()
     value = []
     value1 = []
@@ -3593,7 +3099,6 @@ def getPieMFTA(countryName):
 #####################################
 #Uzimanje podataka za podgrupu:Society and work-Monthly unemployment rate
 def getPieMUR(countryName):
-
     data2 = dataSAWMUR.where(dataSAWMUR.GEOLABEL == countryName).collect()
     suma = 0
     formsuma = 0
@@ -3605,7 +3110,6 @@ def getPieMUR(countryName):
 
 #Uzimanje podataka za podgrupu:Society and work-Monthly youth unemployment rate
 def getPieMYUR(countryName):
-
     data2 = dataSAWMYUR.where(dataSAWMYUR.GEOLABEL == countryName).collect()
     suma = 0
     formsuma=0
@@ -3616,7 +3120,6 @@ def getPieMYUR(countryName):
     return formsuma
 #Uzimanje podataka za podgrupu:Society and work-Quarterly employment
 def getPieQE(countryName):
-
     data2 = dataSAWQE.where(dataSAWQE.GEOLABEL == countryName).collect()
     value = []
     value1 = []
@@ -3640,7 +3143,6 @@ def getPieQE(countryName):
 
 #Uzimanje podataka za podgrupu:Society and work-Quarterly labour market slack
 def getPieQLMS(countryName):
-
     data2 = dataSAWQLMS.where(dataSAWQLMS.GEOLABEL == countryName).collect()
     suma = 0
     formsuma=0
@@ -3652,7 +3154,6 @@ def getPieQLMS(countryName):
 
 #Uzimanje podataka za podgrupu:Society and work-Quarterly job vacancy rate
 def getPieQJVR(countryName):
-
     data2 = dataSAWQJVR.where(dataSAWQJVR.GEOLABEL == countryName).collect()
     suma = 0
     formsuma=0
@@ -3664,7 +3165,6 @@ def getPieQJVR(countryName):
 
 #Uzimanje podataka za podgrupu:Society and work-Quarterly labour cost
 def getPieQLC(countryName):
-
     data2 = dataSAWQLC.where(dataSAWQLC.GEOLABEL == countryName).collect()
     suma = 0
     formsuma=0
@@ -3680,7 +3180,6 @@ def getPieQLC(countryName):
 #Uzimanje podataka za: AGRICULTURE, ENERGY, TRANSPORT & TOURISM-Monthly air passenger transport
 
 def getPieMAPT(countryName):
-
     data2 = dataAETTMAPT.where(dataAETTMAPT.GEOLABEL == countryName).collect()
     value = []
     value1 = []
@@ -3703,7 +3202,6 @@ def getPieMAPT(countryName):
     return formsuma
 #AGRICULTURE, ENERGY, TRANSPORT & TOURISM-Monthly commercial air flights
 def getPieMCAF(countryName):
-
     data2 = dataAETTMCAF.where(dataAETTMCAF.GEOLABEL == countryName).collect()
     suma = 0
     formsuma=0
@@ -3715,7 +3213,6 @@ def getPieMCAF(countryName):
 
 #AGRICULTURE, ENERGY, TRANSPORT & TOURISM-Monthly arrivals at tourist accommodation
 def getPieMATA(countryName):
-
     data2 = dataAETTMATA.where(dataAETTMATA.GEOLABEL == countryName).collect()
     value = []
     value1 = []
@@ -3739,7 +3236,6 @@ def getPieMATA(countryName):
 
 #AGRICULTURE, ENERGY, TRANSPORT & TOURISM-Monthly nights spent at tourist accommodation
 def getPieMNSTA(countryName):
-
     data2 = dataAETTMNSTA.where(dataAETTMNSTA.GEOLABEL == countryName).collect()
     value = []
     value1 = []
@@ -3763,7 +3259,6 @@ def getPieMNSTA(countryName):
 
 #AGRICULTURE, ENERGY, TRANSPORT & TOURISM-Monthly electricity consumed by end-users
 def getPieMEC(countryName):
-
     data2 = dataAETTMEC.where(dataAETTMEC.GEOLABEL == countryName).collect()
     suma = 0
     formsuma=0
@@ -3778,11 +3273,9 @@ def getPieMEC(countryName):
               [Input('w_countries1', 'value')],
               [Input('w_countries2', 'value')])
 def display_content(w_countries, w_countries1, country_chosen):
-
     coun = []
     coun = np.array(country_chosen)
     colors = ['#FF00FF', '#9C0C38', 'orange', 'lightblue']
-
     #Pocinje deo Economy- Inflation
     if (w_countries == 'Economy') & (w_countries1 == 'Inflation - annual growth rate'):
         valueEu1= ''
@@ -3941,7 +3434,6 @@ def display_content(w_countries, w_countries1, country_chosen):
                         hoverinfo='label+value+percent',
                         textinfo='label+value',
                         textfont=dict(size=13)
-
                         )],
             'layout': go.Layout(
                     plot_bgcolor='#808080',
@@ -3949,7 +3441,6 @@ def display_content(w_countries, w_countries1, country_chosen):
                     hovermode='closest',
                     title={
                         'text': 'Economy: ' +(w_countries1) +'</br>',
-
                         'y': 0.93,
                         'x': 0.5,
                         'xanchor': 'center',
@@ -3971,7 +3462,6 @@ def display_content(w_countries, w_countries1, country_chosen):
     # Pocinje ECONOMY GDP
     ##
     elif (w_countries == 'Economy') & (w_countries1 == 'GDP – quarterly growth rate'):
-
         valueEu1 = ''
         if('European Union' in coun):
             valueEu1=getPieGDP('European Union')
@@ -4116,7 +3606,6 @@ def display_content(w_countries, w_countries1, country_chosen):
                             hoverinfo='label+value+percent',
                             textinfo='label+value',
                             textfont=dict(size=13)
-
                             )],
             'layout': go.Layout(
                 plot_bgcolor='#808080',
@@ -4124,7 +3613,6 @@ def display_content(w_countries, w_countries1, country_chosen):
                 hovermode='closest',
                 title={
                     'text': 'Economy: ' + (w_countries1) + '</br>',
-
                     'y': 0.93,
                     'x': 0.5,
                     'xanchor': 'center',
@@ -4298,7 +3786,6 @@ def display_content(w_countries, w_countries1, country_chosen):
                 hovermode='closest',
                 title={
                     'text': 'Economy: ' + (w_countries1) + '</br>',
-
                     'y': 0.93,
                     'x': 0.5,
                     'xanchor': 'center',
@@ -4478,7 +3965,6 @@ def display_content(w_countries, w_countries1, country_chosen):
                 hovermode='closest',
                 title={
                     'text': 'Economy: ' + (w_countries1) + '</br>',
-
                     'y': 0.93,
                     'x': 0.5,
                     'xanchor': 'center',
@@ -4599,16 +4085,13 @@ def display_content(w_countries, w_countries1, country_chosen):
                             hoverinfo='label+value+percent',
                             textinfo='label+value',
                             textfont=dict(size=13)
-
                             )],
-
             'layout': go.Layout(
                 plot_bgcolor='#808080',
                 paper_bgcolor='#A8A8A8',
                 hovermode='closest',
                 title={
                     'text': 'Economy: ' + (w_countries1) + '</br>',
-
                     'y': 0.93,
                     'x': 0.5,
                     'xanchor': 'center',
@@ -4625,7 +4108,6 @@ def display_content(w_countries, w_countries1, country_chosen):
                     size=12,
                     color='white')
             ),
-
         }
 
 ###############################################
@@ -4636,7 +4118,6 @@ def display_content(w_countries, w_countries1, country_chosen):
     # POPULATION AND HEALTH-Monthly excess mortality
     #
     elif (w_countries == 'Population and health') & (w_countries1 == 'Monthly excess mortality'):
-
         valueEu1 = ''
         if ('European Union' in coun):
             valueEu1 = getPieMEM('European Union')
@@ -4765,16 +4246,13 @@ def display_content(w_countries, w_countries1, country_chosen):
                             hoverinfo='label+value+percent',
                             textinfo='label+value',
                             textfont=dict(size=13)
-
                             )],
-
             'layout': go.Layout(
                 plot_bgcolor='#808080',
                 paper_bgcolor='#A8A8A8',
                 hovermode='closest',
                 title={
                     'text': 'Population: ' + (w_countries1) + '</br>',
-
                     'y': 0.93,
                     'x': 0.5,
                     'xanchor': 'center',
@@ -4791,12 +4269,10 @@ def display_content(w_countries, w_countries1, country_chosen):
                     size=12,
                     color='white')
             ),
-
         }
     #
     # Pocinje Number of deaths by week
     elif (w_countries == 'Population and health') & (w_countries1 == 'Number of deaths by week'):
-
         valueBel1 = ''
         if ('Belgium' in coun):
             valueBel1 = getPieNOD('Belgium')
@@ -4929,16 +4405,13 @@ def display_content(w_countries, w_countries1, country_chosen):
                             hoverinfo='label+value+percent',
                             textinfo='label+value',
                             textfont=dict(size=13)
-
                             )],
-
             'layout': go.Layout(
                 plot_bgcolor='#808080',
                 paper_bgcolor='#A8A8A8',
                 hovermode='closest',
                 title={
                     'text': 'Population: ' + (w_countries1) + '</br>',
-
                     'y': 0.93,
                     'x': 0.5,
                     'xanchor': 'center',
@@ -4955,11 +4428,9 @@ def display_content(w_countries, w_countries1, country_chosen):
                     size=12,
                     color='white')
             ),
-
         }
     #####################Pocinje Polulation and healht-Monthly first-time asylum applicants
     elif (w_countries == 'Population and health') & (w_countries1 == 'Monthly first-time asylum applicants'):
-
         valueEu1 = ''
         if ('European Union' in coun):
             valueEu1 = getPieMFTA('European Union')
@@ -5099,7 +4570,6 @@ def display_content(w_countries, w_countries1, country_chosen):
                 hovermode='closest',
                 title={
                     'text': 'Population: ' + (w_countries1) + '</br>',
-
                     'y': 0.93,
                     'x': 0.5,
                     'xanchor': 'center',
@@ -5116,12 +4586,10 @@ def display_content(w_countries, w_countries1, country_chosen):
                     size=12,
                     color='white')
             ),
-
         }
 
     #####################Pocinje Society and work-Monthly unemployment rate
     elif (w_countries == 'Society and work') & (w_countries1 == 'Monthly unemployment rate'):
-
         valueEu1 = ''
         if ('European Union' in coun):
             valueEu1 = getPieMUR('European Union')
@@ -5258,16 +4726,13 @@ def display_content(w_countries, w_countries1, country_chosen):
                             hoverinfo='label+value+percent',
                             textinfo='label+value',
                             textfont=dict(size=13)
-
                             )],
-
             'layout': go.Layout(
                 plot_bgcolor='#808080',
                 paper_bgcolor='#A8A8A8',
                 hovermode='closest',
                 title={
                     'text': 'Society: Average ' + (w_countries1) + '</br>',
-
                     'y': 0.93,
                     'x': 0.5,
                     'xanchor': 'center',
@@ -5284,11 +4749,9 @@ def display_content(w_countries, w_countries1, country_chosen):
                     size=12,
                     color='white')
             ),
-
         }
     #####################Society and work-Monthly youth unemployment rate
     elif (w_countries == 'Society and work') & (w_countries1 == 'Monthly youth unemployment rate'):
-
         valueEu1 = ''
         if ('European Union' in coun):
             valueEu1 = getPieMYUR('European Union')
@@ -5425,16 +4888,13 @@ def display_content(w_countries, w_countries1, country_chosen):
                             hoverinfo='label+value+percent',
                             textinfo='label+value',
                             textfont=dict(size=13)
-
                             )],
-
             'layout': go.Layout(
                 plot_bgcolor='#808080',
                 paper_bgcolor='#A8A8A8',
                 hovermode='closest',
                 title={
                     'text': 'Society: Average ' + (w_countries1) + '</br>',
-
                     'y': 0.93,
                     'x': 0.5,
                     'xanchor': 'center',
@@ -5451,11 +4911,9 @@ def display_content(w_countries, w_countries1, country_chosen):
                     size=12,
                     color='white')
             ),
-
         }
     #####################Society and work-Quarterly employment
     elif (w_countries == 'Society and work') & (w_countries1 == 'Quarterly employment'):
-
         valueEu1 = ''
         if ('European Union' in coun):
             valueEu1 = getPieQE('European Union')
@@ -5560,16 +5018,13 @@ def display_content(w_countries, w_countries1, country_chosen):
                             hoverinfo='label+value+percent',
                             textinfo='label+value',
                             textfont=dict(size=13)
-
                             )],
-
             'layout': go.Layout(
                 plot_bgcolor='#808080',
                 paper_bgcolor='#A8A8A8',
                 hovermode='closest',
                 title={
                     'text': 'Society: Average ' + (w_countries1) + '</br>',
-
                     'y': 0.93,
                     'x': 0.5,
                     'xanchor': 'center',
@@ -5586,11 +5041,9 @@ def display_content(w_countries, w_countries1, country_chosen):
                     size=12,
                     color='white')
             ),
-
         }
     #####################Society and work-Quarterly labour market slack
     elif (w_countries == 'Society and work') & (w_countries1 == 'Quarterly labour market slack'):
-
         valueEu1 = ''
         if ('European Union' in coun):
             valueEu1 = getPieQLMS('European Union')
@@ -5727,9 +5180,7 @@ def display_content(w_countries, w_countries1, country_chosen):
                             hoverinfo='label+value+percent',
                             textinfo='label+value',
                             textfont=dict(size=13)
-
                             )],
-
             'layout': go.Layout(
                 plot_bgcolor='#808080',
                 paper_bgcolor='#A8A8A8',
@@ -5753,7 +5204,6 @@ def display_content(w_countries, w_countries1, country_chosen):
                     size=12,
                     color='white')
             ),
-
         }
     #####################Society and work-Quarterly job vacancy rate
     elif (w_countries == 'Society and work') & (w_countries1 == 'Quarterly job vacancy rate'):
@@ -5882,9 +5332,7 @@ def display_content(w_countries, w_countries1, country_chosen):
                             hoverinfo='label+value+percent',
                             textinfo='label+value',
                             textfont=dict(size=13)
-
                             )],
-
             'layout': go.Layout(
                 plot_bgcolor='#808080',
                 paper_bgcolor='#A8A8A8',
@@ -5908,7 +5356,6 @@ def display_content(w_countries, w_countries1, country_chosen):
                     size=12,
                     color='white')
             ),
-
         }
     #####################Society and work-Quarterly labour cost
     elif (w_countries == 'Society and work') & (w_countries1 == 'Quarterly labour cost'):
@@ -6045,16 +5492,13 @@ def display_content(w_countries, w_countries1, country_chosen):
                             hoverinfo='label+value+percent',
                             textinfo='label+value',
                             textfont=dict(size=13)
-
                             )],
-
             'layout': go.Layout(
                 plot_bgcolor='#808080',
                 paper_bgcolor='#A8A8A8',
                 hovermode='closest',
                 title={
                     'text': 'Society: Average ' + (w_countries1) + '</br>',
-
                     'y': 0.93,
                     'x': 0.5,
                     'xanchor': 'center',
@@ -6071,42 +5515,151 @@ def display_content(w_countries, w_countries1, country_chosen):
                     size=12,
                     color='white')
             ),
-
         }
-    #KRece oblast AGRICULTURE, ENERGY, TRANSPORT & TOURISM
+    #Krece oblast AGRICULTURE, ENERGY, TRANSPORT & TOURISM
     ######################################################
     ######################AGRICULTURE, ENERGY, TRANSPORT & TOURISM-Monthly air passenger transport
     elif (w_countries == 'Agriculture, energy, transport & tourism') & (w_countries1 == 'Monthly air passenger transport'):
 
-        valueEu1 = 0
+        valueEu1 = ''
         if ('European Union' in coun):
             valueEu1 = getPieMAPT('European Union')
 
-        valueBel1 = 0
+        valueBel1 = ''
         if ('Belgium' in coun):
             valueBel1 = getPieMAPT('Belgium')
 
-        valueBul1 = 0
-        if ('Belgium' in coun):
+        valueBul1 = ''
+        if ('Bulgaria' in coun):
             valueBul1 = getPieMAPT('Bulgaria')
 
+        valueChe1 = ''
+        if ('Czechia' in coun):
+            valueChe1 = getPieMAPT('Czechia')
+
+        valueDen1 = ''
+        if ('Denmark' in coun):
+            valueDen1 = getPieMAPT('Denmark')
+
+        valueGer1 = ''
+        if ('Germany' in coun):
+            valueGer1 = getPieMAPT('Germany')
+
+        valueEst1 = ''
+        if ('Estonia' in coun):
+            valueEst1 = getPieMAPT('Estonia')
+
+        valueIre1 = ''
+        if ('Ireland' in coun):
+            valueIre1 = getPieMAPT('Ireland')
+
+        valueGree1 = ''
+        if ('Greece' in coun):
+            valueGree1 = getPieMAPT('Greece')
+
+        valueSpa1 = ''
+        if ('Spain' in coun):
+            valueSpa1 = getPieMAPT('Spain')
+
+        valueFra1 = ''
+        if ('France' in coun):
+            valueFra1 = getPieMAPT('France')
+
+        valueCro1 = ''
+        if ('Croatia' in coun):
+            valueCro1 = getPieMAPT('Croatia')
+
+        valueIta1 = ''
+        if ('Italy' in coun):
+            valueIta1 = getPieMAPT('Italy')
+
+        valueCyp1 = ''
+        if ('Cyprus' in coun):
+            valueCyp1 = getPieMAPT('Cyprus')
+
+        valueLat1 = ''
+        if ('Latvia' in coun):
+            valueLat1 = getPieMAPT('Latvia')
+
+        valueLith1 = ''
+        if ('Lithuania' in coun):
+            valueLith1 = getPieMAPT('Lithuania')
+
+        valueLux1 = ''
+        if ('Luxembourg' in coun):
+            valueLux1 = getPieMAPT('Luxembourg')
+
+        valueHun1 = ''
+        if ('Hungary' in coun):
+            valueHun1 = getPieMAPT('Hungary')
+
+        valueMal1 = ''
+        if ('Malta' in coun):
+            valueMal1 = getPieMAPT('Malta')
+
+        valueNet1 = ''
+        if ('Netherlands' in coun):
+            valueNet1 = getPieMAPT('Netherlands')
+
+        valueAus1 = ''
+        if ('Austria' in coun):
+            valueAus1 = getPieMAPT('Austria')
+
+        valuePol1 = ''
+        if ('Poland' in coun):
+            valuePol1 = getPieMAPT('Poland')
+
+        valuePor1 = ''
+        if ('Portugal' in coun):
+            valuePor1 = getPieMAPT('Portugal')
+
+        valueRom1 = ''
+        if ('Romania' in coun):
+            valueRom1 = getPieMAPT('Romania')
+
+        valueSlo1 = ''
+        if ('Slovenia' in coun):
+            valueSlo1 = getPieMAPT('Slovenia')
+
+        valueSlovak1 = ''
+        if ('Slovakia' in coun):
+            valueSlovak1 = getPieMAPT('Slovakia')
+
+        valueFin1 = ''
+        if ('Finland' in coun):
+            valueFin1 = getPieMAPT('Finland')
+
+        valueSwe1 = ''
+        if ('Sweden' in coun):
+            valueSwe1 = getPieMAPT('Sweden')
+
+        valueUk1 = ''
+        if ('United Kingdom' in coun):
+            valueUk1 = getPieMAPT('United Kingdom')
+
+        valueNor1 = ''
+        if ('Norway' in coun):
+            valueNor1 = getPieMAPT('Norway')
+
+        valueSwi1 = ''
+        if ('Switzerland' in coun):
+            valueSwi1 = getPieMAPT('Switzerland')
+
         return {
-            'data': [go.Pie(labels=['EU', 'BE', 'BG'],
-                            values=[valueEu1, valueBel1, valueBul1],
+            'data': [go.Pie(labels=['EU', 'BE', 'BG','CZ','DK','DE','EE','IE','El','ES','FR','HR','IT','CY','LV','LT','LU','HU','MT','NL','AT','PL','PT','RO','SI','SK','FI','SE','UK','NO','CH'],
+                            values=[valueEu1, valueBel1, valueBul1,valueChe1,valueDen1,valueGer1,valueEst1,valueIre1,valueGree1,valueSpa1,valueFra1,valueCro1,valueIta1,valueCyp1,valueLat1,valueLith1,valueLux1,valueHun1,
+                                valueMal1,valueNet1,valueAus1,valuePol1,valuePor1,valueRom1,valueSlo1,valueSlovak1,valueFin1,valueSwe1,valueUk1,valueNor1,valueSwi1],
                             marker=dict(colors=colors),
                             hoverinfo='label+value+percent',
                             textinfo='label+value',
                             textfont=dict(size=13)
-
                             )],
-
             'layout': go.Layout(
                 plot_bgcolor='#808080',
                 paper_bgcolor='#A8A8A8',
                 hovermode='closest',
                 title={
                     'text': 'Agriculture: Average ' + (w_countries1) + '</br>',
-
                     'y': 0.93,
                     'x': 0.5,
                     'xanchor': 'center',
@@ -6123,40 +5676,159 @@ def display_content(w_countries, w_countries1, country_chosen):
                     size=12,
                     color='white')
             ),
-
         }
     ######################AGRICULTURE, ENERGY, TRANSPORT & TOURISM-Monthly commercial air flights
     elif (w_countries == 'Agriculture, energy, transport & tourism') & (w_countries1 == 'Monthly commercial air flights'):
-
-        valueEu1 = 0
+        valueEu1 = ''
         if ('European Union' in coun):
             valueEu1 = getPieMCAF('European Union')
 
-        valueBel1 = 0
+        valueBel1 = ''
         if ('Belgium' in coun):
             valueBel1 = getPieMCAF('Belgium')
 
-        valueBul1 = 0
-        if ('Belgium' in coun):
+        valueBul1 = ''
+        if ('Bulgaria' in coun):
             valueBul1 = getPieMCAF('Bulgaria')
 
+        valueChe1 = ''
+        if ('Czechia' in coun):
+            valueChe1 = getPieMCAF('Czechia')
+
+        valueDen1 = ''
+        if ('Denmark' in coun):
+            valueDen1 = getPieMCAF('Denmark')
+
+        valueGer1 = ''
+        if ('Germany' in coun):
+            valueGer1 = getPieMCAF('Germany')
+
+        valueEst1 = ''
+        if ('Estonia' in coun):
+            valueEst1 = getPieMCAF('Estonia')
+
+        valueIre1 = ''
+        if ('Ireland' in coun):
+            valueIre1 = getPieMCAF('Ireland')
+
+        valueGree1 = ''
+        if ('Greece' in coun):
+            valueGree1 = getPieMCAF('Greece')
+
+        valueSpa1 = ''
+        if ('Spain' in coun):
+            valueSpa1 = getPieMCAF('Spain')
+
+        valueFra1 = ''
+        if ('France' in coun):
+            valueFra1 = getPieMCAF('France')
+
+        valueCro1 = ''
+        if ('Croatia' in coun):
+            valueCro1 = getPieMCAF('Croatia')
+
+        valueIta1 = ''
+        if ('Italy' in coun):
+            valueIta1 = getPieMCAF('Italy')
+
+        valueCyp1 = ''
+        if ('Cyprus' in coun):
+            valueCyp1 = getPieMCAF('Cyprus')
+
+        valueLat1 = ''
+        if ('Latvia' in coun):
+            valueLat1 = getPieMCAF('Latvia')
+
+        valueLith1 = ''
+        if ('Lithuania' in coun):
+            valueLith1 = getPieMCAF('Lithuania')
+
+        valueLux1 = ''
+        if ('Luxembourg' in coun):
+            valueLux1 = getPieMCAF('Luxembourg')
+
+        valueHun1 = ''
+        if ('Hungary' in coun):
+            valueHun1 = getPieMCAF('Hungary')
+
+        valueMal1 = ''
+        if ('Malta' in coun):
+            valueMal1 = getPieMCAF('Malta')
+
+        valueNet1 = ''
+        if ('Netherlands' in coun):
+            valueNet1 = getPieMCAF('Netherlands')
+
+        valueAus1 = ''
+        if ('Austria' in coun):
+            valueAus1 = getPieMCAF('Austria')
+
+        valuePol1 = ''
+        if ('Poland' in coun):
+            valuePol1 = getPieMCAF('Poland')
+
+        valuePor1 = ''
+        if ('Portugal' in coun):
+            valuePor1 = getPieMCAF('Portugal')
+
+        valueRom1 = ''
+        if ('Romania' in coun):
+            valueRom1 = getPieMCAF('Romania')
+
+        valueSlo1 = ''
+        if ('Slovenia' in coun):
+            valueSlo1 = getPieMCAF('Slovenia')
+
+        valueSlovak1 = ''
+        if ('Slovakia' in coun):
+            valueSlovak1 = getPieMCAF('Slovakia')
+
+        valueFin1 = ''
+        if ('Finland' in coun):
+            valueFin1 = getPieMCAF('Finland')
+
+        valueSwe1 = ''
+        if ('Sweden' in coun):
+            valueSwe1 = getPieMCAF('Sweden')
+
+        valueUk1 = ''
+        if ('United Kingdom' in coun):
+            valueUk1 = getPieMCAF('United Kingdom')
+
+        valueNor1 = ''
+        if ('Norway' in coun):
+            valueNor1 = getPieMCAF('Norway')
+
+        valueSwi1 = ''
+        if ('Switzerland' in coun):
+            valueSwi1 = getPieMCAF('Switzerland')
+
+        valueMake1 = ''
+        if ('North Macedonia' in coun):
+            valueMake1 = getPieMCAF('North Macedonia')
+
+        valueSer1 = ''
+        if ('Serbia' in coun):
+            valueSer1 = getPieMCAF('Serbia')
+
+        valueTur1 = ''
+        if ('Turkey' in coun):
+            valueTur1 = getPieMCAF('Turkey')
+
         return {
-            'data': [go.Pie(labels=['EU', 'BE', 'BG'],
-                            values=[valueEu1, valueBel1, valueBul1],
+            'data': [go.Pie(labels=['EU', 'BE', 'BG','CZ','DK','DE','EE','IE','El','ES','FR','HR','IT','CY','LV','LT','LU','HU','MT','NL','AT','PL','PT','RO','SI','SK','FI','SE','UK','NO','CH','MK','RS','TR'],
+                            values=[valueEu1, valueBel1, valueBul1,valueChe1,valueDen1,valueGer1,valueEst1,valueIre1,valueGree1,valueSpa1,valueFra1,valueCro1,valueIta1,valueCyp1,valueLat1,valueLith1,valueLux1,valueHun1,
+                                valueMal1,valueNet1,valueAus1,valuePol1,valuePor1,valueRom1,valueSlo1,valueSlovak1,valueFin1,valueSwe1,valueUk1,valueNor1,valueSwi1,valueMake1,valueSer1,valueTur1],
                             marker=dict(colors=colors),
                             hoverinfo='label+value+percent',
                             textinfo='label+value',
-                            textfont=dict(size=13)
-
-                            )],
-
+                            textfont=dict(size=13))],
             'layout': go.Layout(
                 plot_bgcolor='#808080',
                 paper_bgcolor='#A8A8A8',
                 hovermode='closest',
                 title={
                     'text': 'Agriculture: Average ' + (w_countries1) + '</br>',
-
                     'y': 0.93,
                     'x': 0.5,
                     'xanchor': 'center',
@@ -6171,42 +5843,138 @@ def display_content(w_countries, w_countries1, country_chosen):
                 font=dict(
                     family="sans-serif",
                     size=12,
-                    color='white')
-            ),
-
-        }
+                    color='white')),}
     ######################AGRICULTURE, ENERGY, TRANSPORT & TOURISM-Monthly arrivals at tourist accommodation
     elif (w_countries == 'Agriculture, energy, transport & tourism') & (w_countries1 == 'Monthly arrivals at tourist accommodation'):
-
-        valueEu1 = 0
+        valueEu1 = ''
         if ('European Union' in coun):
             valueEu1 = getPieMATA('European Union')
 
-        valueBel1 = 0
+        valueBel1 = ''
         if ('Belgium' in coun):
             valueBel1 = getPieMATA('Belgium')
 
-        valueBul1 = 0
+        valueBul1 = ''
         if ('Belgium' in coun):
             valueBul1 = getPieMATA('Bulgaria')
 
+        valueChe1 = ''
+        if ('Czechia' in coun):
+            valueChe1 = getPieMATA('Czechia')
+
+        valueDen1 = ''
+        if ('Denmark' in coun):
+            valueDen1 = getPieMATA('Denmark')
+
+        valueGer1 = ''
+        if ('Germany' in coun):
+            valueGer1 = getPieMATA('Germany')
+
+        valueEst1 = ''
+        if ('Estonia' in coun):
+            valueEst1 = getPieMATA('Estonia')
+
+        valueIre1 = ''
+        if ('Ireland' in coun):
+            valueIre1 = getPieMATA('Ireland')
+
+        valueGree1 = ''
+        if ('Greece' in coun):
+            valueGree1 = getPieMATA('Greece')
+
+        valueSpa1 = ''
+        if ('Spain' in coun):
+            valueSpa1 = getPieMATA('Spain')
+
+        valueFra1 = ''
+        if ('France' in coun):
+            valueFra1 = getPieMATA('France')
+
+        valueCro1 = ''
+        if ('Croatia' in coun):
+            valueCro1 = getPieMATA('Croatia')
+
+        valueIta1 = ''
+        if ('Italy' in coun):
+            valueIta1 = getPieMATA('Italy')
+
+        valueCyp1 = ''
+        if ('Cyprus' in coun):
+            valueCyp1 = getPieMATA('Cyprus')
+
+        valueLat1 = ''
+        if ('Latvia' in coun):
+            valueLat1 = getPieMATA('Latvia')
+
+        valueLith1 = ''
+        if ('Lithuania' in coun):
+            valueLith1 = getPieMATA('Lithuania')
+
+        valueLux1 = ''
+        if ('Luxembourg' in coun):
+            valueLux1 = getPieMATA('Luxembourg')
+
+        valueHun1 = ''
+        if ('Hungary' in coun):
+            valueHun1 = getPieMATA('Hungary')
+
+        valueMal1 = ''
+        if ('Malta' in coun):
+            valueMal1 = getPieMATA('Malta')
+
+        valueNet1 = ''
+        if ('Netherlands' in coun):
+            valueNet1 = getPieMATA('Netherlands')
+
+        valueAus1 = ''
+        if ('Austria' in coun):
+            valueAus1 = getPieMATA('Austria')
+
+        valuePol1 = ''
+        if ('Poland' in coun):
+            valuePol1 = getPieMATA('Poland')
+
+        valuePor1 = ''
+        if ('Portugal' in coun):
+            valuePor1 = getPieMATA('Portugal')
+
+        valueRom1 = ''
+        if ('Romania' in coun):
+            valueRom1 = getPieMATA('Romania')
+
+        valueSlo1 = ''
+        if ('Slovenia' in coun):
+            valueSlo1 = getPieMATA('Slovenia')
+
+        valueSlovak1 = ''
+        if ('Slovakia' in coun):
+            valueSlovak1 = getPieMATA('Slovakia')
+
+        valueFin1 = ''
+        if ('Finland' in coun):
+            valueFin1 = getPieMATA('Finland')
+
+        valueSwe1 = ''
+        if ('Sweden' in coun):
+            valueSwe1 = getPieMATA('Sweden')
+
+        valueIce1 = ''
+        if ('Iceland' in coun):
+            valueIce1 = getPieMATA('Iceland')
         return {
-            'data': [go.Pie(labels=['EU', 'BE', 'BG'],
-                            values=[valueEu1, valueBel1, valueBul1],
+            'data': [go.Pie(labels=['EU', 'BE', 'BG','CZ','DK','DE','EE','IE','El','ES','FR','HR','IT','CY','LV','LT','LU','HU','MT','NL','AT','PL','PT','RO','SI','SK','FI','SE','IS'],
+                            values=[valueEu1, valueBel1, valueBul1,valueChe1,valueDen1,valueGer1,valueEst1,valueIre1,valueGree1,valueSpa1,valueFra1,valueCro1,valueIta1,valueCyp1,valueLat1,valueLith1,valueLux1,valueHun1,
+                                valueMal1,valueNet1,valueAus1,valuePol1,valuePor1,valueRom1,valueSlo1,valueSlovak1,valueFin1,valueSwe1,valueIce1],
                             marker=dict(colors=colors),
                             hoverinfo='label+value+percent',
                             textinfo='label+value',
-                            textfont=dict(size=13)
-
-                            )],
-
+                            textfont=dict(size=13))],
             'layout': go.Layout(
-                plot_bgcolor='#010915',
-                paper_bgcolor='#010915',
+                plot_bgcolor='#808080',
+                paper_bgcolor='#A8A8A8',
                 hovermode='closest',
                 title={
                     'text': 'Agriculture: Average ' + (w_countries1) + '</br>',
-
                     'y': 0.93,
                     'x': 0.5,
                     'xanchor': 'center',
@@ -6221,42 +5989,150 @@ def display_content(w_countries, w_countries1, country_chosen):
                 font=dict(
                     family="sans-serif",
                     size=12,
-                    color='white')
-            ),
-
-        }
+                    color='white')),}
     ######################AGRICULTURE, ENERGY, TRANSPORT & TOURISM-Monthly nights spent at tourist accommodation
     elif (w_countries == 'Agriculture, energy, transport & tourism') & (w_countries1 == 'Monthly nights spent at tourist accommodation'):
-
-        valueEu1 = 0
+        valueEu1 = ''
         if ('European Union' in coun):
             valueEu1 = getPieMNSTA('European Union')
 
-        valueBel1 = 0
+        valueBel1 = ''
         if ('Belgium' in coun):
             valueBel1 = getPieMNSTA('Belgium')
 
-        valueBul1 = 0
-        if ('Belgium' in coun):
+        valueBul1 = ''
+        if ('Bulgaria' in coun):
             valueBul1 = getPieMNSTA('Bulgaria')
 
+        valueChe1 = ''
+        if ('Czechia' in coun):
+            valueChe1 = getPieMNSTA('Czechia')
+
+        valueDen1 = ''
+        if ('Denmark' in coun):
+            valueDen1 = getPieMNSTA('Denmark')
+
+        valueGer1 = ''
+        if ('Germany' in coun):
+            valueGer1 = getPieMNSTA('Germany')
+
+        valueEst1 = ''
+        if ('Estonia' in coun):
+            valueEst1 = getPieMNSTA('Estonia')
+
+        valueIre1 = ''
+        if ('Ireland' in coun):
+            valueIre1 = getPieMNSTA('Ireland')
+
+        valueGree1 = ''
+        if ('Greece' in coun):
+            valueGree1 = getPieMNSTA('Greece')
+
+        valueSpa1 = ''
+        if ('Spain' in coun):
+            valueSpa1 = getPieMNSTA('Spain')
+
+        valueFra1 = ''
+        if ('France' in coun):
+            valueFra1 = getPieMNSTA('France')
+
+        valueCro1 = ''
+        if ('Croatia' in coun):
+            valueCro1 = getPieMNSTA('Croatia')
+
+        valueIta1 = ''
+        if ('Italy' in coun):
+            valueIta1 = getPieMNSTA('Italy')
+
+        valueCyp1 = ''
+        if ('Cyprus' in coun):
+            valueCyp1 = getPieMNSTA('Cyprus')
+
+        valueLat1 = ''
+        if ('Latvia' in coun):
+            valueLat1 = getPieMNSTA('Latvia')
+
+        valueLith1 = ''
+        if ('Lithuania' in coun):
+            valueLith1 = getPieMNSTA('Lithuania')
+
+        valueLux1 = ''
+        if ('Luxembourg' in coun):
+            valueLux1 = getPieMNSTA('Luxembourg')
+
+        valueHun1 = ''
+        if ('Hungary' in coun):
+            valueHun1 = getPieMNSTA('Hungary')
+
+        valueMal1 = ''
+        if ('Malta' in coun):
+            valueMal1 = getPieMNSTA('Malta')
+
+        valueNet1 = ''
+        if ('Netherlands' in coun):
+            valueNet1 = getPieMNSTA('Netherlands')
+
+        valueAus1 = ''
+        if ('Austria' in coun):
+            valueAus1 = getPieMNSTA('Austria')
+
+        valuePol1 = ''
+        if ('Poland' in coun):
+            valuePol1 = getPieMNSTA('Poland')
+
+        valuePor1 = ''
+        if ('Portugal' in coun):
+            valuePor1 = getPieMNSTA('Portugal')
+
+        valueRom1 = ''
+        if ('Romania' in coun):
+            valueRom1 = getPieMNSTA('Romania')
+
+        valueSlo1 = ''
+        if ('Slovenia' in coun):
+            valueSlo1 = getPieMNSTA('Slovenia')
+
+        valueSlovak1 = ''
+        if ('Slovakia' in coun):
+            valueSlovak1 = getPieMNSTA('Slovakia')
+
+        valueFin1 = ''
+        if ('Finland' in coun):
+            valueFin1 = getPieMNSTA('Finland')
+
+        valueSwe1 = ''
+        if ('Sweden' in coun):
+            valueSwe1 = getPieMNSTA('Sweden')
+
+        valueUk1 = ''
+        if ('United Kingdom' in coun):
+            valueUk1 = getPieMNSTA('United Kingdom')
+
+        valueNor1 = ''
+        if ('Norway' in coun):
+            valueNor1 = getPieMNSTA('Norway')
+
+        valueMake1 = ''
+        if ('North Macedonia' in coun):
+            valueMake1 = getPieMNSTA('North Macedonia')
+
+        valueIce1 = ''
+        if ('Iceland' in coun):
+            valueIce1 = getPieMNSTA('Iceland')
         return {
-            'data': [go.Pie(labels=['EU', 'BE', 'BG'],
-                            values=[valueEu1, valueBel1, valueBul1],
+            'data': [go.Pie(labels=['EU', 'BE', 'BG','CZ','DK','DE','EE','IE','El','ES','FR','HR','IT','CY','LV','LT','LU','HU','MT','NL','AT','PL','PT','RO','SI','SK','FI','SE','UK','NO','MK','IS'],
+                            values=[valueEu1, valueBel1, valueBul1,valueChe1,valueDen1,valueGer1,valueEst1,valueIre1,valueGree1,valueSpa1,valueFra1,valueCro1,valueIta1,valueCyp1,valueLat1,valueLith1,valueLux1,valueHun1,
+                                valueMal1,valueNet1,valueAus1,valuePol1,valuePor1,valueRom1,valueSlo1,valueSlovak1,valueFin1,valueSwe1,valueUk1,valueNor1,valueMake1,valueIce1],
                             marker=dict(colors=colors),
                             hoverinfo='label+value+percent',
                             textinfo='label+value',
-                            textfont=dict(size=13)
-
-                            )],
-
+                            textfont=dict(size=13))],
             'layout': go.Layout(
                 plot_bgcolor='#808080',
                 paper_bgcolor='#A8A8A8',
                 hovermode='closest',
                 title={
                     'text': 'Agriculture: Average ' + (w_countries1) + '</br>',
-
                     'y': 0.93,
                     'x': 0.5,
                     'xanchor': 'center',
@@ -6271,42 +6147,142 @@ def display_content(w_countries, w_countries1, country_chosen):
                 font=dict(
                     family="sans-serif",
                     size=12,
-                    color='white')
-            ),
-
-        }
+                    color='white')),}
     ######################AGRICULTURE, ENERGY, TRANSPORT & TOURISM-Monthly electricity consumed by end-users
     elif (w_countries == 'Agriculture, energy, transport & tourism') & (w_countries1 == 'Monthly electricity consumed by end-users'):
-
-        valueEu1 = 0
+        valueEu1 = ''
         if ('European Union' in coun):
             valueEu1 = getPieMEC('European Union')
 
-        valueBel1 = 0
+        valueBel1 = ''
         if ('Belgium' in coun):
             valueBel1 = getPieMEC('Belgium')
 
-        valueBul1 = 0
+        valueBul1 = ''
         if ('Belgium' in coun):
             valueBul1 = getPieMEC('Bulgaria')
 
+        valueChe1 = ''
+        if ('Czechia' in coun):
+            valueChe1 = getPieMEC('Czechia')
+
+        valueDen1 = ''
+        if ('Denmark' in coun):
+            valueDen1 = getPieMEC('Denmark')
+
+        valueGer1 = ''
+        if ('Germany' in coun):
+            valueGer1 = getPieMEC('Germany')
+
+        valueEst1 = ''
+        if ('Estonia' in coun):
+            valueEst1 = getPieMEC('Estonia')
+
+        valueIre1 = ''
+        if ('Ireland' in coun):
+            valueIre1 = getPieMEC('Ireland')
+
+        valueGree1 = ''
+        if ('Greece' in coun):
+            valueGree1 = getPieMEC('Greece')
+
+        valueSpa1 = ''
+        if ('Spain' in coun):
+            valueSpa1 = getPieMEC('Spain')
+
+        valueFra1 = ''
+        if ('France' in coun):
+            valueFra1 = getPieMEC('France')
+
+        valueCro1 = ''
+        if ('Croatia' in coun):
+            valueCro1 = getPieMEC('Croatia')
+
+        valueIta1 = ''
+        if ('Italy' in coun):
+            valueIta1 = getPieMEC('Italy')
+
+        valueCyp1 = ''
+        if ('Cyprus' in coun):
+            valueCyp1 = getPieMEC('Cyprus')
+
+        valueLat1 = ''
+        if ('Latvia' in coun):
+            valueLat1 = getPieMEC('Latvia')
+
+        valueLith1 = ''
+        if ('Lithuania' in coun):
+            valueLith1 = getPieMEC('Lithuania')
+
+        valueLux1 = ''
+        if ('Luxembourg' in coun):
+            valueLux1 = getPieMEC('Luxembourg')
+
+        valueHun1 = ''
+        if ('Hungary' in coun):
+            valueHun1 = getPieMEC('Hungary')
+
+        valueMal1 = ''
+        if ('Malta' in coun):
+            valueMal1 = getPieMEC('Malta')
+
+        valueNet1 = ''
+        if ('Netherlands' in coun):
+            valueNet1 = getPieMEC('Netherlands')
+
+        valueAus1 = ''
+        if ('Austria' in coun):
+            valueAus1 = getPieMEC('Austria')
+
+        valuePol1 = ''
+        if ('Poland' in coun):
+            valuePol1 = getPieMEC('Poland')
+
+        valuePor1 = ''
+        if ('Portugal' in coun):
+            valuePor1 = getPieMEC('Portugal')
+
+        valueRom1 = ''
+        if ('Romania' in coun):
+            valueRom1 = getPieMEC('Romania')
+
+        valueSlo1 = ''
+        if ('Slovenia' in coun):
+            valueSlo1 = getPieMEC('Slovenia')
+
+        valueSlovak1 = ''
+        if ('Slovakia' in coun):
+            valueSlovak1 = getPieMEC('Slovakia')
+
+        valueFin1 = ''
+        if ('Finland' in coun):
+            valueFin1 = getPieMEC('Finland')
+
+        valueSwe1 = ''
+        if ('Sweden' in coun):
+            valueSwe1 = getPieMEC('Sweden')
+
+        valueUk1 = ''
+        if ('United Kingdom' in coun):
+            valueUk1 = getPieMEC('United Kingdom')
+
+        valueNor1 = ''
+        if ('Norway' in coun):
+            valueNor1 = getPieMEC('Norway')
         return {
-            'data': [go.Pie(labels=['EU', 'BE', 'BG'],
-                            values=[valueEu1, valueBel1, valueBul1],
+            'data': [go.Pie(labels=['EU', 'BE', 'BG','CZ','DK','DE','EE','IE','El','ES','FR','HR','IT','CY','LV','LT','LU','HU','MT','NL','AT','PL','PT','RO','SI','SK','FI','SE','UK','NO'],
+                            values=[valueEu1, valueBel1, valueBul1,valueChe1,valueDen1,valueGer1,valueEst1,valueIre1,valueGree1,valueSpa1,valueFra1,valueCro1,valueIta1,valueCyp1,valueLat1,valueLith1,valueLux1,valueHun1,
+                                valueMal1,valueNet1,valueAus1,valuePol1,valuePor1,valueRom1,valueSlo1,valueSlovak1,valueFin1,valueSwe1,valueUk1,valueNor1],
                             marker=dict(colors=colors),
                             hoverinfo='label+value+percent',
                             textinfo='label+value',
-                            textfont=dict(size=13)
-
-                            )],
-
+                            textfont=dict(size=13))],
             'layout': go.Layout(
                 plot_bgcolor='#808080',
                 paper_bgcolor='#A8A8A8',
                 hovermode='closest',
                 title={
                     'text': 'Agriculture: Average ' + (w_countries1) + '</br>',
-
                     'y': 0.93,
                     'x': 0.5,
                     'xanchor': 'center',
@@ -6321,15 +6297,9 @@ def display_content(w_countries, w_countries1, country_chosen):
                 font=dict(
                     family="sans-serif",
                     size=12,
-                    color='white')
-            ),
-
-        }
-
+                    color='white')),}
     else:
         return dash.no_update
-
-
 
 if __name__ == '__main__':
     app.run_server(debug=True)
