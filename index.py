@@ -278,48 +278,34 @@ def get_country_options(w_countries):
 def get_country_value(w_countries1):
     return [k['value'] for k in w_countries1][0]
 
-
+############################
 # Create scattermapbox chart
+############################
 @app.callback(Output('map_1', 'figure'),
               [Input('w_countries', 'value')],
-              [Input('w_countries1', 'value')])
-def update_graph(w_countries, w_countries1):
-    select_years=[]
-    terr3 = terr2.groupby(['region_txt', 'country_txt', 'provstate', 'city', 'iyear', 'latitude', 'longitude'])[
-        ['nkill', 'nwound']].sum().reset_index()
-    terr4 = terr3[(terr3['region_txt'] == w_countries) & (terr3['country_txt'] == w_countries1) & (
-                terr3['iyear'] >= select_years[0]) & (terr3['iyear'] <= select_years[1])]
+              [Input('w_countries1', 'value')],
+              [Input('w_countries2', 'value')])
+def update_graph(w_countries, w_countries1,country_chosen):
+    coun = []
+    coun = np.array(country_chosen)
 
-    if w_countries1:
-        zoom = 3
-        zoom_lat = list_locations[w_countries1]['latitude']
-        zoom_lon = list_locations[w_countries1]['longitude']
 
     return {
         'data': [go.Scattermapbox(
-            lon=terr4['longitude'],
-            lat=terr4['latitude'],
-            mode='markers',
+            lon=[-75, -80, -50],
+            lat=[45, 20, -20],
+            mode='markers+text+lines',
             marker=go.scattermapbox.Marker(
-                size=terr4['nwound'],
-                color=terr4['nwound'],
+                size=30,
+                color=['blue'],
                 colorscale='hsv',
                 showscale=False,
                 sizemode='area'),
 
             hoverinfo='text',
             hovertext=
-            '<b>Region</b>: ' + terr4['region_txt'].astype(str) + '<br>' +
-            '<b>Country</b>: ' + terr4['country_txt'].astype(str) + '<br>' +
-            '<b>Province/State</b>: ' + terr4['provstate'].astype(str) + '<br>' +
-            '<b>City</b>: ' + terr4['city'].astype(str) + '<br>' +
-            '<b>Longitude</b>: ' + terr4['longitude'].astype(str) + '<br>' +
-            '<b>Latitude</b>: ' + terr4['latitude'].astype(str) + '<br>' +
-            '<b>Killed</b>: ' + [f'{x:,.0f}' for x in terr4['nkill']] + '<br>' +
-            '<b>Wounded</b>: ' + [f'{x:,.0f}' for x in terr4['nwound']] + '<br>' +
-            '<b>Year</b>: ' + terr4['iyear'].astype(str) + '<br>'
-
-        )],
+            '<b>Region</b>: ' + 'nesto' + '<br>'
+                    )],
 
         'layout': go.Layout(
             margin={"r": 0, "t": 0, "l": 0, "b": 0},
@@ -327,10 +313,11 @@ def update_graph(w_countries, w_countries1):
             mapbox=dict(
                 accesstoken='pk.eyJ1IjoicXM2MjcyNTI3IiwiYSI6ImNraGRuYTF1azAxZmIycWs0cDB1NmY1ZjYifQ.I1VJ3KjeM-S613FLv3mtkw',
                 # Use mapbox token here
-                center=go.layout.mapbox.Center(lat=zoom_lat, lon=zoom_lon),
+                center=go.layout.mapbox.Center(lat=50, lon=15),
                 # style='open-street-map',
-                style='dark',
-                zoom=zoom),
+                style='outdoors',
+                zoom=2),
+            showlegend=True,
             autosize=True,
         )
     }
