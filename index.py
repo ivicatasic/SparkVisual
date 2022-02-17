@@ -7,6 +7,7 @@ import pandas as pd
 from pyspark import SparkContext, SparkConf
 from pyspark.sql import SQLContext
 import numpy as np
+import functions
 
 app = dash.Dash(__name__, )
 app.title = 'Spark Visual Data'
@@ -278,33 +279,64 @@ def get_country_options(w_countries):
 def get_country_value(w_countries1):
     return [k['value'] for k in w_countries1][0]
 
+csv_World = 'C:/Users/Korisnik/Desktop/SparkVisual/data/Latitude.csv'
+data_World = sqlContext.read.format("csv").options(header='true').load(csv_World)
+def getLan(countryName):
+    data2 = data_World.select("lat").where(data_World.country == countryName).collect()
+    lat = data2[0]['lat']
+    return lat
+
+def getLon(countryName):
+    data2 = data_World.select("lng").where(data_World.country == countryName).collect()
+    lon = data2[0]['lng']
+    return lon
+
 ############################
 # Create scattermapbox chart
 ############################
 @app.callback(Output('map_1', 'figure'),
               [Input('w_countries', 'value')],
-              [Input('w_countries1', 'value')],
-              [Input('w_countries2', 'value')])
-def update_graph(w_countries, w_countries1,country_chosen):
-    coun = []
-    coun = np.array(country_chosen)
+              [Input('w_countries1', 'value')])
+def update_graph(w_countries, w_countries1):
 
+    dataLat = data_World.select("lat").collect()
+    dataLng = data_World.select("lng").collect()
+
+    valueLat = []
+    valueL = []
+    for i in range(35):
+        valueL.append(float(dataLat[i][0]))
+    valueLat = np.array(valueL)
+
+    valueLng = []
+    valueLn = []
+    for i in range(35):
+        valueLn.append(float(dataLng[i][0]))
+    valueLng = np.array(valueLn)
+
+    country = []
+    allCountry = []
+    coun = data_World.select('country').collect()
+    for i in range(35):
+        country.append(coun[i][0])
+    allCountry = np.array(country)
+
+    data_World2 = pd.read_csv('C:/Users/Korisnik/Desktop/SparkVisual/data/Latitude.csv')
 
     return {
         'data': [go.Scattermapbox(
-            lon=[-75, -80, -50],
-            lat=[45, 20, -20],
-            mode='markers+text+lines',
+            lon=valueLng,
+            lat=valueLat,
+            mode='markers',
             marker=go.scattermapbox.Marker(
-                size=30,
-                color=['blue'],
+                size=25,
+                #color=['blue','yellow','red','green'],
                 colorscale='hsv',
                 showscale=False,
                 sizemode='area'),
-
             hoverinfo='text',
             hovertext=
-            '<b>Region</b>: ' + 'nesto' + '<br>'
+            '<b>Country</b>: ' + data_World2['country'].astype(str) + '<br>'
                     )],
 
         'layout': go.Layout(
@@ -312,11 +344,13 @@ def update_graph(w_countries, w_countries1,country_chosen):
             hovermode='closest',
             mapbox=dict(
                 accesstoken='pk.eyJ1IjoicXM2MjcyNTI3IiwiYSI6ImNraGRuYTF1azAxZmIycWs0cDB1NmY1ZjYifQ.I1VJ3KjeM-S613FLv3mtkw',
+                bearing=0,
+                pitch=0,
                 # Use mapbox token here
                 center=go.layout.mapbox.Center(lat=50, lon=15),
                 # style='open-street-map',
                 style='outdoors',
-                zoom=2),
+                zoom=3),
             showlegend=True,
             autosize=True,
         )
