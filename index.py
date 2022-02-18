@@ -281,15 +281,6 @@ def get_country_value(w_countries1):
 
 csv_World = 'C:/Users/Korisnik/Desktop/SparkVisual/data/Latitude.csv'
 data_World = sqlContext.read.format("csv").options(header='true').load(csv_World)
-def getLan(countryName):
-    data2 = data_World.select("lat").where(data_World.country == countryName).collect()
-    lat = data2[0]['lat']
-    return lat
-
-def getLon(countryName):
-    data2 = data_World.select("lng").where(data_World.country == countryName).collect()
-    lon = data2[0]['lng']
-    return lon
 
 ############################
 # Create scattermapbox chart
@@ -314,31 +305,29 @@ def update_graph(w_countries, w_countries1):
         valueLn.append(float(dataLng[i][0]))
     valueLng = np.array(valueLn)
 
-    country = []
-    allCountry = []
-    coun = data_World.select('country').collect()
-    for i in range(35):
-        country.append(coun[i][0])
-    allCountry = np.array(country)
-
     data_World2 = pd.read_csv('C:/Users/Korisnik/Desktop/SparkVisual/data/Latitude.csv')
 
-    return {
+    if (w_countries == 'Economy') & (w_countries1 == 'Inflation - annual growth rate'):
+        ei = pd.read_csv('C:/Users/Korisnik/Desktop/SparkVisual/data/Economy-inflation.csv')
+        ee=(ei.sum(axis=1)/30).map('{:,.2f}'.format)
+
+        size=abs(ei.sum(axis=1))+20
+        return {
         'data': [go.Scattermapbox(
             lon=valueLng,
             lat=valueLat,
             mode='markers',
             marker=go.scattermapbox.Marker(
-                size=25,
+                size=size,
                 #color=['blue','yellow','red','green'],
                 colorscale='hsv',
                 showscale=False,
                 sizemode='area'),
             hoverinfo='text',
             hovertext=
-            '<b>Country</b>: ' + data_World2['country'].astype(str) + '<br>'
+            '<b>Country</b>: ' + data_World2['country'].astype(str) + '<br>'+
+            '<b>Average Economy inflation</b>: ' + ee.astype(str) +'%'+ '<br>'
                     )],
-
         'layout': go.Layout(
             margin={"r": 0, "t": 0, "l": 0, "b": 0},
             hovermode='closest',
@@ -352,9 +341,154 @@ def update_graph(w_countries, w_countries1):
                 style='outdoors',
                 zoom=3),
             showlegend=True,
-            autosize=True,
-        )
-    }
+            autosize=True,)
+        }
+    ##KRECE ECONOMY GDP DEO
+    elif (w_countries == 'Economy') & (w_countries1 == 'GDP – quarterly growth rate'):
+        ei = pd.read_csv('C:/Users/Korisnik/Desktop/SparkVisual/data/Economy-GDP.csv')
+        ee = (ei.sum(axis=1) / 19).map('{:,.2f}'.format)
+
+        size = abs(ei.sum(axis=1)) + 20
+        return {
+            'data': [go.Scattermapbox(
+                lon=valueLng,
+                lat=valueLat,
+                mode='markers',
+                marker=go.scattermapbox.Marker(
+                    size=size,
+                    # color=['blue','yellow','red','green'],
+                    colorscale='hsv',
+                    showscale=False,
+                    sizemode='area'),
+                hoverinfo='text',
+                hovertext=
+                '<b>Country</b>: ' + data_World2['country'].astype(str) + '<br>' +
+                '<b>Average Economy GDP</b>: ' + ee.astype(str) + '%' + '<br>'
+            )],
+            'layout': go.Layout(
+                margin={"r": 0, "t": 0, "l": 0, "b": 0},
+                hovermode='closest',
+                mapbox=dict(
+                    accesstoken='pk.eyJ1IjoicXM2MjcyNTI3IiwiYSI6ImNraGRuYTF1azAxZmIycWs0cDB1NmY1ZjYifQ.I1VJ3KjeM-S613FLv3mtkw',
+                    bearing=0,
+                    pitch=0,
+                    center=go.layout.mapbox.Center(lat=50, lon=15),
+                    style='outdoors',
+                    zoom=3),
+                showlegend=True,
+                autosize=True, )
+        }
+   ########KRECE DEO ECONOMY MONTHLY INDUSTRIAL PRODUCTION
+    elif (w_countries == 'Economy') & (w_countries1 == 'Monthly industrial production'):
+        ei = pd.read_csv('C:/Users/Korisnik/Desktop/SparkVisual/data/Economy-Monthly industrial production.csv')
+        ee = (ei.sum(axis=1) / 29).map('{:,.2f}'.format)
+
+        size = abs(ei.sum(axis=1)) -50
+        return {
+            'data': [go.Scattermapbox(
+                lon=valueLng,
+                lat=valueLat,
+                mode='markers',
+                marker=go.scattermapbox.Marker(
+                    size=size,
+                    # color=['blue','yellow','red','green'],
+                    colorscale='hsv',
+                    showscale=False,
+                    sizemode='area'),
+                hoverinfo='text',
+                hovertext=
+                '<b>Country</b>: ' + data_World2['country'].astype(str) + '<br>' +
+                '<b>Average monthly industrial production</b>: ' + ee.astype(str) + '%' + '<br>'
+            )],
+            'layout': go.Layout(
+                margin={"r": 0, "t": 0, "l": 0, "b": 0},
+                hovermode='closest',
+                mapbox=dict(
+                    accesstoken='pk.eyJ1IjoicXM2MjcyNTI3IiwiYSI6ImNraGRuYTF1azAxZmIycWs0cDB1NmY1ZjYifQ.I1VJ3KjeM-S613FLv3mtkw',
+                    bearing=0,
+                    pitch=0,
+                    center=go.layout.mapbox.Center(lat=50, lon=15),
+                    style='outdoors',
+                    zoom=3),
+                showlegend=True,
+                autosize=True, )
+        }
+    ######KRECE ECONOMY MONTHLY VOLUME OF RETAIL TRADE
+    elif (w_countries == 'Economy') & (w_countries1 == 'Monthly volume of retail trade'):
+        ei = pd.read_csv('C:/Users/Korisnik/Desktop/SparkVisual/data/Economy-Monthly volume.csv')
+        ee = (ei.sum(axis=1) / 83).map('{:,.2f}'.format)
+
+        size = abs(ei.sum(axis=1)) -50
+        return {
+            'data': [go.Scattermapbox(
+                lon=valueLng,
+                lat=valueLat,
+                mode='markers',
+                marker=go.scattermapbox.Marker(
+                    size=size,
+                    # color=['blue','yellow','red','green'],
+                    colorscale='hsv',
+                    showscale=False,
+                    sizemode='area'),
+                hoverinfo='text',
+                hovertext=
+                '<b>Country</b>: ' + data_World2['country'].astype(str) + '<br>' +
+                '<b>Average Monthly volume of retail trade</b>: ' + ee.astype(str) + '%' + '<br>'
+            )],
+            'layout': go.Layout(
+                margin={"r": 0, "t": 0, "l": 0, "b": 0},
+                hovermode='closest',
+                mapbox=dict(
+                    accesstoken='pk.eyJ1IjoicXM2MjcyNTI3IiwiYSI6ImNraGRuYTF1azAxZmIycWs0cDB1NmY1ZjYifQ.I1VJ3KjeM-S613FLv3mtkw',
+                    bearing=0,
+                    pitch=0,
+                    center=go.layout.mapbox.Center(lat=50, lon=15),
+                    style='outdoors',
+                    zoom=3),
+                showlegend=True,
+                autosize=True, )
+        }
+    ##########KRECE ECONOMY MONTHLY PRODUCTION IN CONSTRUCTION
+    elif (w_countries == 'Economy') and (w_countries1 == 'Monthly production in construction'):
+        ei = pd.read_csv('C:/Users/Korisnik/Desktop/SparkVisual/data/Economy-Monthly production in construction.csv')
+        ee = (ei.sum(axis=1) / 29).map('{:,.2f}'.format)
+
+        size = abs(ei.sum(axis=1)) + 20
+        return {
+            'data': [go.Scattermapbox(
+                lon=valueLng,
+                lat=valueLat,
+                mode='markers',
+                marker=go.scattermapbox.Marker(
+                    size=size,
+                    # color=['blue','yellow','red','green'],
+                    colorscale='hsv',
+                    showscale=False,
+                    sizemode='area'),
+                hoverinfo='text',
+                hovertext=
+                '<b>Country</b>: ' + data_World2['country'].astype(str) + '<br>' +
+                '<b>Average monthly production in consturction</b>: ' + ee.astype(str) + '%' + '<br>'
+            )],
+
+            'layout': go.Layout(
+                margin={"r": 0, "t": 0, "l": 0, "b": 0},
+                hovermode='closest',
+                mapbox=dict(
+                    accesstoken='pk.eyJ1IjoicXM2MjcyNTI3IiwiYSI6ImNraGRuYTF1azAxZmIycWs0cDB1NmY1ZjYifQ.I1VJ3KjeM-S613FLv3mtkw',
+                    bearing=0,
+                    pitch=0,
+                    center=go.layout.mapbox.Center(lat=50, lon=15),
+                    style='outdoors',
+                    zoom=3),
+                showlegend=True,
+                autosize=True, )
+        }
+
+
+    else:
+        return dash.no_update
+
 ####################################
 ############# LINE CHART ###########
 ####################################
