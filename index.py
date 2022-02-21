@@ -470,7 +470,6 @@ def update_graph(w_countries, w_countries1):
                 '<b>Country</b>: ' + data_World2['country'].astype(str) + '<br>' +
                 '<b>Average monthly production in consturction</b>: ' + ee.astype(str) + '%' + '<br>'
             )],
-
             'layout': go.Layout(
                 margin={"r": 0, "t": 0, "l": 0, "b": 0},
                 hovermode='closest',
@@ -484,8 +483,529 @@ def update_graph(w_countries, w_countries1):
                 showlegend=True,
                 autosize=True, )
         }
+    # POPULATION AND HEALTH-Monthly excess mortality
+    elif (w_countries == 'Population and health') & (w_countries1 == 'Monthly excess mortality'):
+        ei = pd.read_csv('C:/Users/Korisnik/Desktop/SparkVisual/data/Population and health-Monthly excess mortality.csv')
+        ee = (ei.sum(axis=1) / 22).map('{:,.2f}'.format)
 
+        size = abs(ei.sum(axis=1)) + 20
+        return {
+            'data': [go.Scattermapbox(
+                lon=valueLng,
+                lat=valueLat,
+                mode='markers',
+                marker=go.scattermapbox.Marker(
+                    size=size,
+                    # color=['blue','yellow','red','green'],
+                    colorscale='hsv',
+                    showscale=False,
+                    sizemode='area'),
+                hoverinfo='text',
+                hovertext=
+                '<b>Country</b>: ' + data_World2['country'].astype(str) + '<br>' +
+                '<b>Average Monthly excess mortality</b>: ' + ee.astype(str) + '%' + '<br>'
+            )],
 
+            'layout': go.Layout(
+                margin={"r": 0, "t": 0, "l": 0, "b": 0},
+                hovermode='closest',
+                mapbox=dict(
+                    accesstoken='pk.eyJ1IjoicXM2MjcyNTI3IiwiYSI6ImNraGRuYTF1azAxZmIycWs0cDB1NmY1ZjYifQ.I1VJ3KjeM-S613FLv3mtkw',
+                    bearing=0,
+                    pitch=0,
+                    # Use mapbox token here
+                    center=go.layout.mapbox.Center(lat=50, lon=15),
+                    # style='open-street-map',
+                    style='outdoors',
+                    zoom=3),
+                showlegend=True,
+                autosize=True, )
+        }
+    # Pocinje Number of deaths by week
+    elif (w_countries == 'Population and health') & (w_countries1 == 'Number of deaths by week'):
+        ei = pd.read_csv('C:/Users/Korisnik/Desktop/SparkVisual/data/Population and health-Number of deaths by week.csv')
+
+        ei = ei.drop('GEOLABEL', 1)
+        e1= ei.replace(',','.',regex=True)
+        e3 = (e1.astype(float).sum(axis=1) / 109).map('{:,.2f}'.format)
+
+        size = abs(e1.astype(float).sum(axis=1)-100)
+        return {
+            'data': [go.Scattermapbox(
+                lon=valueLng,
+                lat=valueLat,
+                mode='markers',
+                marker=go.scattermapbox.Marker(
+                    size=size,
+                    # color=['blue','yellow','red','green'],
+                    colorscale='hsv',
+                    showscale=False,
+                    sizemode='area'),
+                hoverinfo='text',
+                hovertext=
+                '<b>Country</b>: ' + data_World2['country'].astype(str) + '<br>' +
+                '<b>Average number of deaths by week</b>: ' + e3.astype(str) + '<br>'
+            )],
+
+            'layout': go.Layout(
+                margin={"r": 0, "t": 0, "l": 0, "b": 0},
+                hovermode='closest',
+                mapbox=dict(
+                    accesstoken='pk.eyJ1IjoicXM2MjcyNTI3IiwiYSI6ImNraGRuYTF1azAxZmIycWs0cDB1NmY1ZjYifQ.I1VJ3KjeM-S613FLv3mtkw',
+                    bearing=0,
+                    pitch=0,
+                    # Use mapbox token here
+                    center=go.layout.mapbox.Center(lat=50, lon=15),
+                    # style='open-street-map',
+                    style='outdoors',
+                    zoom=3),
+                showlegend=True,
+                autosize=True, )
+        }
+    ###Uzimanje podataka iz fajla: Population and health-Monthly first-time asylum
+    elif (w_countries == 'Population and health') & (w_countries1 == 'Monthly first-time asylum applicants'):
+        ei = pd.read_csv('C:/Users/Korisnik/Desktop/SparkVisual/data/Population and health-Monthly first-time asylum applicants.csv')
+
+        ei = ei.drop('GEOLABEL', 1)
+        e1 = ei.replace(',', '.', regex=True)
+        e3 = (e1.astype(float).sum(axis=1) / 150).map('{:,.2f}'.format)
+
+        size = abs(e1.astype(float).sum(axis=1) - 100)
+        return {
+            'data': [go.Scattermapbox(
+                lon=valueLng,
+                lat=valueLat,
+                mode='markers',
+                marker=go.scattermapbox.Marker(
+                    size=size-100,
+                    # color=['blue','yellow','red','green'],
+                    colorscale='hsv',
+                    showscale=False,
+                    sizemode='area'),
+                hoverinfo='text',
+                hovertext=
+                '<b>Country</b>: ' + data_World2['country'].astype(str) + '<br>' +
+                '<b>Average monthly first-time asylum</b>: ' + e3.astype(str) + '<br>'
+            )],
+            'layout': go.Layout(
+                margin={"r": 0, "t": 0, "l": 0, "b": 0},
+                hovermode='closest',
+                mapbox=dict(
+                    accesstoken='pk.eyJ1IjoicXM2MjcyNTI3IiwiYSI6ImNraGRuYTF1azAxZmIycWs0cDB1NmY1ZjYifQ.I1VJ3KjeM-S613FLv3mtkw',
+                    bearing=0,
+                    pitch=0,
+                    center=go.layout.mapbox.Center(lat=50, lon=15),
+                    style='outdoors',
+                    zoom=3),
+                showlegend=True,
+                autosize=True, )
+        }
+    # KRECE SOCIETY AND WORK
+    # oblast: Society and work-Monthly unemployment rate
+    elif (w_countries == 'Society and work') & (w_countries1 == 'Monthly unemployment rate'):
+        ei = pd.read_csv('C:/Users/Korisnik/Desktop/SparkVisual/data/Society and work-Monthly unemployment rate.csv')
+
+        ee = (ei.sum(axis=1) / 36).map('{:,.2f}'.format)
+
+        size = abs(ei.sum(axis=1)) + 20
+        return {
+            'data': [go.Scattermapbox(
+                lon=valueLng,
+                lat=valueLat,
+                mode='markers',
+                marker=go.scattermapbox.Marker(
+                    size=size,
+                    # color=['blue','yellow','red','green'],
+                    colorscale='hsv',
+                    showscale=False,
+                    sizemode='area'),
+                hoverinfo='text',
+                hovertext=
+                '<b>Country</b>: ' + data_World2['country'].astype(str) + '<br>' +
+                '<b>Average monthly unemployment rate</b>: ' + ee.astype(str) +'%'+'<br>'
+            )],
+            'layout': go.Layout(
+                margin={"r": 0, "t": 0, "l": 0, "b": 0},
+                hovermode='closest',
+                mapbox=dict(
+                    accesstoken='pk.eyJ1IjoicXM2MjcyNTI3IiwiYSI6ImNraGRuYTF1azAxZmIycWs0cDB1NmY1ZjYifQ.I1VJ3KjeM-S613FLv3mtkw',
+                    bearing=0,
+                    pitch=0,
+                    center=go.layout.mapbox.Center(lat=50, lon=15),
+                    style='outdoors',
+                    zoom=3),
+                showlegend=True,
+                autosize=True, )
+        }
+    # Society and work-Monthly youth unemployment rate
+    elif (w_countries == 'Society and work') & (w_countries1 == 'Monthly youth unemployment rate'):
+        ei = pd.read_csv('C:/Users/Korisnik/Desktop/SparkVisual/data/Society and work-Monthly youth unemployment rate.csv')
+        ee = (ei.sum(axis=1) / 33).map('{:,.2f}'.format)
+
+        size = abs(ei.sum(axis=1)) + 20
+        return {
+            'data': [go.Scattermapbox(
+                lon=valueLng,
+                lat=valueLat,
+                mode='markers',
+                marker=go.scattermapbox.Marker(
+                    size=size,
+                    # color=['blue','yellow','red','green'],
+                    colorscale='hsv',
+                    showscale=False,
+                    sizemode='area'),
+                hoverinfo='text',
+                hovertext=
+                '<b>Country</b>: ' + data_World2['country'].astype(str) + '<br>' +
+                '<b>Average monthly youth unemployment rate</b>: ' + ee.astype(str) + '%' + '<br>'
+            )],
+
+            'layout': go.Layout(
+                margin={"r": 0, "t": 0, "l": 0, "b": 0},
+                hovermode='closest',
+                mapbox=dict(
+                    accesstoken='pk.eyJ1IjoicXM2MjcyNTI3IiwiYSI6ImNraGRuYTF1azAxZmIycWs0cDB1NmY1ZjYifQ.I1VJ3KjeM-S613FLv3mtkw',
+                    bearing=0,
+                    pitch=0,
+                    # Use mapbox token here
+                    center=go.layout.mapbox.Center(lat=50, lon=15),
+                    # style='open-street-map',
+                    style='outdoors',
+                    zoom=3),
+                showlegend=True,
+                autosize=True, )
+        }
+    # Krece podgrupa: Society and work-Quarterly employment
+    elif (w_countries == 'Society and work') & (w_countries1 == 'Quarterly employment'):
+        ei = pd.read_csv('C:/Users/Korisnik/Desktop/SparkVisual/data/Society and work-Quarterly employment.csv')
+
+        ei = ei.drop('GEOLABEL', 1)
+        e1 = ei.replace(',', '', regex=True)
+        e3 = (e1.astype(float).sum(axis=1) / 20).map('{:,.2f}'.format)
+
+        #size = abs(e1.astype(float).sum(axis=1) - 100)
+        size1=[22,23,24,25,26,27,28,29,30,31,32,32,33,23,25,19,18,20,21]
+        return {
+            'data': [go.Scattermapbox(
+                lon=valueLng,
+                lat=valueLat,
+                mode='markers',
+                marker=go.scattermapbox.Marker(
+                    size=size1,
+                    # color=['blue','yellow','red','green'],
+                    colorscale='hsv',
+                    showscale=False,
+                    sizemode='area'),
+                hoverinfo='text',
+                hovertext=
+                '<b>Country</b>: ' + data_World2['country'].astype(str) + '<br>' +
+                '<b>Average quarterly employment</b>: ' + e3.astype(str) + '<br>'
+            )],
+            'layout': go.Layout(
+                margin={"r": 0, "t": 0, "l": 0, "b": 0},
+                hovermode='closest',
+                mapbox=dict(
+                    accesstoken='pk.eyJ1IjoicXM2MjcyNTI3IiwiYSI6ImNraGRuYTF1azAxZmIycWs0cDB1NmY1ZjYifQ.I1VJ3KjeM-S613FLv3mtkw',
+                    bearing=0,
+                    pitch=0,
+                    center=go.layout.mapbox.Center(lat=50, lon=15),
+                    style='outdoors',
+                    zoom=3),
+                showlegend=True,
+                autosize=True, )
+        }
+    # Society and work-Quarterly labour market slack
+    elif (w_countries == 'Society and work') & (w_countries1 == 'Quarterly labour market slack'):
+        ei = pd.read_csv('C:/Users/Korisnik/Desktop/SparkVisual/data/Society and work-Quarterly labour market slack.csv')
+        ee = (ei.sum(axis=1) / 10).map('{:,.2f}'.format)
+
+        size = abs(ei.sum(axis=1)) + 20
+        return {
+            'data': [go.Scattermapbox(
+                lon=valueLng,
+                lat=valueLat,
+                mode='markers',
+                marker=go.scattermapbox.Marker(
+                    size=size,
+                    # color=['blue','yellow','red','green'],
+                    colorscale='hsv',
+                    showscale=False,
+                    sizemode='area'),
+                hoverinfo='text',
+                hovertext=
+                '<b>Country</b>: ' + data_World2['country'].astype(str) + '<br>' +
+                '<b>Average quarterly labour market slack</b>: ' + ee.astype(str) + '%' + '<br>'
+            )],
+            'layout': go.Layout(
+                margin={"r": 0, "t": 0, "l": 0, "b": 0},
+                hovermode='closest',
+                mapbox=dict(
+                    accesstoken='pk.eyJ1IjoicXM2MjcyNTI3IiwiYSI6ImNraGRuYTF1azAxZmIycWs0cDB1NmY1ZjYifQ.I1VJ3KjeM-S613FLv3mtkw',
+                    bearing=0,
+                    pitch=0,
+                    center=go.layout.mapbox.Center(lat=50, lon=15),
+                    style='outdoors',
+                    zoom=3),
+                showlegend=True,
+                autosize=True, )
+        }
+    # Society and work-Quarterly job vacancy rate
+    elif (w_countries == 'Society and work') & (w_countries1 == 'Quarterly job vacancy rate'):
+        ei = pd.read_csv('C:/Users/Korisnik/Desktop/SparkVisual/data/Society and work-Quarterly job vacancy rate.csv')
+        ee = (ei.sum(axis=1) / 19).map('{:,.2f}'.format)
+
+        size = abs(ei.sum(axis=1)) + 20
+        return {
+            'data': [go.Scattermapbox(
+                lon=valueLng,
+                lat=valueLat,
+                mode='markers',
+                marker=go.scattermapbox.Marker(
+                    size=size,
+                    # color=['blue','yellow','red','green'],
+                    colorscale='hsv',
+                    showscale=False,
+                    sizemode='area'),
+                hoverinfo='text',
+                hovertext=
+                '<b>Country</b>: ' + data_World2['country'].astype(str) + '<br>' +
+                '<b>Average quarterly job vacancy rate</b>: ' + ee.astype(str) + '%' + '<br>'
+            )],
+            'layout': go.Layout(
+                margin={"r": 0, "t": 0, "l": 0, "b": 0},
+                hovermode='closest',
+                mapbox=dict(
+                    accesstoken='pk.eyJ1IjoicXM2MjcyNTI3IiwiYSI6ImNraGRuYTF1azAxZmIycWs0cDB1NmY1ZjYifQ.I1VJ3KjeM-S613FLv3mtkw',
+                    bearing=0,
+                    pitch=0,
+                    center=go.layout.mapbox.Center(lat=50, lon=15),
+                    style='outdoors',
+                    zoom=3),
+                showlegend=True,
+                autosize=True, )
+        }
+    # Society and work-Quarterly labour cost
+    elif (w_countries == 'Society and work') & (w_countries1 == 'Quarterly labour cost'):
+        ei = pd.read_csv('C:/Users/Korisnik/Desktop/SparkVisual/data/Society and work-Quarterly labour cost.csv')
+        ee = (ei.sum(axis=1) / 19).map('{:,.2f}'.format)
+
+        size = abs(ei.sum(axis=1)) + 20
+        return {
+            'data': [go.Scattermapbox(
+                lon=valueLng,
+                lat=valueLat,
+                mode='markers',
+                marker=go.scattermapbox.Marker(
+                    size=size,
+                    # color=['blue','yellow','red','green'],
+                    colorscale='hsv',
+                    showscale=False,
+                    sizemode='area'),
+                hoverinfo='text',
+                hovertext=
+                '<b>Country</b>: ' + data_World2['country'].astype(str) + '<br>' +
+                '<b>Average quarterly labour cost</b>: ' + ee.astype(str) + '%' + '<br>'
+            )],
+            'layout': go.Layout(
+                margin={"r": 0, "t": 0, "l": 0, "b": 0},
+                hovermode='closest',
+                mapbox=dict(
+                    accesstoken='pk.eyJ1IjoicXM2MjcyNTI3IiwiYSI6ImNraGRuYTF1azAxZmIycWs0cDB1NmY1ZjYifQ.I1VJ3KjeM-S613FLv3mtkw',
+                    bearing=0,
+                    pitch=0,
+                    center=go.layout.mapbox.Center(lat=50, lon=15),
+                    style='outdoors',
+                    zoom=3),
+                showlegend=True,
+                autosize=True, )
+        }
+    # AGRICULTURE, ENERGY, TRANSPORT & TOURISM-Monthly air passenger transport
+    elif (w_countries == 'Agriculture, energy, transport & tourism') & (w_countries1 == 'Monthly air passenger transport'):
+        ei = pd.read_csv('C:/Users/Korisnik/Desktop/SparkVisual/data/Agriculture, energy, transport & tourism-Monthly air passenger transport.csv')
+
+        ei = ei.drop('GEOLABEL', 1)
+        e1 = ei.replace(',', '', regex=True)
+        e3 = (e1.astype(float).sum(axis=1) / 30).map('{:,.2f}'.format)
+
+        #size = abs(e1.astype(float).sum(axis=1) - 100)
+        size1 = [45, 30, 24, 25, 26, 27, 28, 29, 30, 31, 32, 32, 33, 23, 25, 19, 18, 20, 21,29,35,21,36,15,46,35,29,28,41,36]
+        return {
+            'data': [go.Scattermapbox(
+                lon=valueLng,
+                lat=valueLat,
+                mode='markers',
+                marker=go.scattermapbox.Marker(
+                    size=size1,
+                    # color=['blue','yellow','red','green'],
+                    colorscale='hsv',
+                    showscale=False,
+                    sizemode='area'),
+                hoverinfo='text',
+                hovertext=
+                '<b>Country</b>: ' + data_World2['country'].astype(str) + '<br>' +
+                '<b>Average monthly air passenger transport</b>: ' + e3.astype(str) + '<br>'
+            )],
+            'layout': go.Layout(
+                margin={"r": 0, "t": 0, "l": 0, "b": 0},
+                hovermode='closest',
+                mapbox=dict(
+                    accesstoken='pk.eyJ1IjoicXM2MjcyNTI3IiwiYSI6ImNraGRuYTF1azAxZmIycWs0cDB1NmY1ZjYifQ.I1VJ3KjeM-S613FLv3mtkw',
+                    bearing=0,
+                    pitch=0,
+                    center=go.layout.mapbox.Center(lat=50, lon=15),
+                    style='outdoors',
+                    zoom=3),
+                showlegend=True,
+                autosize=True, )
+        }
+    # AGRICULTURE, ENERGY, TRANSPORT & TOURISM-Monthly commercial air flights
+    elif (w_countries == 'Agriculture, energy, transport & tourism') & (w_countries1 == 'Monthly commercial air flights'):
+        ei = pd.read_csv('C:/Users/Korisnik/Desktop/SparkVisual/data/Agriculture, energy, transport & tourism-Monthly commercial air flights.csv')
+        ee = (ei.sum(axis=1) / 24).map('{:,.2f}'.format)
+
+        size = abs(ei.sum(axis=1)) + 20
+        return {
+            'data': [go.Scattermapbox(
+                lon=valueLng,
+                lat=valueLat,
+                mode='markers',
+                marker=go.scattermapbox.Marker(
+                    size=size,
+                    # color=['blue','yellow','red','green'],
+                    colorscale='hsv',
+                    showscale=False,
+                    sizemode='area'),
+                hoverinfo='text',
+                hovertext=
+                '<b>Country</b>: ' + data_World2['country'].astype(str) + '<br>' +
+                '<b>Average Monthly commercial air flights</b>: ' + ee.astype(str) + '%' + '<br>'
+            )],
+            'layout': go.Layout(
+                margin={"r": 0, "t": 0, "l": 0, "b": 0},
+                hovermode='closest',
+                mapbox=dict(
+                    accesstoken='pk.eyJ1IjoicXM2MjcyNTI3IiwiYSI6ImNraGRuYTF1azAxZmIycWs0cDB1NmY1ZjYifQ.I1VJ3KjeM-S613FLv3mtkw',
+                    bearing=0,
+                    pitch=0,
+                    center=go.layout.mapbox.Center(lat=50, lon=15),
+                    style='outdoors',
+                    zoom=3),
+                showlegend=True,
+                autosize=True, )
+        }
+    # AGRICULTURE, ENERGY, TRANSPORT & TOURISM-Monthly arrivals at tourist accommodation
+    elif (w_countries == 'Agriculture, energy, transport & tourism') & (w_countries1 == 'Monthly arrivals at tourist accommodation'):
+        ei = pd.read_csv('C:/Users/Korisnik/Desktop/SparkVisual/data/Agriculture, energy, transport & tourism-Monthly arrivals at tourist accommodation.csv')
+
+        ei = ei.drop('GEOLABEL', 1)
+        e1 = ei.replace(',', '', regex=True)
+        e3 = (e1.astype(float).sum(axis=1) / 20).map('{:,.2f}'.format)
+
+        #size = abs(e1.astype(float).sum(axis=1) - 100)
+        size1 = [45, 30, 24, 25, 26, 27, 28, 29, 30, 31, 32, 32, 33, 23, 25, 19, 18, 20, 21,29,35,21,36,15,46,35,29,28,41,36]
+        return {
+            'data': [go.Scattermapbox(
+                lon=valueLng,
+                lat=valueLat,
+                mode='markers',
+                marker=go.scattermapbox.Marker(
+                    size=size1,
+                    # color=['blue','yellow','red','green'],
+                    colorscale='hsv',
+                    showscale=False,
+                    sizemode='area'),
+                hoverinfo='text',
+                hovertext=
+                '<b>Country</b>: ' + data_World2['country'].astype(str) + '<br>' +
+                '<b>Average Monthly arrivals at tourist accommodation</b>: ' + e3.astype(str) + '<br>'
+            )],
+            'layout': go.Layout(
+                margin={"r": 0, "t": 0, "l": 0, "b": 0},
+                hovermode='closest',
+                mapbox=dict(
+                    accesstoken='pk.eyJ1IjoicXM2MjcyNTI3IiwiYSI6ImNraGRuYTF1azAxZmIycWs0cDB1NmY1ZjYifQ.I1VJ3KjeM-S613FLv3mtkw',
+                    bearing=0,
+                    pitch=0,
+                    center=go.layout.mapbox.Center(lat=50, lon=15),
+                    style='outdoors',
+                    zoom=3),
+                showlegend=True,
+                autosize=True, )
+        }
+    # AGRICULTURE, ENERGY, TRANSPORT & TOURISM-Monthly nights spent at tourist accommodation
+    elif (w_countries == 'Agriculture, energy, transport & tourism') & (w_countries1 == 'Monthly nights spent at tourist accommodation'):
+        ei = pd.read_csv('C:/Users/Korisnik/Desktop/SparkVisual/data/Agriculture, energy, transport & tourism-Monthly nights spent at tourist accommodation.csv')
+
+        ei = ei.drop('GEOLABEL', 1)
+        e1 = ei.replace(',', '', regex=True)
+        e3 = (e1.astype(float).sum(axis=1) / 20).map('{:,.2f}'.format)
+
+        #size = abs(e1.astype(float).sum(axis=1) - 100)
+        size1 = [45, 30, 24, 25, 26, 27, 28, 29, 30, 31, 32, 32, 33, 23, 25, 19, 18, 20, 21,29,35,21,36,15,46,35,29,28,41,36]
+        return {
+            'data': [go.Scattermapbox(
+                lon=valueLng,
+                lat=valueLat,
+                mode='markers',
+                marker=go.scattermapbox.Marker(
+                    size=size1,
+                    # color=['blue','yellow','red','green'],
+                    colorscale='hsv',
+                    showscale=False,
+                    sizemode='area'),
+                hoverinfo='text',
+                hovertext=
+                '<b>Country</b>: ' + data_World2['country'].astype(str) + '<br>' +
+                '<b>Average monthly nights spent at tourist accommodation</b>: ' + e3.astype(str) + '<br>'
+            )],
+            'layout': go.Layout(
+                margin={"r": 0, "t": 0, "l": 0, "b": 0},
+                hovermode='closest',
+                mapbox=dict(
+                    accesstoken='pk.eyJ1IjoicXM2MjcyNTI3IiwiYSI6ImNraGRuYTF1azAxZmIycWs0cDB1NmY1ZjYifQ.I1VJ3KjeM-S613FLv3mtkw',
+                    bearing=0,
+                    pitch=0,
+                    center=go.layout.mapbox.Center(lat=50, lon=15),
+                    style='outdoors',
+                    zoom=3),
+                showlegend=True,
+                autosize=True, )
+        }
+    # AGRICULTURE, ENERGY, TRANSPORT & TOURISM-Monthly electricity consumed by end-users
+    elif (w_countries == 'Agriculture, energy, transport & tourism') & (w_countries1 == 'Monthly electricity consumed by end-users'):
+        ei = pd.read_csv('C:/Users/Korisnik/Desktop/SparkVisual/data/Agriculture, energy, transport & tourism-Monthly electricity consumed by end-users.csv')
+        ee = (ei.sum(axis=1) / 30).map('{:,.2f}'.format)
+
+        size = abs(ei.sum(axis=1)) + 20
+        return {
+            'data': [go.Scattermapbox(
+                lon=valueLng,
+                lat=valueLat,
+                mode='markers',
+                marker=go.scattermapbox.Marker(
+                    size=size,
+                    # color=['blue','yellow','red','green'],
+                    colorscale='hsv',
+                    showscale=False,
+                    sizemode='area'),
+                hoverinfo='text',
+                hovertext=
+                '<b>Country</b>: ' + data_World2['country'].astype(str) + '<br>' +
+                '<b>Average monthly electricity consumed by end-users</b>: ' + ee.astype(str) + '%' + '<br>'
+            )],
+            'layout': go.Layout(
+                margin={"r": 0, "t": 0, "l": 0, "b": 0},
+                hovermode='closest',
+                mapbox=dict(
+                    accesstoken='pk.eyJ1IjoicXM2MjcyNTI3IiwiYSI6ImNraGRuYTF1azAxZmIycWs0cDB1NmY1ZjYifQ.I1VJ3KjeM-S613FLv3mtkw',
+                    bearing=0,
+                    pitch=0,
+                    center=go.layout.mapbox.Center(lat=50, lon=15),
+                    style='outdoors',
+                    zoom=3),
+                showlegend=True,
+                autosize=True, )
+        }
     else:
         return dash.no_update
 
@@ -3595,7 +4115,7 @@ def display_content(w_countries, w_countries1, country_chosen):
                     paper_bgcolor='#A8A8A8',
                     hovermode='closest',
                     title={
-                        'text': 'Economy: ' +(w_countries1) +'</br>',
+                        'text':'Average inflation' +'</br>',
                         'y': 0.93,
                         'x': 0.5,
                         'xanchor': 'center',
@@ -3767,7 +4287,7 @@ def display_content(w_countries, w_countries1, country_chosen):
                 paper_bgcolor='#A8A8A8',
                 hovermode='closest',
                 title={
-                    'text': 'Economy: ' + (w_countries1) + '</br>',
+                    'text': 'Average GDP' + '</br>',
                     'y': 0.93,
                     'x': 0.5,
                     'xanchor': 'center',
@@ -3940,7 +4460,7 @@ def display_content(w_countries, w_countries1, country_chosen):
                 paper_bgcolor='#A8A8A8',
                 hovermode='closest',
                 title={
-                    'text': 'Economy: ' + (w_countries1) + '</br>',
+                    'text': 'Average industrial production' + '</br>',
                     'y': 0.93,
                     'x': 0.5,
                     'xanchor': 'center',
@@ -4119,7 +4639,7 @@ def display_content(w_countries, w_countries1, country_chosen):
                 paper_bgcolor='#A8A8A8',
                 hovermode='closest',
                 title={
-                    'text': 'Economy: ' + (w_countries1) + '</br>',
+                    'text': 'Average monthly volume' + '</br>',
                     'y': 0.93,
                     'x': 0.5,
                     'xanchor': 'center',
@@ -4246,7 +4766,7 @@ def display_content(w_countries, w_countries1, country_chosen):
                 paper_bgcolor='#A8A8A8',
                 hovermode='closest',
                 title={
-                    'text': 'Economy: ' + (w_countries1) + '</br>',
+                    'text': 'Average production in construction' + '</br>',
                     'y': 0.93,
                     'x': 0.5,
                     'xanchor': 'center',
@@ -4407,7 +4927,7 @@ def display_content(w_countries, w_countries1, country_chosen):
                 paper_bgcolor='#A8A8A8',
                 hovermode='closest',
                 title={
-                    'text': 'Population: ' + (w_countries1) + '</br>',
+                    'text': 'Average excess mortality' + '</br>',
                     'y': 0.93,
                     'x': 0.5,
                     'xanchor': 'center',
@@ -4566,7 +5086,7 @@ def display_content(w_countries, w_countries1, country_chosen):
                 paper_bgcolor='#A8A8A8',
                 hovermode='closest',
                 title={
-                    'text': 'Population: ' + (w_countries1) + '</br>',
+                    'text': 'Average deaths by week' + '</br>',
                     'y': 0.93,
                     'x': 0.5,
                     'xanchor': 'center',
@@ -4724,7 +5244,7 @@ def display_content(w_countries, w_countries1, country_chosen):
                 paper_bgcolor='#A8A8A8',
                 hovermode='closest',
                 title={
-                    'text': 'Population: ' + (w_countries1) + '</br>',
+                    'text': 'Average first-time asylum' + '</br>',
                     'y': 0.93,
                     'x': 0.5,
                     'xanchor': 'center',
@@ -4887,7 +5407,7 @@ def display_content(w_countries, w_countries1, country_chosen):
                 paper_bgcolor='#A8A8A8',
                 hovermode='closest',
                 title={
-                    'text': 'Society: Average ' + (w_countries1) + '</br>',
+                    'text': 'Average unemployment rate' + '</br>',
                     'y': 0.93,
                     'x': 0.5,
                     'xanchor': 'center',
@@ -5049,7 +5569,7 @@ def display_content(w_countries, w_countries1, country_chosen):
                 paper_bgcolor='#A8A8A8',
                 hovermode='closest',
                 title={
-                    'text': 'Society: Average ' + (w_countries1) + '</br>',
+                    'text': 'Average youth unemployment rate' + '</br>',
                     'y': 0.93,
                     'x': 0.5,
                     'xanchor': 'center',
@@ -5179,7 +5699,7 @@ def display_content(w_countries, w_countries1, country_chosen):
                 paper_bgcolor='#A8A8A8',
                 hovermode='closest',
                 title={
-                    'text': 'Society: Average ' + (w_countries1) + '</br>',
+                    'text': 'Average quarterly employment'+ '</br>',
                     'y': 0.93,
                     'x': 0.5,
                     'xanchor': 'center',
@@ -5341,7 +5861,7 @@ def display_content(w_countries, w_countries1, country_chosen):
                 paper_bgcolor='#A8A8A8',
                 hovermode='closest',
                 title={
-                    'text': 'Society: Average ' + (w_countries1) + '</br>',
+                    'text': 'Average labour market slack' + '</br>',
 
                     'y': 0.93,
                     'x': 0.5,
@@ -5493,7 +6013,7 @@ def display_content(w_countries, w_countries1, country_chosen):
                 paper_bgcolor='#A8A8A8',
                 hovermode='closest',
                 title={
-                    'text': 'Society: Average ' + (w_countries1) + '</br>',
+                    'text': 'Average job vacancy rate' + '</br>',
 
                     'y': 0.93,
                     'x': 0.5,
@@ -5653,7 +6173,7 @@ def display_content(w_countries, w_countries1, country_chosen):
                 paper_bgcolor='#A8A8A8',
                 hovermode='closest',
                 title={
-                    'text': 'Society: Average ' + (w_countries1) + '</br>',
+                    'text': 'Average labour cost' + '</br>',
                     'y': 0.93,
                     'x': 0.5,
                     'xanchor': 'center',
@@ -5814,7 +6334,7 @@ def display_content(w_countries, w_countries1, country_chosen):
                 paper_bgcolor='#A8A8A8',
                 hovermode='closest',
                 title={
-                    'text': 'Agriculture: Average ' + (w_countries1) + '</br>',
+                    'text': 'Average air passenger transport' + '</br>',
                     'y': 0.93,
                     'x': 0.5,
                     'xanchor': 'center',
@@ -5983,7 +6503,7 @@ def display_content(w_countries, w_countries1, country_chosen):
                 paper_bgcolor='#A8A8A8',
                 hovermode='closest',
                 title={
-                    'text': 'Agriculture: Average ' + (w_countries1) + '</br>',
+                    'text': 'Average commercial air flights' + '</br>',
                     'y': 0.93,
                     'x': 0.5,
                     'xanchor': 'center',
@@ -6129,7 +6649,7 @@ def display_content(w_countries, w_countries1, country_chosen):
                 paper_bgcolor='#A8A8A8',
                 hovermode='closest',
                 title={
-                    'text': 'Agriculture: Average ' + (w_countries1) + '</br>',
+                    'text': 'Average arrivals at tourist accommodation'+ '</br>',
                     'y': 0.93,
                     'x': 0.5,
                     'xanchor': 'center',
@@ -6287,7 +6807,7 @@ def display_content(w_countries, w_countries1, country_chosen):
                 paper_bgcolor='#A8A8A8',
                 hovermode='closest',
                 title={
-                    'text': 'Agriculture: Average ' + (w_countries1) + '</br>',
+                    'text': 'Average nights spent at tourist accommodation' + '</br>',
                     'y': 0.93,
                     'x': 0.5,
                     'xanchor': 'center',
@@ -6437,7 +6957,7 @@ def display_content(w_countries, w_countries1, country_chosen):
                 paper_bgcolor='#A8A8A8',
                 hovermode='closest',
                 title={
-                    'text': 'Agriculture: Average ' + (w_countries1) + '</br>',
+                    'text': 'Average electricity consumed by end-users' + '</br>',
                     'y': 0.93,
                     'x': 0.5,
                     'xanchor': 'center',
