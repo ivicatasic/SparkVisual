@@ -6649,7 +6649,7 @@ def display_content(w_countries, w_countries1, country_chosen):
                 paper_bgcolor='#A8A8A8',
                 hovermode='closest',
                 title={
-                    'text': 'Average arrivals at tourist accommodation'+ '</br>',
+                    'text': 'Arrivals at tourist accommodation'+ '</br>',
                     'y': 0.93,
                     'x': 0.5,
                     'xanchor': 'center',
@@ -6807,7 +6807,7 @@ def display_content(w_countries, w_countries1, country_chosen):
                 paper_bgcolor='#A8A8A8',
                 hovermode='closest',
                 title={
-                    'text': 'Average nights spent at tourist accommodation' + '</br>',
+                    'text': 'Nights spent at tourist accommodation' + '</br>',
                     'y': 0.93,
                     'x': 0.5,
                     'xanchor': 'center',
@@ -6957,7 +6957,7 @@ def display_content(w_countries, w_countries1, country_chosen):
                 paper_bgcolor='#A8A8A8',
                 hovermode='closest',
                 title={
-                    'text': 'Average electricity consumed by end-users' + '</br>',
+                    'text': 'Electricity consumed by end-users' + '</br>',
                     'y': 0.93,
                     'x': 0.5,
                     'xanchor': 'center',
