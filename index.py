@@ -1,13 +1,13 @@
 import dash
-import dash_core_components as dcc
-import dash_html_components as html
+from dash import dcc
+from dash import html
 from dash.dependencies import Input, Output
 import plotly.graph_objs as go
 import pandas as pd
 from pyspark import SparkContext, SparkConf
 from pyspark.sql import SQLContext
 import numpy as np
-import functions
+
 
 app = dash.Dash(__name__, )
 app.title = 'Spark Visual Data'
@@ -1404,6 +1404,8 @@ def update_graph(w_countries, w_countries1, country_chosen):
         if ('United States' in coun):
             valueUs1 = getArr('United States')
 
+        ei = pd.read_csv('C:/Users/Korisnik/Desktop/SparkVisual/data/Economy-inflation.csv')
+
         return {
             'data': [go.Scatter(x=lab,
                                 y=valueEu1,
@@ -1980,6 +1982,9 @@ def update_graph(w_countries, w_countries1, country_chosen):
         if ('Turkey' in coun):
             valueTur1 = getGDP('Turkey')
 
+        gdp = pd.read_csv('C:/Users/Korisnik/Desktop/SparkVisual/data/Economy-GDP.csv')
+        gdpEu=gdp.loc[0,:]
+        gdpBe=gdp.loc[2,:]
         return {
             'data': [go.Scatter(x=labGDP,
                                 y=valueEu1,
@@ -1990,7 +1995,9 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                             line=dict(color='#E6D1D1', width=2)),
                                 hoverinfo='text',
                                 hovertext=
-                                '<b>Country</b>: ' + 'European Union' + '<br>' ),
+                                '<b>Country</b>: ' + 'European Union' + '<br>' +
+                                '<b>GDP</b>: ' + gdpEu.astype(str) + '<br>'
+                               ),
                      go.Scatter(x=labGDP,
                                 y=valueBel1,
                                 mode='lines+markers',
@@ -2000,7 +2007,8 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                             line=dict(color='#FF0000', width=2)),
                                 hoverinfo='text',
                                 hovertext=
-                                '<b>Country</b>: ' + 'Belgium' + '<br>'
+                                '<b>Country</b>: ' + 'Belgium' + '<br>'+
+                                '<b>GDP</b>: ' + gdpBe.astype(str) + '<br>'
                                 )],
             'layout': go.Layout(
                 barmode='stack',
