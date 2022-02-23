@@ -1,4 +1,3 @@
-gunicorn
 dash
 pyspark
 numpy
