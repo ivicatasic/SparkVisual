@@ -6985,4 +6985,4 @@ def display_content(w_countries, w_countries1, country_chosen):
         return dash.no_update
 
 if __name__ == '__main__':
-    app.run_server(debug=True)
+    app.run_server()
