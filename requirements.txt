@@ -1,2 +1,11 @@
-pip install dash
-pip install pyspark
+dash
+pyspark
+numpy
+pandas
+flask-compress
+plotly
+dash_renderer
+dash-core-components
+dash-html-components
+dash-table
+dash_bootstrap_components
