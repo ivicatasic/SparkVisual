@@ -7,7 +7,7 @@ import pandas as pd
 from pyspark import SparkContext, SparkConf
 from pyspark.sql import SQLContext
 import numpy as np
-
+from gunicorn.app.wsgiapp import run
 
 app = dash.Dash(__name__, )
 app.title = 'Spark Visual Data'
