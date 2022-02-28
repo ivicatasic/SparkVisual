@@ -1,5 +1,5 @@
+gunicorn==19.7.1
 dash
-gunicorn
 pyspark
 numpy
 pandas
