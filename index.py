@@ -84,7 +84,6 @@ dataSAWQJVR = sqlContext.read.format("csv").options(header='true').load(csv_SAWQ
 csv_SAWQLC = 'data/Society and work-Quarterly labour cost.csv'
 dataSAWQLC = sqlContext.read.format("csv").options(header='true').load(csv_SAWQLC)
 ######################################
-######################################
 #KRECE OBLAST AGRICULTURE, ENERGY, TRANSPORT & TOURISM
 
 #Ucitavanje fajla Agriculture, energy, transport & tourism-Monthly air passenger transport
@@ -106,7 +105,6 @@ dataAETTMNSTA = sqlContext.read.format("csv").options(header='true').load(csv_AE
 #Ucitavanje fajla: Agriculture, energy, transport & tourism-Monthly electricity consumed by end-users
 csv_AETTMEC = 'data/Agriculture, energy, transport & tourism-Monthly electricity consumed by end-users.csv'
 dataAETTMEC = sqlContext.read.format("csv").options(header='true').load(csv_AETTMEC)
-############################################
 ############################################
 # labels for Economy inflation
 labels = ["6-2019", "7-2019", "8-2019", "9-2019", "10-2019", "11-2019", "12-2019", "1-2020", "2-2020", "3-2020",
@@ -281,7 +279,6 @@ def get_country_value(w_countries1):
 
 csv_World = 'data/Latitude.csv'
 data_World = sqlContext.read.format("csv").options(header='true').load(csv_World)
-
 ############################
 # Create scattermapbox chart
 ############################
@@ -289,7 +286,6 @@ data_World = sqlContext.read.format("csv").options(header='true').load(csv_World
               [Input('w_countries', 'value')],
               [Input('w_countries1', 'value')])
 def update_graph(w_countries, w_countries1):
-
     dataLat = data_World.select("lat").collect()
     dataLng = data_World.select("lng").collect()
 
@@ -306,11 +302,9 @@ def update_graph(w_countries, w_countries1):
     valueLng = np.array(valueLn)
 
     data_World2 = pd.read_csv('data/Latitude.csv')
-
     if (w_countries == 'Economy') & (w_countries1 == 'Inflation - annual growth rate'):
         ei = pd.read_csv('data/Economy-inflation.csv')
         ee=(ei.sum(axis=1)/30).map('{:,.2f}'.format)
-
         size=abs(ei.sum(axis=1))+20
         return {
         'data': [go.Scattermapbox(
@@ -326,8 +320,7 @@ def update_graph(w_countries, w_countries1):
             hoverinfo='text',
             hovertext=
             '<b>Country</b>: ' + data_World2['country'].astype(str) + '<br>'+
-            '<b>Average Economy inflation</b>: ' + ee.astype(str) +'%'+ '<br>'
-                    )],
+            '<b>Average Economy inflation</b>: ' + ee.astype(str) +'%'+ '<br>')],
         'layout': go.Layout(
             margin={"r": 0, "t": 0, "l": 0, "b": 0},
             hovermode='closest',
@@ -347,7 +340,6 @@ def update_graph(w_countries, w_countries1):
     elif (w_countries == 'Economy') & (w_countries1 == 'GDP – quarterly growth rate'):
         ei = pd.read_csv('data/Economy-GDP.csv')
         ee = (ei.sum(axis=1) / 19).map('{:,.2f}'.format)
-
         size = abs(ei.sum(axis=1)) + 20
         return {
             'data': [go.Scattermapbox(
@@ -363,8 +355,7 @@ def update_graph(w_countries, w_countries1):
                 hoverinfo='text',
                 hovertext=
                 '<b>Country</b>: ' + data_World2['country'].astype(str) + '<br>' +
-                '<b>Average Economy GDP</b>: ' + ee.astype(str) + '%' + '<br>'
-            )],
+                '<b>Average Economy GDP</b>: ' + ee.astype(str) + '%' + '<br>')],
             'layout': go.Layout(
                 margin={"r": 0, "t": 0, "l": 0, "b": 0},
                 hovermode='closest',
@@ -382,7 +373,6 @@ def update_graph(w_countries, w_countries1):
     elif (w_countries == 'Economy') & (w_countries1 == 'Monthly industrial production'):
         ei = pd.read_csv('data/Economy-Monthly industrial production.csv')
         ee = (ei.sum(axis=1) / 29).map('{:,.2f}'.format)
-
         size = abs(ei.sum(axis=1)) -50
         return {
             'data': [go.Scattermapbox(
@@ -398,8 +388,7 @@ def update_graph(w_countries, w_countries1):
                 hoverinfo='text',
                 hovertext=
                 '<b>Country</b>: ' + data_World2['country'].astype(str) + '<br>' +
-                '<b>Average monthly industrial production</b>: ' + ee.astype(str) + '%' + '<br>'
-            )],
+                '<b>Average monthly industrial production</b>: ' + ee.astype(str) + '%' + '<br>')],
             'layout': go.Layout(
                 margin={"r": 0, "t": 0, "l": 0, "b": 0},
                 hovermode='closest',
@@ -417,7 +406,6 @@ def update_graph(w_countries, w_countries1):
     elif (w_countries == 'Economy') & (w_countries1 == 'Monthly volume of retail trade'):
         ei = pd.read_csv('data/Economy-Monthly volume.csv')
         ee = (ei.sum(axis=1) / 83).map('{:,.2f}'.format)
-
         size = abs(ei.sum(axis=1)) -50
         return {
             'data': [go.Scattermapbox(
@@ -433,8 +421,7 @@ def update_graph(w_countries, w_countries1):
                 hoverinfo='text',
                 hovertext=
                 '<b>Country</b>: ' + data_World2['country'].astype(str) + '<br>' +
-                '<b>Average Monthly volume of retail trade</b>: ' + ee.astype(str) + '%' + '<br>'
-            )],
+                '<b>Average Monthly volume of retail trade</b>: ' + ee.astype(str) + '%' + '<br>')],
             'layout': go.Layout(
                 margin={"r": 0, "t": 0, "l": 0, "b": 0},
                 hovermode='closest',
@@ -452,7 +439,6 @@ def update_graph(w_countries, w_countries1):
     elif (w_countries == 'Economy') and (w_countries1 == 'Monthly production in construction'):
         ei = pd.read_csv('data/Economy-Monthly production in construction.csv')
         ee = (ei.sum(axis=1) / 29).map('{:,.2f}'.format)
-
         size = abs(ei.sum(axis=1)) + 20
         return {
             'data': [go.Scattermapbox(
@@ -468,8 +454,7 @@ def update_graph(w_countries, w_countries1):
                 hoverinfo='text',
                 hovertext=
                 '<b>Country</b>: ' + data_World2['country'].astype(str) + '<br>' +
-                '<b>Average monthly production in consturction</b>: ' + ee.astype(str) + '%' + '<br>'
-            )],
+                '<b>Average monthly production in consturction</b>: ' + ee.astype(str) + '%' + '<br>')],
             'layout': go.Layout(
                 margin={"r": 0, "t": 0, "l": 0, "b": 0},
                 hovermode='closest',
@@ -487,7 +472,6 @@ def update_graph(w_countries, w_countries1):
     elif (w_countries == 'Population and health') & (w_countries1 == 'Monthly excess mortality'):
         ei = pd.read_csv('data/Population and health-Monthly excess mortality.csv')
         ee = (ei.sum(axis=1) / 22).map('{:,.2f}'.format)
-
         size = abs(ei.sum(axis=1)) + 20
         return {
             'data': [go.Scattermapbox(
@@ -503,9 +487,7 @@ def update_graph(w_countries, w_countries1):
                 hoverinfo='text',
                 hovertext=
                 '<b>Country</b>: ' + data_World2['country'].astype(str) + '<br>' +
-                '<b>Average Monthly excess mortality</b>: ' + ee.astype(str) + '%' + '<br>'
-            )],
-
+                '<b>Average Monthly excess mortality</b>: ' + ee.astype(str) + '%' + '<br>')],
             'layout': go.Layout(
                 margin={"r": 0, "t": 0, "l": 0, "b": 0},
                 hovermode='closest',
@@ -524,11 +506,9 @@ def update_graph(w_countries, w_countries1):
     # Pocinje Number of deaths by week
     elif (w_countries == 'Population and health') & (w_countries1 == 'Number of deaths by week'):
         ei = pd.read_csv('data/Population and health-Number of deaths by week.csv')
-
         ei = ei.drop('GEOLABEL', 1)
         e1= ei.replace(',','.',regex=True)
         e3 = (e1.astype(float).sum(axis=1) / 109).map('{:,.2f}'.format)
-
         size = abs(e1.astype(float).sum(axis=1)-100)
         return {
             'data': [go.Scattermapbox(
@@ -544,9 +524,7 @@ def update_graph(w_countries, w_countries1):
                 hoverinfo='text',
                 hovertext=
                 '<b>Country</b>: ' + data_World2['country'].astype(str) + '<br>' +
-                '<b>Average number of deaths by week</b>: ' + e3.astype(str) + '<br>'
-            )],
-
+                '<b>Average number of deaths by week</b>: ' + e3.astype(str) + '<br>')],
             'layout': go.Layout(
                 margin={"r": 0, "t": 0, "l": 0, "b": 0},
                 hovermode='closest',
@@ -565,11 +543,9 @@ def update_graph(w_countries, w_countries1):
     ###Uzimanje podataka iz fajla: Population and health-Monthly first-time asylum
     elif (w_countries == 'Population and health') & (w_countries1 == 'Monthly first-time asylum applicants'):
         ei = pd.read_csv('data/Population and health-Monthly first-time asylum applicants.csv')
-
         ei = ei.drop('GEOLABEL', 1)
         e1 = ei.replace(',', '.', regex=True)
         e3 = (e1.astype(float).sum(axis=1) / 150).map('{:,.2f}'.format)
-
         size = abs(e1.astype(float).sum(axis=1) - 100)
         return {
             'data': [go.Scattermapbox(
@@ -585,8 +561,7 @@ def update_graph(w_countries, w_countries1):
                 hoverinfo='text',
                 hovertext=
                 '<b>Country</b>: ' + data_World2['country'].astype(str) + '<br>' +
-                '<b>Average monthly first-time asylum</b>: ' + e3.astype(str) + '<br>'
-            )],
+                '<b>Average monthly first-time asylum</b>: ' + e3.astype(str) + '<br>')],
             'layout': go.Layout(
                 margin={"r": 0, "t": 0, "l": 0, "b": 0},
                 hovermode='closest',
@@ -604,9 +579,7 @@ def update_graph(w_countries, w_countries1):
     # oblast: Society and work-Monthly unemployment rate
     elif (w_countries == 'Society and work') & (w_countries1 == 'Monthly unemployment rate'):
         ei = pd.read_csv('data/Society and work-Monthly unemployment rate.csv')
-
         ee = (ei.sum(axis=1) / 36).map('{:,.2f}'.format)
-
         size = abs(ei.sum(axis=1)) + 20
         return {
             'data': [go.Scattermapbox(
@@ -622,8 +595,7 @@ def update_graph(w_countries, w_countries1):
                 hoverinfo='text',
                 hovertext=
                 '<b>Country</b>: ' + data_World2['country'].astype(str) + '<br>' +
-                '<b>Average monthly unemployment rate</b>: ' + ee.astype(str) +'%'+'<br>'
-            )],
+                '<b>Average monthly unemployment rate</b>: ' + ee.astype(str) +'%'+'<br>')],
             'layout': go.Layout(
                 margin={"r": 0, "t": 0, "l": 0, "b": 0},
                 hovermode='closest',
@@ -641,7 +613,6 @@ def update_graph(w_countries, w_countries1):
     elif (w_countries == 'Society and work') & (w_countries1 == 'Monthly youth unemployment rate'):
         ei = pd.read_csv('data/Society and work-Monthly youth unemployment rate.csv')
         ee = (ei.sum(axis=1) / 33).map('{:,.2f}'.format)
-
         size = abs(ei.sum(axis=1)) + 20
         return {
             'data': [go.Scattermapbox(
@@ -657,9 +628,7 @@ def update_graph(w_countries, w_countries1):
                 hoverinfo='text',
                 hovertext=
                 '<b>Country</b>: ' + data_World2['country'].astype(str) + '<br>' +
-                '<b>Average monthly youth unemployment rate</b>: ' + ee.astype(str) + '%' + '<br>'
-            )],
-
+                '<b>Average monthly youth unemployment rate</b>: ' + ee.astype(str) + '%' + '<br>')],
             'layout': go.Layout(
                 margin={"r": 0, "t": 0, "l": 0, "b": 0},
                 hovermode='closest',
@@ -678,11 +647,9 @@ def update_graph(w_countries, w_countries1):
     # Krece podgrupa: Society and work-Quarterly employment
     elif (w_countries == 'Society and work') & (w_countries1 == 'Quarterly employment'):
         ei = pd.read_csv('data/Society and work-Quarterly employment.csv')
-
         ei = ei.drop('GEOLABEL', 1)
         e1 = ei.replace(',', '', regex=True)
         e3 = (e1.astype(float).sum(axis=1) / 20).map('{:,.2f}'.format)
-
         #size = abs(e1.astype(float).sum(axis=1) - 100)
         size1=[22,23,24,25,26,27,28,29,30,31,32,32,33,23,25,19,18,20,21]
         return {
@@ -699,8 +666,7 @@ def update_graph(w_countries, w_countries1):
                 hoverinfo='text',
                 hovertext=
                 '<b>Country</b>: ' + data_World2['country'].astype(str) + '<br>' +
-                '<b>Average quarterly employment</b>: ' + e3.astype(str) + '<br>'
-            )],
+                '<b>Average quarterly employment</b>: ' + e3.astype(str) + '<br>')],
             'layout': go.Layout(
                 margin={"r": 0, "t": 0, "l": 0, "b": 0},
                 hovermode='closest',
@@ -718,7 +684,6 @@ def update_graph(w_countries, w_countries1):
     elif (w_countries == 'Society and work') & (w_countries1 == 'Quarterly labour market slack'):
         ei = pd.read_csv('data/Society and work-Quarterly labour market slack.csv')
         ee = (ei.sum(axis=1) / 10).map('{:,.2f}'.format)
-
         size = abs(ei.sum(axis=1)) + 20
         return {
             'data': [go.Scattermapbox(
@@ -734,8 +699,7 @@ def update_graph(w_countries, w_countries1):
                 hoverinfo='text',
                 hovertext=
                 '<b>Country</b>: ' + data_World2['country'].astype(str) + '<br>' +
-                '<b>Average quarterly labour market slack</b>: ' + ee.astype(str) + '%' + '<br>'
-            )],
+                '<b>Average quarterly labour market slack</b>: ' + ee.astype(str) + '%' + '<br>')],
             'layout': go.Layout(
                 margin={"r": 0, "t": 0, "l": 0, "b": 0},
                 hovermode='closest',
@@ -753,7 +717,6 @@ def update_graph(w_countries, w_countries1):
     elif (w_countries == 'Society and work') & (w_countries1 == 'Quarterly job vacancy rate'):
         ei = pd.read_csv('data/Society and work-Quarterly job vacancy rate.csv')
         ee = (ei.sum(axis=1) / 19).map('{:,.2f}'.format)
-
         size = abs(ei.sum(axis=1)) + 20
         return {
             'data': [go.Scattermapbox(
@@ -769,8 +732,7 @@ def update_graph(w_countries, w_countries1):
                 hoverinfo='text',
                 hovertext=
                 '<b>Country</b>: ' + data_World2['country'].astype(str) + '<br>' +
-                '<b>Average quarterly job vacancy rate</b>: ' + ee.astype(str) + '%' + '<br>'
-            )],
+                '<b>Average quarterly job vacancy rate</b>: ' + ee.astype(str) + '%' + '<br>')],
             'layout': go.Layout(
                 margin={"r": 0, "t": 0, "l": 0, "b": 0},
                 hovermode='closest',
@@ -788,7 +750,6 @@ def update_graph(w_countries, w_countries1):
     elif (w_countries == 'Society and work') & (w_countries1 == 'Quarterly labour cost'):
         ei = pd.read_csv('data/Society and work-Quarterly labour cost.csv')
         ee = (ei.sum(axis=1) / 19).map('{:,.2f}'.format)
-
         size = abs(ei.sum(axis=1)) + 20
         return {
             'data': [go.Scattermapbox(
@@ -804,8 +765,7 @@ def update_graph(w_countries, w_countries1):
                 hoverinfo='text',
                 hovertext=
                 '<b>Country</b>: ' + data_World2['country'].astype(str) + '<br>' +
-                '<b>Average quarterly labour cost</b>: ' + ee.astype(str) + '%' + '<br>'
-            )],
+                '<b>Average quarterly labour cost</b>: ' + ee.astype(str) + '%' + '<br>')],
             'layout': go.Layout(
                 margin={"r": 0, "t": 0, "l": 0, "b": 0},
                 hovermode='closest',
@@ -822,11 +782,9 @@ def update_graph(w_countries, w_countries1):
     # AGRICULTURE, ENERGY, TRANSPORT & TOURISM-Monthly air passenger transport
     elif (w_countries == 'Agriculture, energy, transport & tourism') & (w_countries1 == 'Monthly air passenger transport'):
         ei = pd.read_csv('data/Agriculture, energy, transport & tourism-Monthly air passenger transport.csv')
-
         ei = ei.drop('GEOLABEL', 1)
         e1 = ei.replace(',', '', regex=True)
         e3 = (e1.astype(float).sum(axis=1) / 30).map('{:,.2f}'.format)
-
         #size = abs(e1.astype(float).sum(axis=1) - 100)
         size1 = [45, 30, 24, 25, 26, 27, 28, 29, 30, 31, 32, 32, 33, 23, 25, 19, 18, 20, 21,29,35,21,36,15,46,35,29,28,41,36]
         return {
@@ -843,8 +801,7 @@ def update_graph(w_countries, w_countries1):
                 hoverinfo='text',
                 hovertext=
                 '<b>Country</b>: ' + data_World2['country'].astype(str) + '<br>' +
-                '<b>Average monthly air passenger transport</b>: ' + e3.astype(str) + '<br>'
-            )],
+                '<b>Average monthly air passenger transport</b>: ' + e3.astype(str) + '<br>')],
             'layout': go.Layout(
                 margin={"r": 0, "t": 0, "l": 0, "b": 0},
                 hovermode='closest',
@@ -862,7 +819,6 @@ def update_graph(w_countries, w_countries1):
     elif (w_countries == 'Agriculture, energy, transport & tourism') & (w_countries1 == 'Monthly commercial air flights'):
         ei = pd.read_csv('data/Agriculture, energy, transport & tourism-Monthly commercial air flights.csv')
         ee = (ei.sum(axis=1) / 24).map('{:,.2f}'.format)
-
         size = abs(ei.sum(axis=1)) + 20
         return {
             'data': [go.Scattermapbox(
@@ -878,8 +834,7 @@ def update_graph(w_countries, w_countries1):
                 hoverinfo='text',
                 hovertext=
                 '<b>Country</b>: ' + data_World2['country'].astype(str) + '<br>' +
-                '<b>Average Monthly commercial air flights</b>: ' + ee.astype(str) + '%' + '<br>'
-            )],
+                '<b>Average Monthly commercial air flights</b>: ' + ee.astype(str) + '%' + '<br>')],
             'layout': go.Layout(
                 margin={"r": 0, "t": 0, "l": 0, "b": 0},
                 hovermode='closest',
@@ -896,11 +851,9 @@ def update_graph(w_countries, w_countries1):
     # AGRICULTURE, ENERGY, TRANSPORT & TOURISM-Monthly arrivals at tourist accommodation
     elif (w_countries == 'Agriculture, energy, transport & tourism') & (w_countries1 == 'Monthly arrivals at tourist accommodation'):
         ei = pd.read_csv('data/Agriculture, energy, transport & tourism-Monthly arrivals at tourist accommodation.csv')
-
         ei = ei.drop('GEOLABEL', 1)
         e1 = ei.replace(',', '', regex=True)
         e3 = (e1.astype(float).sum(axis=1) / 20).map('{:,.2f}'.format)
-
         #size = abs(e1.astype(float).sum(axis=1) - 100)
         size1 = [45, 30, 24, 25, 26, 27, 28, 29, 30, 31, 32, 32, 33, 23, 25, 19, 18, 20, 21,29,35,21,36,15,46,35,29,28,41,36]
         return {
@@ -917,8 +870,7 @@ def update_graph(w_countries, w_countries1):
                 hoverinfo='text',
                 hovertext=
                 '<b>Country</b>: ' + data_World2['country'].astype(str) + '<br>' +
-                '<b>Average Monthly arrivals at tourist accommodation</b>: ' + e3.astype(str) + '<br>'
-            )],
+                '<b>Average Monthly arrivals at tourist accommodation</b>: ' + e3.astype(str) + '<br>')],
             'layout': go.Layout(
                 margin={"r": 0, "t": 0, "l": 0, "b": 0},
                 hovermode='closest',
@@ -935,11 +887,9 @@ def update_graph(w_countries, w_countries1):
     # AGRICULTURE, ENERGY, TRANSPORT & TOURISM-Monthly nights spent at tourist accommodation
     elif (w_countries == 'Agriculture, energy, transport & tourism') & (w_countries1 == 'Monthly nights spent at tourist accommodation'):
         ei = pd.read_csv('data/Agriculture, energy, transport & tourism-Monthly nights spent at tourist accommodation.csv')
-
         ei = ei.drop('GEOLABEL', 1)
         e1 = ei.replace(',', '', regex=True)
         e3 = (e1.astype(float).sum(axis=1) / 20).map('{:,.2f}'.format)
-
         #size = abs(e1.astype(float).sum(axis=1) - 100)
         size1 = [45, 30, 24, 25, 26, 27, 28, 29, 30, 31, 32, 32, 33, 23, 25, 19, 18, 20, 21,29,35,21,36,15,46,35,29,28,41,36]
         return {
@@ -956,8 +906,7 @@ def update_graph(w_countries, w_countries1):
                 hoverinfo='text',
                 hovertext=
                 '<b>Country</b>: ' + data_World2['country'].astype(str) + '<br>' +
-                '<b>Average monthly nights spent at tourist accommodation</b>: ' + e3.astype(str) + '<br>'
-            )],
+                '<b>Average monthly nights spent at tourist accommodation</b>: ' + e3.astype(str) + '<br>')],
             'layout': go.Layout(
                 margin={"r": 0, "t": 0, "l": 0, "b": 0},
                 hovermode='closest',
@@ -975,7 +924,6 @@ def update_graph(w_countries, w_countries1):
     elif (w_countries == 'Agriculture, energy, transport & tourism') & (w_countries1 == 'Monthly electricity consumed by end-users'):
         ei = pd.read_csv('data/Agriculture, energy, transport & tourism-Monthly electricity consumed by end-users.csv')
         ee = (ei.sum(axis=1) / 30).map('{:,.2f}'.format)
-
         size = abs(ei.sum(axis=1)) + 20
         return {
             'data': [go.Scattermapbox(
@@ -991,8 +939,7 @@ def update_graph(w_countries, w_countries1):
                 hoverinfo='text',
                 hovertext=
                 '<b>Country</b>: ' + data_World2['country'].astype(str) + '<br>' +
-                '<b>Average monthly electricity consumed by end-users</b>: ' + ee.astype(str) + '%' + '<br>'
-            )],
+                '<b>Average monthly electricity consumed by end-users</b>: ' + ee.astype(str) + '%' + '<br>')],
             'layout': go.Layout(
                 margin={"r": 0, "t": 0, "l": 0, "b": 0},
                 hovermode='closest',
@@ -1008,8 +955,6 @@ def update_graph(w_countries, w_countries1):
         }
     else:
         return dash.no_update
-
-####################################
 ############# LINE CHART ###########
 ####################################
 # get Data for Economy Inflation
@@ -1057,7 +1002,6 @@ def getMPIC(countryName):
         value.append(float(data2[0][i]))
     value1 = np.array(value)
     return value1
-#######################################
 ######################################
 # Get data for population and health
 def getPAHMEM(countryName):
@@ -1068,7 +1012,6 @@ def getPAHMEM(countryName):
         value.append(float(data2[0][i]))
     value1 = np.array(value)
     return value1
-####################
 ###Uzimanje podataka iz fajla Population and health-number of deaths by week
 def getPAHDBW(countryName):
     value = []
@@ -1241,16 +1184,10 @@ def getAETTMEC(countryName):
               [Input('w_countries1', 'value')],
               [Input('w_countries2', 'value')])
 def update_graph(w_countries, w_countries1, country_chosen):
-    # Data for line
-    mon = np.array(terr2)
-    mon1 = mon[5][1]
-
     coun = []
     coun = np.array(country_chosen)
     #
     # ECONOMY INFLATION
-    #
-    wctr1 = w_countries1
     if (w_countries == 'Economy') & (w_countries1 == 'Inflation - annual growth rate'):
         valueEu1 = []
         if ('European Union' in coun):
@@ -1401,12 +1338,10 @@ def update_graph(w_countries, w_countries1, country_chosen):
             valueUs1 = getArr('United States')
 
         ei = pd.read_csv('data/Economy-inflation.csv')
-
         df1 = {}
         for i in range(0, 38):
             niz = ei.loc[i, :]
             df1[i] = niz
-
         return {
             'data': [go.Scatter(x=lab,
                                 y=valueEu1,
@@ -1799,8 +1734,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 name='TR',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#ff4da6'),
                                 marker=dict(size=5, symbol='circle', color='lightblue',
-                                            line=dict(color='#ff4da6', width=2)
-                                            ),
+                                            line=dict(color='#ff4da6', width=2)),
                                 hoverinfo='text',
                                 hovertext=
                                 '<b>Country</b>: ' + 'Turkey' + '<br>'+
@@ -1815,8 +1749,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 hoverinfo='text',
                                 hovertext=
                                 '<b>Country</b>: ' + 'United States' + '<br>'+
-                                '<b>Economy inflation</b>: ' + df1[37].astype(str) + '<br>'
-                                ), ],
+                                '<b>Economy inflation</b>: ' + df1[37].astype(str) + '<br>'), ],
             'layout': go.Layout(
                 barmode='stack',
                 plot_bgcolor='#808080',
@@ -1860,8 +1793,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                            tickfont=dict(
                                family='Arial',
                                size=12,
-                               color='white'
-                           )),
+                               color='white' )),
                 legend={
                     'orientation': 'h',
                     'bgcolor': '#010915',
@@ -1869,8 +1801,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                 font=dict(
                     family="sans-serif",
                     size=12,
-                    color='white'),
-            )
+                    color='white'),)
         }
     #Kraj ECONOMY INFLATION
     #############################
@@ -2032,8 +1963,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 hoverinfo='text',
                                 hovertext=
                                 '<b>Country</b>: ' + 'European Union' + '<br>' +
-                                '<b>GDP</b>: ' + df1[0].astype(str) + '<br>'
-                               ),
+                                '<b>GDP</b>: ' + df1[0].astype(str) + '<br>'),
                      go.Scatter(x=labGDP,
                                 y=valueBel1,
                                 mode='lines+markers',
@@ -2044,8 +1974,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 hoverinfo='text',
                                 hovertext=
                                 '<b>Country</b>: ' + 'Belgium' + '<br>'+
-                                '<b>GDP</b>: ' + df1[2].astype(str) + '<br>'
-                                ),
+                                '<b>GDP</b>: ' + df1[2].astype(str) + '<br>'),
                      go.Scatter(x=labGDP,
                                 y=valueSer1,
                                 mode='lines+markers',
@@ -2404,13 +2333,11 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 name='TR',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#ff4da6'),
                                 marker=dict(size=5, symbol='circle', color='lightblue',
-                                            line=dict(color='#ff4da6', width=2)
-                                            ),
+                                            line=dict(color='#ff4da6', width=2)),
                                 hoverinfo='text',
                                 hovertext=
                                 '<b>Country</b>: ' + 'Turkey' + '<br>' +
-                                '<b>GDP</b>: ' + df1[34].astype(str) + '<br>'),
-                     ],
+                                '<b>GDP</b>: ' + df1[34].astype(str) + '<br>'),],
             'layout': go.Layout(
                 barmode='stack',
                 plot_bgcolor='#808080',
@@ -2442,8 +2369,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                            tickfont=dict(
                                family='Arial',
                                size=12,
-                               color='white'
-                           )),
+                               color='white')),
                 yaxis=dict(title='<b>%</b>',
                            color='white',
                            showline=True,
@@ -2455,8 +2381,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                            tickfont=dict(
                                family='Arial',
                                size=12,
-                               color='white'
-                           )),
+                               color='white')),
                 legend={
                     'orientation': 'h',
                     'bgcolor': '#010915',
@@ -2464,13 +2389,11 @@ def update_graph(w_countries, w_countries1, country_chosen):
                 font=dict(
                     family="sans-serif",
                     size=12,
-                    color='white'),
-            )
+                    color='white'),)
         }
     # ECONOMY GDP
     #
     # ECONOMY MIN
-
     elif (w_countries == 'Economy') & (w_countries1 == 'Monthly industrial production'):
         valueEu1 = []
         if ('European Union' in coun):
@@ -2613,12 +2536,10 @@ def update_graph(w_countries, w_countries1, country_chosen):
             valueTur1 = getMIN('Turkey')
 
         eMip = pd.read_csv('data/Economy-Monthly industrial production.csv')
-
         df1 = {}
         for i in range(0, 36):
             niz = eMip.loc[i, :]
             df1[i] = niz
-
         return {
             'data': [go.Scatter(x=lab,
                                 y=valueEu1,
@@ -2626,26 +2547,22 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 name='EU',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#E6D1D1'),
                                 marker=dict(size=5, symbol='circle', color='lightblue',
-                                            line=dict(color='#E6D1D1', width=2)
-                                            ),
+                                            line=dict(color='#E6D1D1', width=2)),
                                 hoverinfo='text',
                                 hovertext=
                                 '<b>Country</b>: ' + 'European Union' + '<br>'+
-                                '<b>Monthly industrial production</b>: ' + df1[0].astype(str) + '<br>'
-                                ),
+                                '<b>Monthly industrial production</b>: ' + df1[0].astype(str) + '<br>'),
                      go.Scatter(x=lab,
                                 y=valueBel1,
                                 mode='lines+markers',
                                 name='BE',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#FF0000'),
                                 marker=dict(size=5, symbol='circle', color='lightblue',
-                                            line=dict(color='#FF0000', width=2)
-                                            ),
+                                            line=dict(color='#FF0000', width=2)),
                                 hoverinfo='text',
                                 hovertext=
                                 '<b>Country</b>: ' + 'Belgium' + '<br>'+
-                                '<b>Monthly industrial production</b>: ' + df1[2].astype(str) + '<br>'
-                                ),
+                                '<b>Monthly industrial production</b>: ' + df1[2].astype(str) + '<br>'),
                      go.Scatter(x=lab,
                                 y=valueSer1,
                                 mode='lines+markers',
@@ -3004,13 +2921,11 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 name='TR',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#ff4da6'),
                                 marker=dict(size=5, symbol='circle', color='lightblue',
-                                            line=dict(color='#ff4da6', width=2)
-                                            ),
+                                            line=dict(color='#ff4da6', width=2)),
                                 hoverinfo='text',
                                 hovertext=
                                 '<b>Country</b>: ' + 'Turkey' + '<br>'+
-                                '<b>Monthly industrial production</b>: ' + df1[35].astype(str) + '<br>'),
-                               ],
+                                '<b>Monthly industrial production</b>: ' + df1[35].astype(str) + '<br>'),],
             'layout': go.Layout(
                 barmode='stack',
                 plot_bgcolor='#808080',
@@ -3042,8 +2957,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                            tickfont=dict(
                                family='Arial',
                                size=12,
-                               color='white'
-                           )),
+                               color='white')),
                 yaxis=dict(title='<b>%</b>',
                            color='white',
                            showline=True,
@@ -3055,8 +2969,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                            tickfont=dict(
                                family='Arial',
                                size=12,
-                               color='white'
-                           ) ),
+                               color='white') ),
                 legend={
                     'orientation': 'h',
                     'bgcolor': '#010915',
@@ -3064,13 +2977,11 @@ def update_graph(w_countries, w_countries1, country_chosen):
                 font=dict(
                     family="sans-serif",
                     size=12,
-                    color='white'),
-            )
+                    color='white'),)
         }
     # ECONOMY MIN
     #
     # ECONOMY MV
-    #
     elif (w_countries == 'Economy') & (w_countries1 == 'Monthly volume of retail trade'):
         valueEu1 = []
         if ('European Union' in coun):
@@ -3221,12 +3132,10 @@ def update_graph(w_countries, w_countries1, country_chosen):
             valueUs1 = getMV('United States')
 
         mv = pd.read_csv('data/Economy-Monthly volume.csv')
-
         df1 = {}
         for i in range(0, 38):
             niz = mv.loc[i, :]
             df1[i] = niz
-
         return {
             'data': [go.Scatter(x=labMV,
                                 y=valueEu1,
@@ -3619,8 +3528,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 name='TR',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#ff4da6'),
                                 marker=dict(size=5, symbol='circle', color='lightblue',
-                                            line=dict(color='#ff4da6', width=2)
-                                            ),
+                                            line=dict(color='#ff4da6', width=2)),
                                 hoverinfo='text',
                                 hovertext=
                                 '<b>Country</b>: ' + 'Turkey' + '<br>'+
@@ -3635,9 +3543,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 hoverinfo='text',
                                 hovertext=
                                 '<b>Country</b>: ' + 'United States' + '<br>'+
-                                '<b>Monthly volume of retail trade</b>: ' + df1[37].astype(str) + '<br>'
-                                ),
-                     ],
+                                '<b>Monthly volume of retail trade</b>: ' + df1[37].astype(str) + '<br>' ),],
             'layout': go.Layout(
                 barmode='stack',
                 plot_bgcolor='#808080',
@@ -3669,8 +3575,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                            tickfont=dict(
                                family='Arial',
                                size=12,
-                               color='white'
-                           )),
+                               color='white')),
                 yaxis=dict(title='<b>Index 2015=100</b>',
                            color='white',
                            showline=True,
@@ -3682,8 +3587,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                            tickfont=dict(
                                family='Arial',
                                size=12,
-                               color='white'
-                           ) ),
+                               color='white') ),
                 legend={
                     'orientation': 'h',
                     'bgcolor': '#010915',
@@ -3691,8 +3595,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                 font=dict(
                     family="sans-serif",
                     size=12,
-                    color='white'),
-            )
+                    color='white'),)
         }
     # End ECONOMY MV
     #
@@ -3800,7 +3703,6 @@ def update_graph(w_countries, w_countries1, country_chosen):
         for i in range(0, 24):
             niz = mpic.loc[i, :]
             df1[i] = niz
-
         return {
             'data': [go.Scatter(x=lab,
                                 y=valueEu1,
@@ -3808,26 +3710,22 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 name='EU',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#E6D1D1'),
                                 marker=dict(size=5, symbol='circle', color='lightblue',
-                                            line=dict(color='#E6D1D1', width=2)
-                                            ),
+                                            line=dict(color='#E6D1D1', width=2)),
                                 hoverinfo='text',
                                 hovertext=
                                 '<b>Country</b>: ' + 'European Union' + '<br>'+
-                                '<b>Monthly production in construction</b>: ' + df1[0].astype(str) + '<br>'
-                                ),
+                                '<b>Monthly production in construction</b>: ' + df1[0].astype(str) + '<br>'),
                      go.Scatter(x=lab,
                                 y=valueBel1,
                                 mode='lines+markers',
                                 name='BE',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#FF0000'),
                                 marker=dict(size=5, symbol='circle', color='lightblue',
-                                            line=dict(color='#FF0000', width=2)
-                                            ),
+                                            line=dict(color='#FF0000', width=2)),
                                 hoverinfo='text',
                                 hovertext=
                                 '<b>Country</b>: ' + 'Belgium' + '<br>'+
-                                '<b>Monthly production in construction</b>: ' + df1[2].astype(str) + '<br>'
-                                ),
+                                '<b>Monthly production in construction</b>: ' + df1[2].astype(str) + '<br>'),
                      go.Scatter(x=lab,
                                 y=valueEa1,
                                 mode='lines+markers',
@@ -4101,8 +3999,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                            tickfont=dict(
                                family='Arial',
                                size=12,
-                               color='white'
-                           )),
+                               color='white')),
                 yaxis=dict(title='<b>Index 2015=100</b>',
                            color='white',
                            showline=True,
@@ -4114,8 +4011,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                            tickfont=dict(
                                family='Arial',
                                size=12,
-                               color='white'
-                           )),
+                               color='white')),
                 legend={
                     'orientation': 'h',
                     'bgcolor': '#010915',
@@ -4123,11 +4019,8 @@ def update_graph(w_countries, w_countries1, country_chosen):
                 font=dict(
                     family="sans-serif",
                     size=12,
-                    color='white'),
-            )
+                    color='white'),)
         }
-    # END Economy-Monthly production in construction
-    #
     # END of ECONOMY
     #
     # Start POPULATION AND HEALTH
@@ -4139,17 +4032,9 @@ def update_graph(w_countries, w_countries1, country_chosen):
         if ('European Union' in coun):
             valueEu1 = getPAHMEM('European Union')
 
-        valueBel1 = []
-        if ('Belgium' in coun):
-            valueBel1 = getPAHMEM('Belgium')
-
         valueMal1 = []
         if ('Malta' in coun):
             valueMal1 = getPAHMEM('Malta')
-
-        valueEa1 = []
-        if ('Euro area' in coun):
-            valueEa1 = getPAHMEM('Euro area')
 
         valueBel1 = []
         if ('Belgium' in coun):
@@ -4174,10 +4059,6 @@ def update_graph(w_countries, w_countries1, country_chosen):
         valueEst1 = []
         if ('Estonia' in coun):
             valueEst1 = getPAHMEM('Estonia')
-
-        valueIre1 = []
-        if ('Ireland' in coun):
-            valueIre1 = getPAHMEM('Ireland')
 
         valueGree1 = []
         if ('Greece' in coun):
@@ -4255,14 +4136,6 @@ def update_graph(w_countries, w_countries1, country_chosen):
         if ('Sweden' in coun):
             valueSwe1 = getPAHMEM('Sweden')
 
-        valueUk1 = []
-        if ('United Kingdom' in coun):
-            valueUk1 = getPAHMEM('United Kingdom')
-
-        valueEea1 = []
-        if ('European Economic Area' in coun):
-            valueEea1 = getPAHMEM('European Economic Area')
-
         valueIce1 = []
         if ('Iceland' in coun):
             valueIce1 = getPAHMEM('Iceland')
@@ -4275,14 +4148,11 @@ def update_graph(w_countries, w_countries1, country_chosen):
         if ('Switzerland' in coun):
             valueSwi1 = getPAHMEM('Switzerland')
 
-
         pop = pd.read_csv('data/Population and health-Monthly excess mortality.csv')
-
         df1 = {}
         for i in range(0, 31):
             niz = pop.loc[i, :]
             df1[i] = niz
-
         return {
             'data': [go.Scatter(x=labPAHMEM,
                                 y=valueEu1,
@@ -4306,8 +4176,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 hoverinfo='text',
                                 hovertext=
                                 '<b>Country</b>: ' + 'Belgium' + '<br>'+
-                                '<b>Monthly excess mortality</b>: ' + df1[1].astype(str) + '<br>'
-                                ),
+                                '<b>Monthly excess mortality</b>: ' + df1[1].astype(str) + '<br>'),
                      go.Scatter(x=labPAHMEM,
                                 y=valueMal1,
                                 mode='lines+markers',
@@ -4615,8 +4484,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 hoverinfo='text',
                                 hovertext=
                                 '<b>Country</b>: ' + 'Switzerland' + '<br>' +
-                                '<b>Monthly excess mortality</b>: ' + df1[30].astype(str) + '<br>'),
-                     ],
+                                '<b>Monthly excess mortality</b>: ' + df1[30].astype(str) + '<br>'),],
             'layout': go.Layout(
                 barmode='stack',
                 plot_bgcolor='#808080',
@@ -4648,8 +4516,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                            tickfont=dict(
                                family='Arial',
                                size=12,
-                               color='white'
-                           )),
+                               color='white')),
                 yaxis=dict(title='<b>% of additional deaths</b>',
                            color='white',
                            showline=True,
@@ -4661,8 +4528,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                            tickfont=dict(
                                family='Arial',
                                size=12,
-                               color='white'
-                           )),
+                               color='white' )),
                 legend={
                     'orientation': 'h',
                     'bgcolor': '#010915',
@@ -4670,8 +4536,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                 font=dict(
                     family="sans-serif",
                     size=12,
-                    color='white'),
-            )
+                    color='white'),)
         }
     # Zavrsava se POPULATION AND HEALTH-Monthly excess mortality
     ##Pocinje Number of deaths by week
@@ -4802,14 +4667,11 @@ def update_graph(w_countries, w_countries1, country_chosen):
             if ('Switzerland' in coun):
                 valueSwi1 = getPAHDBW('Switzerland')
 
-
             dbw = pd.read_csv('data/Population and health-Number of deaths by week.csv')
-
             df1 = {}
             for i in range(0, 34):
                 niz = dbw.loc[i, :]
                 df1[i] = niz
-
             return {
                 'data': [go.Scatter(x=labelDbw,
                                     y=valueBul1,
@@ -4821,8 +4683,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                     hoverinfo='text',
                                     hovertext=
                                     '<b>Country</b>: ' + 'Bulgaria' + '<br>'+
-                                    '<b>Number of deaths by week</b>: ' + df1[1].astype(str) + '<br>'
-                                    ),
+                                    '<b>Number of deaths by week</b>: ' + df1[1].astype(str) + '<br>'),
                          go.Scatter(x=labelDbw,
                                     y=valueBel1,
                                     mode='lines+markers',
@@ -4833,8 +4694,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                     hoverinfo='text',
                                     hovertext=
                                     '<b>Country</b>: ' + 'Belgium' + '<br>'+
-                                    '<b>Number of deaths by week</b>: ' + df1[1].astype(str) + '<br>'
-                                    ),
+                                    '<b>Number of deaths by week</b>: ' + df1[1].astype(str) + '<br>'),
                          go.Scatter(x=labelDbw,
                                     y=valueSer1,
                                     mode='lines+markers',
@@ -5153,8 +5013,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                     hoverinfo='text',
                                     hovertext=
                                     '<b>Country</b>: ' + 'Switzerland' + '<br>' +
-                                    '<b>Number of deaths by week</b>: ' + df1[29].astype(str) + '<br>'),
-                         ],
+                                    '<b>Number of deaths by week</b>: ' + df1[29].astype(str) + '<br>'),],
                 'layout': go.Layout(
                     barmode='stack',
                     plot_bgcolor='#808080',
@@ -5186,8 +5045,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                tickfont=dict(
                                    family='Arial',
                                    size=12,
-                                   color='white'
-                               )),
+                                   color='white')),
                     yaxis=dict(title='<b>% of additional deaths</b>',
                                color='white',
                                showline=True,
@@ -5199,8 +5057,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                tickfont=dict(
                                    family='Arial',
                                    size=12,
-                                   color='white'
-                               ) ),
+                                   color='white') ),
                     legend={
                         'orientation': 'h',
                         'bgcolor': '#010915',
@@ -5208,8 +5065,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                     font=dict(
                         family="sans-serif",
                         size=12,
-                        color='white'),
-                )
+                        color='white'),)
             }
     ##################################Pocinje Polulation and healht-Monthly first-time asylum applicants
     elif (w_countries == 'Population and health') & (w_countries1 == 'Monthly first-time asylum applicants'):
@@ -5220,11 +5076,6 @@ def update_graph(w_countries, w_countries1, country_chosen):
         valueBel1 = []
         if ('Belgium' in coun):
             valueBel1 = getPAHMFTA('Belgium')
-
-        labelDbw = getLabelPAHMFTA2()
-        valueBul1 = []
-        if ('Bulgaria' in coun):
-            valueBul1 = getPAHMFTA('Bulgaria')
 
         valueMal1 = []
         if ('Malta' in coun):
@@ -5326,10 +5177,6 @@ def update_graph(w_countries, w_countries1, country_chosen):
         if ('United Kingdom' in coun):
             valueUk1 = getPAHMFTA('United Kingdom')
 
-        valueIce1 = []
-        if ('Iceland' in coun):
-            valueIce1 = getPAHMFTA('Iceland')
-
         valueNor1 = []
         if ('Norway' in coun):
             valueNor1 = getPAHMFTA('Norway')
@@ -5339,12 +5186,10 @@ def update_graph(w_countries, w_countries1, country_chosen):
             valueSwi1 = getPAHMFTA('Switzerland')
 
         mfta = pd.read_csv('data/Population and health-Monthly first-time asylum applicants.csv')
-
         df1 = {}
         for i in range(0, 31):
             niz = mfta.loc[i, :]
             df1[i] = niz
-
         return {
             'data': [go.Scatter(x=labelPAHMFTA2,
                                 y=valueEu1,
@@ -5352,26 +5197,22 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 name='EU',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#E6D1D1'),
                                 marker=dict(size=5, symbol='circle', color='lightblue',
-                                            line=dict(color='#E6D1D1', width=2)
-                                            ),
+                                            line=dict(color='#E6D1D1', width=2)),
                                 hoverinfo='text',
                                 hovertext=
                                 '<b>Country</b>: ' + 'European Union' + '<br>'+
-                                '<b>Monthly first-time asylum applicants</b>: ' + df1[0].astype(str) + '<br>'
-                                ),
+                                '<b>Monthly first-time asylum applicants</b>: ' + df1[0].astype(str) + '<br>'),
                      go.Scatter(x=labelPAHMFTA2,
                                 y=valueBel1,
                                 mode='lines+markers',
                                 name='BE',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#FF0000'),
                                 marker=dict(size=5, symbol='circle', color='lightblue',
-                                            line=dict(color='#FF0000', width=2)
-                                            ),
+                                            line=dict(color='#FF0000', width=2)),
                                 hoverinfo='text',
                                 hovertext=
                                 '<b>Country</b>: ' + 'Belgium' + '<br>'+
-                                '<b>Monthly first-time asylum applicants</b>: ' + df1[1].astype(str) + '<br>'
-                                ),
+                                '<b>Monthly first-time asylum applicants</b>: ' + df1[1].astype(str) + '<br>'),
                      go.Scatter(x=labelPAHMFTA2,
                                 y=valueMal1,
                                 mode='lines+markers',
@@ -5668,8 +5509,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 hoverinfo='text',
                                 hovertext=
                                 '<b>Country</b>: ' + 'Switzerland' + '<br>' +
-                                '<b>Monthly first-time asylum applicants</b>: ' + df1[29].astype(str) + '<br>'),
-                     ],
+                                '<b>Monthly first-time asylum applicants</b>: ' + df1[29].astype(str) + '<br>'),],
             'layout': go.Layout(
                 barmode='stack',
                 plot_bgcolor='#808080',
@@ -5701,8 +5541,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                            tickfont=dict(
                                family='Arial',
                                size=12,
-                               color='white'
-                           ) ),
+                               color='white') ),
                 yaxis=dict(title='<b>Number of first time asylum applicants</b>',
                            color='white',
                            showline=True,
@@ -5714,8 +5553,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                            tickfont=dict(
                                family='Arial',
                                size=12,
-                               color='white'
-                           )),
+                               color='white')),
                 legend={
                     'orientation': 'h',
                     'bgcolor': '#010915',
@@ -5723,10 +5561,8 @@ def update_graph(w_countries, w_countries1, country_chosen):
                 font=dict(
                     family="sans-serif",
                     size=12,
-                    color='white'),
-            )
+                    color='white'))
         }
-#####################################################
     ##################################################
     #KRECE SOCIETY AND WORK
     #Iscrtavanje oblasti: Society and work-Monthly unemployment rate
@@ -5739,14 +5575,9 @@ def update_graph(w_countries, w_countries1, country_chosen):
         if ('Belgium' in coun):
             valueBel1 = getSAWMUR('Belgium')
 
-        labelDbw = getLabelSAWMUR2()
         valueBul1 = []
         if ('Bulgaria' in coun):
             valueBul1 = getSAWMUR('Bulgaria')
-
-        valueMal1 = []
-        if ('Malta' in coun):
-            valueMal1 = getSAWMUR('Malta')
 
         valueChe1 = []
         if ('Czechia' in coun):
@@ -5873,21 +5704,18 @@ def update_graph(w_countries, w_countries1, country_chosen):
             valueIre1 = getSAWMUR('Ireland')
 
         mur = pd.read_csv('data/Society and work-Monthly unemployment rate.csv')
-
         df1 = {}
         for i in range(0, 36):
             niz = mur.loc[i, :]
             df1[i] = niz
-
         return {
             'data': [go.Scatter(x=labelSAWMUR,
                                 y=valueEu1,
                                 mode='lines+markers',
-                                name='European Union',
+                                name='EU',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#E6D1D1'),
                                 marker=dict(size=5, symbol='circle', color='lightblue',
-                                            line=dict(color='#E6D1D1', width=2)
-                                            ),
+                                            line=dict(color='#E6D1D1', width=2)),
                                 hoverinfo='text',
                                 hovertext=
                                 '<b>Country</b>: ' + 'European Union' + '<br>' +
@@ -5895,11 +5723,10 @@ def update_graph(w_countries, w_countries1, country_chosen):
                      go.Scatter(x=labelSAWMUR,
                                 y=valueBel1,
                                 mode='lines+markers',
-                                name='Belgium',
+                                name='BE',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#FF0000'),
                                 marker=dict(size=5, symbol='circle', color='lightblue',
-                                            line=dict(color='#FF0000', width=2)
-                                            ),
+                                            line=dict(color='#FF0000', width=2)),
                                 hoverinfo='text',
                                 hovertext=
                                 '<b>Country</b>: ' + 'Belgium' + '<br>'+
@@ -6241,8 +6068,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 name='TR',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#ff4da6'),
                                 marker=dict(size=5, symbol='circle', color='lightblue',
-                                            line=dict(color='#ff4da6', width=2)
-                                            ),
+                                            line=dict(color='#ff4da6', width=2)),
                                 hoverinfo='text',
                                 hovertext=
                                 '<b>Country</b>: ' + 'Turkey' + '<br>' +
@@ -6257,9 +6083,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 hoverinfo='text',
                                 hovertext=
                                 '<b>Country</b>: ' + 'United States' + '<br>' +
-                                '<b>Monthly unemployment rate</b>: ' + df1[34].astype(str) + '<br>'
-                                ),
-                     ],
+                                '<b>Monthly unemployment rate</b>: ' + df1[34].astype(str) + '<br>'),],
             'layout': go.Layout(
                 barmode='stack',
                 plot_bgcolor='#808080',
@@ -6291,8 +6115,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                            tickfont=dict(
                                family='Arial',
                                size=12,
-                               color='white'
-                           )),
+                               color='white')),
                 yaxis=dict(title='<b>% of active population aged 15-74 years</b>',
                            color='white',
                            showline=True,
@@ -6304,8 +6127,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                            tickfont=dict(
                                family='Arial',
                                size=12,
-                               color='white'
-                           )),
+                               color='white')),
                 legend={
                     'orientation': 'h',
                     'bgcolor': '#010915',
@@ -6313,8 +6135,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                 font=dict(
                     family="sans-serif",
                     size=12,
-                    color='white'),
-            )
+                    color='white'), )
         }
     elif (w_countries == 'Society and work') & (w_countries1 == 'Monthly youth unemployment rate'):
         valueEu1 = []
@@ -6328,10 +6149,6 @@ def update_graph(w_countries, w_countries1, country_chosen):
         valueBul1 = []
         if ('Bulgaria' in coun):
             valueBul1 = getSAWMYUR('Bulgaria')
-
-        valueMal1 = []
-        if ('Malta' in coun):
-            valueMal1 = getSAWMYUR('Malta')
 
         valueChe1 = []
         if ('Czechia' in coun):
@@ -6458,30 +6275,26 @@ def update_graph(w_countries, w_countries1, country_chosen):
             valueIre1 = getSAWMYUR('Ireland')
 
         myur = pd.read_csv('data/Society and work-Monthly youth unemployment rate.csv')
-
         df1 = {}
         for i in range(0, 36):
             niz = myur.loc[i, :]
             df1[i] = niz
-
         return {
             'data': [go.Scatter(x=labelSAWMYUR,
                                 y=valueEu1,
                                 mode='lines+markers',
-                                name='European Union',
+                                name='EU',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#E6D1D1'),
                                 marker=dict(size=5, symbol='circle', color='lightblue',
-                                            line=dict(color='#E6D1D1', width=2)
-                                            ),
+                                            line=dict(color='#E6D1D1', width=2)),
                                 hoverinfo='text',
                                 hovertext=
                                 '<b>Country</b>: ' + 'European Union' + '<br>' +
-                                '<b>Monthly youth unemployment rate</b>: ' + df1[1].astype(str) + '<br>'
-                                ),
+                                '<b>Monthly youth unemployment rate</b>: ' + df1[1].astype(str) + '<br>'),
                      go.Scatter(x=labelSAWMYUR,
                                 y=valueBel1,
                                 mode='lines+markers',
-                                name='Belgium',
+                                name='BE',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#FF0000'),
                                 marker=dict(size=5, symbol='circle', color='lightblue',
                                             line=dict(color='#FF0000', width=2)
@@ -6827,8 +6640,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 name='TR',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#ff4da6'),
                                 marker=dict(size=5, symbol='circle', color='lightblue',
-                                            line=dict(color='#ff4da6', width=2)
-                                            ),
+                                            line=dict(color='#ff4da6', width=2) ),
                                 hoverinfo='text',
                                 hovertext=
                                 '<b>Country</b>: ' + 'Turkey' + '<br>' +
@@ -6843,9 +6655,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 hoverinfo='text',
                                 hovertext=
                                 '<b>Country</b>: ' + 'United States' + '<br>' +
-                                '<b>Monthly youth unemployment rate</b>: ' + df1[34].astype(str) + '<br>'
-                                ),
-                     ],
+                                '<b>Monthly youth unemployment rate</b>: ' + df1[34].astype(str) + '<br>'),],
             'layout': go.Layout(
                 barmode='stack',
                 plot_bgcolor='#808080',
@@ -6877,8 +6687,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                            tickfont=dict(
                                family='Arial',
                                size=12,
-                               color='white'
-                           )),
+                               color='white')),
                 yaxis=dict(title='<b>% of active population aged > 25 years</b>',
                            color='white',
                            showline=True,
@@ -6890,8 +6699,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                            tickfont=dict(
                                family='Arial',
                                size=12,
-                               color='white'
-                           )),
+                               color='white')),
                 legend={
                     'orientation': 'h',
                     'bgcolor': '#010915',
@@ -6899,8 +6707,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                 font=dict(
                     family="sans-serif",
                     size=12,
-                    color='white'),
-            )
+                    color='white'),)
         }
     #KRece podgrupa: Society and work-Quarterly employment
     elif (w_countries == 'Society and work') & (w_countries1 == 'Quarterly employment'):
@@ -6968,14 +6775,6 @@ def update_graph(w_countries, w_countries1, country_chosen):
         if ('Austria' in coun):
             valueAus1 = getSAWQE('Austria')
 
-        valuePol1 = []
-        if ('Poland' in coun):
-            valuePol1 = getSAWQE('Poland')
-
-        valuePor1 = []
-        if ('Portugal' in coun):
-            valuePor1 = getSAWQE('Portugal')
-
         valueRom1 = []
         if ('Romania' in coun):
             valueRom1 = getSAWQE('Romania')
@@ -7017,39 +6816,33 @@ def update_graph(w_countries, w_countries1, country_chosen):
             valueIre1 = getSAWQE('Ireland')
 
         qe = pd.read_csv('data/Society and work-Quarterly employment.csv')
-
         df1 = {}
         for i in range(0, 26):
             niz = qe.loc[i, :]
             df1[i] = niz
-
         return {
             'data': [go.Scatter(x=labelSAWQE,
                                 y=valueEu1,
                                 mode='lines+markers',
-                                name='European Union',
+                                name='EU',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#E6D1D1'),
                                 marker=dict(size=5, symbol='circle', color='lightblue',
-                                            line=dict(color='#E6D1D1', width=2)
-                                            ),
+                                            line=dict(color='#E6D1D1', width=2)),
                                 hoverinfo='text',
                                 hovertext=
                                 '<b>Country</b>: ' + 'European Union' + '<br>' +
-                                '<b>Quarterly employment</b>: ' + df1[0].astype(str) + '<br>'
-                                ),
+                                '<b>Quarterly employment</b>: ' + df1[0].astype(str) + '<br>'),
                      go.Scatter(x=labelSAWQE,
                                 y=valueBel1,
                                 mode='lines+markers',
-                                name='Belgium',
+                                name='BE',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#FF0000'),
                                 marker=dict(size=5, symbol='circle', color='lightblue',
-                                            line=dict(color='#FF0000', width=2)
-                                            ),
+                                            line=dict(color='#FF0000', width=2)),
                                 hoverinfo='text',
                                 hovertext=
                                 '<b>Country</b>: ' + 'Belgium' + '<br>'+
-                                '<b>Quarterly employment</b>: ' + df1[2].astype(str) + '<br>'
-                                ),
+                                '<b>Quarterly employment</b>: ' + df1[2].astype(str) + '<br>'),
                      go.Scatter(x=labelSAWQE,
                                 y=valueEa1,
                                 mode='lines+markers',
@@ -7313,8 +7106,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 hoverinfo='text',
                                 hovertext=
                                 '<b>Country</b>: ' + 'Norway' + '<br>' +
-                                '<b>Quarterly employment</b>: ' + df1[24].astype(str) + '<br>'),
-                     ],
+                                '<b>Quarterly employment</b>: ' + df1[24].astype(str) + '<br>'),],
             'layout': go.Layout(
                 barmode='stack',
                 plot_bgcolor='#808080',
@@ -7346,8 +7138,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                            tickfont=dict(
                                family='Arial',
                                size=12,
-                               color='white'
-                           ) ),
+                               color='white') ),
                 yaxis=dict(title='<b>1 000 persons</b>',
                            color='white',
                            showline=True,
@@ -7359,9 +7150,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                            tickfont=dict(
                                family='Arial',
                                size=12,
-                               color='white'
-                           )
-                           ),
+                               color='white')),
                 legend={
                     'orientation': 'h',
                     'bgcolor': '#010915',
@@ -7369,8 +7158,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                 font=dict(
                     family="sans-serif",
                     size=12,
-                    color='white'),
-            )
+                    color='white'), )
         }
     #Krece podgrupa Society and work-Quarterly labour market slack
     elif (w_countries == 'Society and work') & (w_countries1 == 'Quarterly labour market slack'):
@@ -7382,32 +7170,499 @@ def update_graph(w_countries, w_countries1, country_chosen):
         if ('Belgium' in coun):
             valueBel1 = getSAWQLMS('Belgium')
 
+        valueBul1 = []
+        if ('Bulgaria' in coun):
+            valueBul1 = getSAWQLMS('Bulgaria')
+
+        valueSer1 = []
+        if ('Serbia' in coun):
+            valueSer1 = getSAWQLMS('Serbia')
+
+        valueChe1 = []
+        if ('Czechia' in coun):
+            valueChe1 = getSAWQLMS('Czechia')
+
+        valueDen1 = []
+        if ('Denmark' in coun):
+            valueDen1 = getSAWQLMS('Denmark')
+
+        valueGer1 = []
+        if ('Germany' in coun):
+            valueGer1 = getSAWQLMS('Germany')
+
+        valueEst1 = []
+        if ('Estonia' in coun):
+            valueEst1 = getSAWQLMS('Estonia')
+
+        valueGree1 = []
+        if ('Greece' in coun):
+            valueGree1 = getSAWQLMS('Greece')
+
+        valueSpa1 = []
+        if ('Spain' in coun):
+            valueSpa1 = getSAWQLMS('Spain')
+
+        valueFra1 = []
+        if ('France' in coun):
+            valueFra1 = getSAWQLMS('France')
+
+        valueCro1 = []
+        if ('Croatia' in coun):
+            valueCro1 = getSAWQLMS('Croatia')
+
+        valueIta1 = []
+        if ('Italy' in coun):
+            valueIta1 = getSAWQLMS('Italy')
+
+        valueCyp1 = []
+        if ('Cyprus' in coun):
+            valueCyp1 = getSAWQLMS('Cyprus')
+
+        valueLat1 = []
+        if ('Latvia' in coun):
+            valueLat1 = getSAWQLMS('Latvia')
+
+        valueLith1 = []
+        if ('Lithuania' in coun):
+            valueLith1 = getSAWQLMS('Lithuania')
+
+        valueLux1 = []
+        if ('Luxembourg' in coun):
+            valueLux1 = getSAWQLMS('Luxembourg')
+
+        valueHun1 = []
+        if ('Hungary' in coun):
+            valueHun1 = getSAWQLMS('Hungary')
+
+        valueNet1 = []
+        if ('Netherlands' in coun):
+            valueNet1 = getSAWQLMS('Netherlands')
+
+        valueAus1 = []
+        if ('Austria' in coun):
+            valueAus1 = getSAWQLMS('Austria')
+
+        valuePol1 = []
+        if ('Poland' in coun):
+            valuePol1 = getSAWQLMS('Poland')
+
+        valuePor1 = []
+        if ('Portugal' in coun):
+            valuePor1 = getSAWQLMS('Portugal')
+
+        valueRom1 = []
+        if ('Romania' in coun):
+            valueRom1 = getSAWQLMS('Romania')
+
+        valueSlo1 = []
+        if ('Slovenia' in coun):
+            valueSlo1 = getSAWQLMS('Slovenia')
+
+        valueSlovak1 = []
+        if ('Slovakia' in coun):
+            valueSlovak1 = getSAWQLMS('Slovakia')
+
+        valueFin1 = []
+        if ('Finland' in coun):
+            valueFin1 = getSAWQLMS('Finland')
+
+        valueSwe1 = []
+        if ('Sweden' in coun):
+            valueSwe1 = getSAWQLMS('Sweden')
+
+        valueIce1 = []
+        if ('Iceland' in coun):
+            valueIce1 = getSAWQLMS('Iceland')
+
+        valueNor1 = []
+        if ('Norway' in coun):
+            valueNor1 = getSAWQLMS('Norway')
+
+        valueSwi1 = []
+        if ('Switzerland' in coun):
+            valueSwi1 = getSAWQLMS('Switzerland')
+
+        valueEa1 = []
+        if ('Euro area' in coun):
+            valueEa1 = getSAWQLMS('Euro area')
+
+        valueTur1 = []
+        if ('Turkey' in coun):
+            valueTur1 = getSAWQLMS('Turkey')
+
+        valueIre1 = []
+        if ('Ireland' in coun):
+            valueIre1 = getSAWQLMS('Ireland')
+
+        qlms = pd.read_csv('data/Society and work-Quarterly labour market slack.csv')
+        df1 = {}
+        for i in range(0, 36):
+            niz = qlms.loc[i, :]
+            df1[i] = niz
         return {
             'data': [go.Scatter(x=labelSAWQLMS,
                                 y=valueEu1,
                                 mode='lines+markers',
-                                name='European Union',
+                                name='BE',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#E6D1D1'),
                                 marker=dict(size=5, symbol='circle', color='lightblue',
-                                            line=dict(color='#E6D1D1', width=2)
-                                            ),
+                                            line=dict(color='#E6D1D1', width=2)),
                                 hoverinfo='text',
                                 hovertext=
-                                '<b>Country</b>: ' + 'European Union' + '<br>'
-                                ),
+                                '<b>Country</b>: ' + 'European Union' + '<br>'+
+                                '<b>Quarterly labour market slack</b>: ' + df1[0].astype(str) + '<br>'),
                      go.Scatter(x=labelSAWQLMS,
                                 y=valueBel1,
                                 mode='lines+markers',
-                                name='Belgium',
+                                name='EU',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#FF0000'),
                                 marker=dict(size=5, symbol='circle', color='lightblue',
-                                            line=dict(color='#FF0000', width=2)
-                                            ),
+                                            line=dict(color='#FF0000', width=2)),
                                 hoverinfo='text',
                                 hovertext=
-                                '<b>Country</b>: ' + 'Belgium' + '<br>'
-                                )
-                     ],
+                                '<b>Country</b>: ' + 'Belgium' + '<br>'+
+                                '<b>Quarterly labour market slack</b>: ' + df1[2].astype(str) + '<br>'),
+                     go.Scatter(x=labelSAWQLMS,
+                                y=valueEa1,
+                                mode='lines+markers',
+                                name='EA',
+                                line=dict(shape="spline", smoothing=1.3, width=3, color='#472727'),
+                                marker=dict(size=5, symbol='circle', color='lightblue',
+                                            line=dict(color='#472727', width=2)),
+                                hoverinfo='text',
+                                hovertext=
+                                '<b>Country</b>: ' + 'Euro area' + '<br>' +
+                                '<b>Quarterly labour market slack</b>: ' + df1[1].astype(str) + '<br>'),
+                     go.Scatter(x=labelSAWQLMS,
+                                y=valueBul1,
+                                mode='lines+markers',
+                                name='BG',
+                                line=dict(shape="spline", smoothing=1.3, width=3, color='#353131'),
+                                marker=dict(size=5, symbol='circle', color='lightblue',
+                                            line=dict(color='#353131', width=2)),
+                                hoverinfo='text',
+                                hovertext=
+                                '<b>Country</b>: ' + 'Bulgaria' + '<br>' +
+                                '<b>Quarterly labour market slack</b>: ' + df1[3].astype(str) + '<br>'),
+                     go.Scatter(x=labelSAWQLMS,
+                                y=valueChe1,
+                                mode='lines+markers',
+                                name='CZ',
+                                line=dict(shape="spline", smoothing=1.3, width=3, color='#49AF30'),
+                                marker=dict(size=5, symbol='circle', color='lightblue',
+                                            line=dict(color='#49AF30', width=2)),
+                                hoverinfo='text',
+                                hovertext=
+                                '<b>Country</b>: ' + 'Czechia' + '<br>' +
+                                '<b>Quarterly labour market slack</b>: ' + df1[4].astype(str) + '<br>'),
+                     go.Scatter(x=labelSAWQLMS,
+                                y=valueDen1,
+                                mode='lines+markers',
+                                name='DK',
+                                line=dict(shape="spline", smoothing=1.3, width=3, color='#2A4623'),
+                                marker=dict(size=5, symbol='circle', color='lightblue',
+                                            line=dict(color='#2A4623', width=2)),
+                                hoverinfo='text',
+                                hovertext=
+                                '<b>Country</b>: ' + 'Denmark' + '<br>' +
+                                '<b>Quarterly labour market slack</b>: ' + df1[5].astype(str) + '<br>'),
+                     go.Scatter(x=labelSAWQLMS,
+                                y=valueGer1,
+                                mode='lines+markers',
+                                name='DE',
+                                line=dict(shape="spline", smoothing=1.3, width=3, color='#7B7D7B'),
+                                marker=dict(size=5, symbol='circle', color='lightblue',
+                                            line=dict(color='#7B7D7B', width=2)),
+                                hoverinfo='text',
+                                hovertext=
+                                '<b>Country</b>: ' + 'Germany' + '<br>' +
+                                '<b>Quarterly labour market slack</b>: ' + df1[6].astype(str) + '<br>'),
+                     go.Scatter(x=labelSAWQLMS,
+                                y=valueEst1,
+                                mode='lines+markers',
+                                name='EE',
+                                line=dict(shape="spline", smoothing=1.3, width=3, color='#C4C048'),
+                                marker=dict(size=5, symbol='circle', color='lightblue',
+                                            line=dict(color='#C4C048', width=2)),
+                                hoverinfo='text',
+                                hovertext=
+                                '<b>Country</b>: ' + 'Estonia' + '<br>' +
+                                '<b>Quarterly labour market slack</b>: ' + df1[7].astype(str) + '<br>'),
+                     go.Scatter(x=labelSAWQLMS,
+                                y=valueIre1,
+                                mode='lines+markers',
+                                name='IE',
+                                line=dict(shape="spline", smoothing=1.3, width=3, color='#9E9D7B'),
+                                marker=dict(size=5, symbol='circle', color='lightblue',
+                                            line=dict(color='#9E9D7B', width=2)),
+                                hoverinfo='text',
+                                hovertext=
+                                '<b>Country</b>: ' + 'Ireland' + '<br>' +
+                                '<b>Quarterly labour market slack</b>: ' + df1[8].astype(str) + '<br>'),
+                     go.Scatter(x=labelSAWQLMS,
+                                y=valueGree1,
+                                mode='lines+markers',
+                                name='EL',
+                                line=dict(shape="spline", smoothing=1.3, width=3, color='#1A46C0'),
+                                marker=dict(size=5, symbol='circle', color='lightblue',
+                                            line=dict(color='#1A46C0', width=2)),
+                                hoverinfo='text',
+                                hovertext=
+                                '<b>Country</b>: ' + 'Greece' + '<br>' +
+                                '<b>Quarterly labour market slack</b>: ' + df1[9].astype(str) + '<br>'),
+                     go.Scatter(x=labelSAWQLMS,
+                                y=valueSpa1,
+                                mode='lines+markers',
+                                name='ES',
+                                line=dict(shape="spline", smoothing=1.3, width=3, color='#2E063A'),
+                                marker=dict(size=5, symbol='circle', color='lightblue',
+                                            line=dict(color='#2E063A', width=2)),
+                                hoverinfo='text',
+                                hovertext=
+                                '<b>Country</b>: ' + 'Spain' + '<br>' +
+                                '<b>Quarterly labour market slack</b>: ' + df1[10].astype(str) + '<br>'),
+                     go.Scatter(x=labelSAWQLMS,
+                                y=valueFra1,
+                                mode='lines+markers',
+                                name='FR',
+                                line=dict(shape="spline", smoothing=1.3, width=3, color='#39313C'),
+                                marker=dict(size=5, symbol='circle', color='lightblue',
+                                            line=dict(color='#39313C', width=2)),
+                                hoverinfo='text',
+                                hovertext=
+                                '<b>Country</b>: ' + 'France' + '<br>' +
+                                '<b>Quarterly labour market slack</b>: ' + df1[11].astype(str) + '<br>'),
+                     go.Scatter(x=labelSAWQLMS,
+                                y=valueCro1,
+                                mode='lines+markers',
+                                name='HR',
+                                line=dict(shape="spline", smoothing=1.3, width=3, color='#189F96'),
+                                marker=dict(size=5, symbol='circle', color='lightblue',
+                                            line=dict(color='#189F96', width=2)),
+                                hoverinfo='text',
+                                hovertext=
+                                '<b>Country</b>: ' + 'Croatia' + '<br>' +
+                                '<b>Quarterly labour market slack</b>: ' + df1[12].astype(str) + '<br>'),
+                     go.Scatter(x=labelSAWQLMS,
+                                y=valueIta1,
+                                mode='lines+markers',
+                                name='IT',
+                                line=dict(shape="spline", smoothing=1.3, width=3, color='#94A4A3'),
+                                marker=dict(size=5, symbol='circle', color='lightblue',
+                                            line=dict(color='#94A4A3', width=2)),
+                                hoverinfo='text',
+                                hovertext=
+                                '<b>Country</b>: ' + 'Italy' + '<br>' +
+                                '<b>Quarterly labour market slack</b>: ' + df1[13].astype(str) + '<br>'),
+                     go.Scatter(x=labelSAWQLMS,
+                                y=valueCyp1,
+                                mode='lines+markers',
+                                name='CY',
+                                line=dict(shape="spline", smoothing=1.3, width=3, color='#ff3399'),
+                                marker=dict(size=5, symbol='circle', color='lightblue',
+                                            line=dict(color='#ff3399', width=2)),
+                                hoverinfo='text',
+                                hovertext=
+                                '<b>Country</b>: ' + 'Cyprus' + '<br>' +
+                                '<b>Quarterly labour market slack</b>: ' + df1[14].astype(str) + '<br>'),
+                     go.Scatter(x=labelSAWQLMS,
+                                y=valueLat1,
+                                mode='lines+markers',
+                                name='LV',
+                                line=dict(shape="spline", smoothing=1.3, width=3, color='#aaaa55'),
+                                marker=dict(size=5, symbol='circle', color='lightblue',
+                                            line=dict(color='#aaaa55', width=2)),
+                                hoverinfo='text',
+                                hovertext=
+                                '<b>Country</b>: ' + 'Latvia' + '<br>' +
+                                '<b>Quarterly labour market slack</b>: ' + df1[15].astype(str) + '<br>'),
+                     go.Scatter(x=labelSAWQLMS,
+                                y=valueLith1,
+                                mode='lines+markers',
+                                name='LT',
+                                line=dict(shape="spline", smoothing=1.3, width=3, color='#ffff00'),
+                                marker=dict(size=5, symbol='circle', color='lightblue',
+                                            line=dict(color='#ffff00', width=2)),
+                                hoverinfo='text',
+                                hovertext=
+                                '<b>Country</b>: ' + 'Lithuania' + '<br>' +
+                                '<b>Quarterly labour market slack</b>: ' + df1[16].astype(str) + '<br>'),
+                     go.Scatter(x=labelSAWQLMS,
+                                y=valueLux1,
+                                mode='lines+markers',
+                                name='LU',
+                                line=dict(shape="spline", smoothing=1.3, width=3, color='#007399'),
+                                marker=dict(size=5, symbol='circle', color='lightblue',
+                                            line=dict(color='#007399', width=2)),
+                                hoverinfo='text',
+                                hovertext=
+                                '<b>Country</b>: ' + 'Luxembourg' + '<br>' +
+                                '<b>Quarterly labour market slack</b>: ' + df1[17].astype(str) + '<br>'),
+                     go.Scatter(x=labelSAWQLMS,
+                                y=valueHun1,
+                                mode='lines+markers',
+                                name='HU',
+                                line=dict(shape="spline", smoothing=1.3, width=3, color='#ff3300'),
+                                marker=dict(size=5, symbol='circle', color='lightblue',
+                                            line=dict(color='#ff3300', width=2)),
+                                hoverinfo='text',
+                                hovertext=
+                                '<b>Country</b>: ' + 'Hungary' + '<br>' +
+                                '<b>Quarterly labour market slack</b>: ' + df1[18].astype(str) + '<br>'),
+                     go.Scatter(x=labelSAWQLMS,
+                                y=valueNet1,
+                                mode='lines+markers',
+                                name='NL',
+                                line=dict(shape="spline", smoothing=1.3, width=3, color='#00e600'),
+                                marker=dict(size=5, symbol='circle', color='lightblue',
+                                            line=dict(color='#00e600', width=2)),
+                                hoverinfo='text',
+                                hovertext=
+                                '<b>Country</b>: ' + 'Netherlands' + '<br>' +
+                                '<b>Quarterly labour market slack</b>: ' + df1[20].astype(str) + '<br>'),
+                     go.Scatter(x=labelSAWQLMS,
+                                y=valueAus1,
+                                mode='lines+markers',
+                                name='AT',
+                                line=dict(shape="spline", smoothing=1.3, width=3, color='#4dff4d'),
+                                marker=dict(size=5, symbol='circle', color='lightblue',
+                                            line=dict(color='#4dff4d', width=2)),
+                                hoverinfo='text',
+                                hovertext=
+                                '<b>Country</b>: ' + 'Austria' + '<br>' +
+                                '<b>Quarterly labour market slack</b>: ' + df1[21].astype(str) + '<br>'),
+                     go.Scatter(x=labelSAWQLMS,
+                                y=valuePol1,
+                                mode='lines+markers',
+                                name='PL',
+                                line=dict(shape="spline", smoothing=1.3, width=3, color='#003300'),
+                                marker=dict(size=5, symbol='circle', color='lightblue',
+                                            line=dict(color='#003300', width=2)),
+                                hoverinfo='text',
+                                hovertext=
+                                '<b>Country</b>: ' + 'Poland' + '<br>' +
+                                '<b>Quarterly labour market slack</b>: ' + df1[22].astype(str) + '<br>'),
+                     go.Scatter(x=labelSAWQLMS,
+                                y=valuePor1,
+                                mode='lines+markers',
+                                name='PT',
+                                line=dict(shape="spline", smoothing=1.3, width=3, color='#662900'),
+                                marker=dict(size=5, symbol='circle', color='lightblue',
+                                            line=dict(color='#662900', width=2)),
+                                hoverinfo='text',
+                                hovertext=
+                                '<b>Country</b>: ' + 'Portugal' + '<br>' +
+                                '<b>Quarterly labour market slack</b>: ' + df1[23].astype(str) + '<br>'),
+                     go.Scatter(x=labelSAWQLMS,
+                                y=valueRom1,
+                                mode='lines+markers',
+                                name='RO',
+                                line=dict(shape="spline", smoothing=1.3, width=3, color='#993399'),
+                                marker=dict(size=5, symbol='circle', color='lightblue',
+                                            line=dict(color='#993399', width=2)),
+                                hoverinfo='text',
+                                hovertext=
+                                '<b>Country</b>: ' + 'Romania' + '<br>' +
+                                '<b>Quarterly labour market slack</b>: ' + df1[24].astype(str) + '<br>'),
+                     go.Scatter(x=labelSAWQLMS,
+                                y=valueSlo1,
+                                mode='lines+markers',
+                                name='SI',
+                                line=dict(shape="spline", smoothing=1.3, width=3, color='#d98cd9'),
+                                marker=dict(size=5, symbol='circle', color='lightblue',
+                                            line=dict(color='#d98cd9', width=2)),
+                                hoverinfo='text',
+                                hovertext=
+                                '<b>Country</b>: ' + 'Slovenia' + '<br>' +
+                                '<b>Quarterly labour market slack</b>: ' + df1[25].astype(str) + '<br>'),
+                     go.Scatter(x=labelSAWQLMS,
+                                y=valueSlovak1,
+                                mode='lines+markers',
+                                name='SK',
+                                line=dict(shape="spline", smoothing=1.3, width=3, color='#0033cc'),
+                                marker=dict(size=5, symbol='circle', color='lightblue',
+                                            line=dict(color='#0033cc', width=2)),
+                                hoverinfo='text',
+                                hovertext=
+                                '<b>Country</b>: ' + 'Slovakia' + '<br>' +
+                                '<b>Quarterly labour market slack</b>: ' + df1[26].astype(str) + '<br>'),
+                     go.Scatter(x=labelSAWQLMS,
+                                y=valueFin1,
+                                mode='lines+markers',
+                                name='FI',
+                                line=dict(shape="spline", smoothing=1.3, width=3, color='#99b3ff'),
+                                marker=dict(size=5, symbol='circle', color='lightblue',
+                                            line=dict(color='#99b3ff', width=2)),
+                                hoverinfo='text',
+                                hovertext=
+                                '<b>Country</b>: ' + 'Finland' + '<br>' +
+                                '<b>Quarterly labour market slack</b>: ' + df1[27].astype(str) + '<br>'),
+                     go.Scatter(x=labelSAWQLMS,
+                                y=valueSwe1,
+                                mode='lines+markers',
+                                name='SE',
+                                line=dict(shape="spline", smoothing=1.3, width=3, color='#001a66'),
+                                marker=dict(size=5, symbol='circle', color='lightblue',
+                                            line=dict(color='#001a66', width=2)),
+                                hoverinfo='text',
+                                hovertext=
+                                '<b>Country</b>: ' + 'Sweden' + '<br>' +
+                                '<b>Quarterly labour market slack</b>: ' + df1[28].astype(str) + '<br>'),
+                     go.Scatter(x=labelSAWQLMS,
+                                y=valueIce1,
+                                mode='lines+markers',
+                                name='IS',
+                                line=dict(shape="spline", smoothing=1.3, width=3, color='#336600'),
+                                marker=dict(size=5, symbol='circle', color='lightblue',
+                                            line=dict(color='#336600', width=2)),
+                                hoverinfo='text',
+                                hovertext=
+                                '<b>Country</b>: ' + 'Iceland' + '<br>' +
+                                '<b>Quarterly labour market slack</b>: ' + df1[29].astype(str) + '<br>'),
+                     go.Scatter(x=labelSAWQLMS,
+                                y=valueNor1,
+                                mode='lines+markers',
+                                name='NO',
+                                line=dict(shape="spline", smoothing=1.3, width=3, color='#73e600'),
+                                marker=dict(size=5, symbol='circle', color='lightblue',
+                                            line=dict(color='#73e600', width=2)),
+                                hoverinfo='text',
+                                hovertext=
+                                '<b>Country</b>: ' + 'Norway' + '<br>' +
+                                '<b>Quarterly labour market slack</b>: ' + df1[30].astype(str) + '<br>'),
+                     go.Scatter(x=labelSAWQLMS,
+                                y=valueSwi1,
+                                mode='lines+markers',
+                                name='CH',
+                                line=dict(shape="spline", smoothing=1.3, width=3, color='#bfff80'),
+                                marker=dict(size=5, symbol='circle', color='lightblue',
+                                            line=dict(color='#bfff80', width=2)),
+                                hoverinfo='text',
+                                hovertext=
+                                '<b>Country</b>: ' + 'Switzerland' + '<br>' +
+                                '<b>Quarterly labour market slack</b>: ' + df1[31].astype(str) + '<br>'),
+                     go.Scatter(x=labelSAWQLMS,
+                                y=valueTur1,
+                                mode='lines+markers',
+                                name='TR',
+                                line=dict(shape="spline", smoothing=1.3, width=3, color='#ff4da6'),
+                                marker=dict(size=5, symbol='circle', color='lightblue',
+                                            line=dict(color='#ff4da6', width=2)),
+                                hoverinfo='text',
+                                hovertext=
+                                '<b>Country</b>: ' + 'Turkey' + '<br>' +
+                                '<b>Quarterly labour market slack</b>: ' + df1[35].astype(str) + '<br>'),
+                     go.Scatter(x=labelSAWQLMS,
+                                y=valueSer1,
+                                mode='lines+markers',
+                                name='US',
+                                line=dict(shape="spline", smoothing=1.3, width=3, color='#4dc3ff'),
+                                marker=dict(size=5, symbol='circle', color='lightblue',
+                                            line=dict(color='#4dc3ff', width=2)),
+                                hoverinfo='text',
+                                hovertext=
+                                '<b>Country</b>: ' + 'Serbia' + '<br>' +
+                                '<b>Quarterly labour market slack</b>: ' + df1[34].astype(str) + '<br>'),],
             'layout': go.Layout(
                 barmode='stack',
                 plot_bgcolor='#808080',
@@ -7439,9 +7694,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                            tickfont=dict(
                                family='Arial',
                                size=12,
-                               color='white'
-                           )
-                           ),
+                               color='white')),
                 yaxis=dict(title='<b>% of extended labour force aged 15-74 years</b>',
                            color='white',
                            showline=True,
@@ -7453,9 +7706,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                            tickfont=dict(
                                family='Arial',
                                size=12,
-                               color='white'
-                           )
-                           ),
+                               color='white' )),
                 legend={
                     'orientation': 'h',
                     'bgcolor': '#010915',
@@ -7463,8 +7714,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                 font=dict(
                     family="sans-serif",
                     size=12,
-                    color='white'),
-            )
+                    color='white'),)
         }
     #KRece podgrupa Society and work-Quarterly job vacancy rate
     elif (w_countries == 'Society and work') & (w_countries1 == 'Quarterly job vacancy rate'):
@@ -7476,32 +7726,424 @@ def update_graph(w_countries, w_countries1, country_chosen):
         if ('Belgium' in coun):
             valueBel1 = getSAWQJVR('Belgium')
 
+        valueBul1 = []
+        if ('Bulgaria' in coun):
+            valueBul1 = getSAWQJVR('Bulgaria')
+
+        valueChe1 = []
+        if ('Czechia' in coun):
+            valueChe1 = getSAWQJVR('Czechia')
+
+        valueDen1 = []
+        if ('Denmark' in coun):
+            valueDen1 = getSAWQJVR('Denmark')
+
+        valueGer1 = []
+        if ('Germany' in coun):
+            valueGer1 = getSAWQJVR('Germany')
+
+        valueEst1 = []
+        if ('Estonia' in coun):
+            valueEst1 = getSAWQJVR('Estonia')
+
+        valueGree1 = []
+        if ('Greece' in coun):
+            valueGree1 = getSAWQJVR('Greece')
+
+        valueSpa1 = []
+        if ('Spain' in coun):
+            valueSpa1 = getSAWQJVR('Spain')
+
+        valueCyp1 = []
+        if ('Cyprus' in coun):
+            valueCyp1 = getSAWQJVR('Cyprus')
+
+        valueLat1 = []
+        if ('Latvia' in coun):
+            valueLat1 = getSAWQJVR('Latvia')
+
+        valueLith1 = []
+        if ('Lithuania' in coun):
+            valueLith1 = getSAWQJVR('Lithuania')
+
+        valueLux1 = []
+        if ('Luxembourg' in coun):
+            valueLux1 = getSAWQJVR('Luxembourg')
+
+        valueHun1 = []
+        if ('Hungary' in coun):
+            valueHun1 = getSAWQJVR('Hungary')
+
+        valueNet1 = []
+        if ('Netherlands' in coun):
+            valueNet1 = getSAWQJVR('Netherlands')
+
+        valueAus1 = []
+        if ('Austria' in coun):
+            valueAus1 = getSAWQJVR('Austria')
+
+        valuePol1 = []
+        if ('Poland' in coun):
+            valuePol1 = getSAWQJVR('Poland')
+
+        valuePor1 = []
+        if ('Portugal' in coun):
+            valuePor1 = getSAWQJVR('Portugal')
+
+        valueRom1 = []
+        if ('Romania' in coun):
+            valueRom1 = getSAWQJVR('Romania')
+
+        valueSlo1 = []
+        if ('Slovenia' in coun):
+            valueSlo1 = getSAWQJVR('Slovenia')
+
+        valueSlovak1 = []
+        if ('Slovakia' in coun):
+            valueSlovak1 = getSAWQJVR('Slovakia')
+
+        valueFin1 = []
+        if ('Finland' in coun):
+            valueFin1 = getSAWQJVR('Finland')
+
+        valueSwe1 = []
+        if ('Sweden' in coun):
+            valueSwe1 = getSAWQJVR('Sweden')
+
+        valueUk1 = []
+        if ('United Kingdom' in coun):
+            valueUk1 = getSAWQJVR('United Kingdom')
+
+        valueNor1 = []
+        if ('Norway' in coun):
+            valueNor1 = getSAWQJVR('Norway')
+
+        valueSwi1 = []
+        if ('Switzerland' in coun):
+            valueSwi1 = getSAWQJVR('Switzerland')
+
+        valueEa1 = []
+        if ('Euro area' in coun):
+            valueEa1 = getSAWQJVR('Euro area')
+
+        valueIre1 = []
+        if ('Ireland' in coun):
+            valueIre1 = getSAWQJVR('Ireland')
+
+        mur = pd.read_csv('data/Society and work-Quarterly job vacancy rate.csv')
+        df1 = {}
+        for i in range(0, 29):
+            niz = mur.loc[i, :]
+            df1[i] = niz
         return {
             'data': [go.Scatter(x=labelSAWQE,
                                 y=valueEu1,
                                 mode='lines+markers',
-                                name='European Union',
+                                name='EU',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#E6D1D1'),
                                 marker=dict(size=5, symbol='circle', color='lightblue',
-                                            line=dict(color='#E6D1D1', width=2)
-                                            ),
+                                            line=dict(color='#E6D1D1', width=2)),
                                 hoverinfo='text',
                                 hovertext=
-                                '<b>Country</b>: ' + 'European Union' + '<br>'
-                                ),
+                                '<b>Country</b>: ' + 'European Union' + '<br>'+
+                                '<b>Quarterly job vacancy rate</b>: ' + df1[0].astype(str) + '<br>'),
                      go.Scatter(x=labelSAWQE,
                                 y=valueBel1,
                                 mode='lines+markers',
-                                name='Belgium',
+                                name='BE',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#FF0000'),
                                 marker=dict(size=5, symbol='circle', color='lightblue',
-                                            line=dict(color='#FF0000', width=2)
-                                            ),
+                                            line=dict(color='#FF0000', width=2)),
                                 hoverinfo='text',
                                 hovertext=
-                                '<b>Country</b>: ' + 'Belgium' + '<br>'
-                                )
-                     ],
+                                '<b>Country</b>: ' + 'Belgium' + '<br>'+
+                                '<b>Quarterly job vacancy rate</b>: ' + df1[2].astype(str) + '<br>'),
+                     go.Scatter(x=labelSAWQE,
+                                y=valueEa1,
+                                mode='lines+markers',
+                                name='EA',
+                                line=dict(shape="spline", smoothing=1.3, width=3, color='#472727'),
+                                marker=dict(size=5, symbol='circle', color='lightblue',
+                                            line=dict(color='#472727', width=2)),
+                                hoverinfo='text',
+                                hovertext=
+                                '<b>Country</b>: ' + 'Euro area' + '<br>' +
+                                '<b>Quarterly job vacancy rate</b>: ' + df1[1].astype(str) + '<br>'),
+                     go.Scatter(x=labelSAWQE,
+                                y=valueBul1,
+                                mode='lines+markers',
+                                name='BG',
+                                line=dict(shape="spline", smoothing=1.3, width=3, color='#353131'),
+                                marker=dict(size=5, symbol='circle', color='lightblue',
+                                            line=dict(color='#353131', width=2)),
+                                hoverinfo='text',
+                                hovertext=
+                                '<b>Country</b>: ' + 'Bulgaria' + '<br>' +
+                                '<b>Quarterly job vacancy rate</b>: ' + df1[3].astype(str) + '<br>'),
+                     go.Scatter(x=labelSAWQE,
+                                y=valueChe1,
+                                mode='lines+markers',
+                                name='CZ',
+                                line=dict(shape="spline", smoothing=1.3, width=3, color='#49AF30'),
+                                marker=dict(size=5, symbol='circle', color='lightblue',
+                                            line=dict(color='#49AF30', width=2)),
+                                hoverinfo='text',
+                                hovertext=
+                                '<b>Country</b>: ' + 'Czechia' + '<br>' +
+                                '<b>Quarterly job vacancy rate</b>: ' + df1[4].astype(str) + '<br>'),
+                     go.Scatter(x=labelSAWQE,
+                                y=valueDen1,
+                                mode='lines+markers',
+                                name='DK',
+                                line=dict(shape="spline", smoothing=1.3, width=3, color='#2A4623'),
+                                marker=dict(size=5, symbol='circle', color='lightblue',
+                                            line=dict(color='#2A4623', width=2)),
+                                hoverinfo='text',
+                                hovertext=
+                                '<b>Country</b>: ' + 'Denmark' + '<br>' +
+                                '<b>Quarterly job vacancy rate</b>: ' + df1[5].astype(str) + '<br>'),
+                     go.Scatter(x=labelSAWQE,
+                                y=valueGer1,
+                                mode='lines+markers',
+                                name='DE',
+                                line=dict(shape="spline", smoothing=1.3, width=3, color='#7B7D7B'),
+                                marker=dict(size=5, symbol='circle', color='lightblue',
+                                            line=dict(color='#7B7D7B', width=2)),
+                                hoverinfo='text',
+                                hovertext=
+                                '<b>Country</b>: ' + 'Germany' + '<br>' +
+                                '<b>Quarterly job vacancy rate</b>: ' + df1[6].astype(str) + '<br>'),
+                     go.Scatter(x=labelSAWQE,
+                                y=valueEst1,
+                                mode='lines+markers',
+                                name='EE',
+                                line=dict(shape="spline", smoothing=1.3, width=3, color='#C4C048'),
+                                marker=dict(size=5, symbol='circle', color='lightblue',
+                                            line=dict(color='#C4C048', width=2)),
+                                hoverinfo='text',
+                                hovertext=
+                                '<b>Country</b>: ' + 'Estonia' + '<br>' +
+                                '<b>Quarterly job vacancy rate</b>: ' + df1[7].astype(str) + '<br>'),
+                     go.Scatter(x=labelSAWQE,
+                                y=valueIre1,
+                                mode='lines+markers',
+                                name='IE',
+                                line=dict(shape="spline", smoothing=1.3, width=3, color='#9E9D7B'),
+                                marker=dict(size=5, symbol='circle', color='lightblue',
+                                            line=dict(color='#9E9D7B', width=2)),
+                                hoverinfo='text',
+                                hovertext=
+                                '<b>Country</b>: ' + 'Ireland' + '<br>' +
+                                '<b>Quarterly job vacancy rate</b>: ' + df1[8].astype(str) + '<br>'),
+                     go.Scatter(x=labelSAWQE,
+                                y=valueGree1,
+                                mode='lines+markers',
+                                name='EL',
+                                line=dict(shape="spline", smoothing=1.3, width=3, color='#1A46C0'),
+                                marker=dict(size=5, symbol='circle', color='lightblue',
+                                            line=dict(color='#1A46C0', width=2)),
+                                hoverinfo='text',
+                                hovertext=
+                                '<b>Country</b>: ' + 'Greece' + '<br>' +
+                                '<b>Quarterly job vacancy rate</b>: ' + df1[9].astype(str) + '<br>'),
+                     go.Scatter(x=labelSAWQE,
+                                y=valueSpa1,
+                                mode='lines+markers',
+                                name='ES',
+                                line=dict(shape="spline", smoothing=1.3, width=3, color='#2E063A'),
+                                marker=dict(size=5, symbol='circle', color='lightblue',
+                                            line=dict(color='#2E063A', width=2)),
+                                hoverinfo='text',
+                                hovertext=
+                                '<b>Country</b>: ' + 'Spain' + '<br>' +
+                                '<b>Quarterly job vacancy rate</b>: ' + df1[9].astype(str) + '<br>'),
+                     go.Scatter(x=labelSAWQE,
+                                y=valueCyp1,
+                                mode='lines+markers',
+                                name='CY',
+                                line=dict(shape="spline", smoothing=1.3, width=3, color='#ff3399'),
+                                marker=dict(size=5, symbol='circle', color='lightblue',
+                                            line=dict(color='#ff3399', width=2)),
+                                hoverinfo='text',
+                                hovertext=
+                                '<b>Country</b>: ' + 'Cyprus' + '<br>' +
+                                '<b>Quarterly job vacancy rate</b>: ' + df1[10].astype(str) + '<br>'),
+                     go.Scatter(x=labelSAWQE,
+                                y=valueLat1,
+                                mode='lines+markers',
+                                name='LV',
+                                line=dict(shape="spline", smoothing=1.3, width=3, color='#aaaa55'),
+                                marker=dict(size=5, symbol='circle', color='lightblue',
+                                            line=dict(color='#aaaa55', width=2)),
+                                hoverinfo='text',
+                                hovertext=
+                                '<b>Country</b>: ' + 'Latvia' + '<br>' +
+                                '<b>Quarterly job vacancy rate</b>: ' + df1[11].astype(str) + '<br>'),
+                     go.Scatter(x=labelSAWQE,
+                                y=valueLith1,
+                                mode='lines+markers',
+                                name='LT',
+                                line=dict(shape="spline", smoothing=1.3, width=3, color='#ffff00'),
+                                marker=dict(size=5, symbol='circle', color='lightblue',
+                                            line=dict(color='#ffff00', width=2)),
+                                hoverinfo='text',
+                                hovertext=
+                                '<b>Country</b>: ' + 'Lithuania' + '<br>' +
+                                '<b>Quarterly job vacancy rate</b>: ' + df1[12].astype(str) + '<br>'),
+                     go.Scatter(x=labelSAWQE,
+                                y=valueLux1,
+                                mode='lines+markers',
+                                name='LU',
+                                line=dict(shape="spline", smoothing=1.3, width=3, color='#007399'),
+                                marker=dict(size=5, symbol='circle', color='lightblue',
+                                            line=dict(color='#007399', width=2)),
+                                hoverinfo='text',
+                                hovertext=
+                                '<b>Country</b>: ' + 'Luxembourg' + '<br>' +
+                                '<b>Quarterly job vacancy rate</b>: ' + df1[13].astype(str) + '<br>'),
+                     go.Scatter(x=labelSAWQE,
+                                y=valueHun1,
+                                mode='lines+markers',
+                                name='HU',
+                                line=dict(shape="spline", smoothing=1.3, width=3, color='#ff3300'),
+                                marker=dict(size=5, symbol='circle', color='lightblue',
+                                            line=dict(color='#ff3300', width=2)),
+                                hoverinfo='text',
+                                hovertext=
+                                '<b>Country</b>: ' + 'Hungary' + '<br>' +
+                                '<b>Quarterly job vacancy rate</b>: ' + df1[14].astype(str) + '<br>'),
+                     go.Scatter(x=labelSAWQE,
+                                y=valueNet1,
+                                mode='lines+markers',
+                                name='NL',
+                                line=dict(shape="spline", smoothing=1.3, width=3, color='#00e600'),
+                                marker=dict(size=5, symbol='circle', color='lightblue',
+                                            line=dict(color='#00e600', width=2)),
+                                hoverinfo='text',
+                                hovertext=
+                                '<b>Country</b>: ' + 'Netherlands' + '<br>' +
+                                '<b>Quarterly job vacancy rate</b>: ' + df1[16].astype(str) + '<br>'),
+                     go.Scatter(x=labelSAWQE,
+                                y=valueAus1,
+                                mode='lines+markers',
+                                name='AT',
+                                line=dict(shape="spline", smoothing=1.3, width=3, color='#4dff4d'),
+                                marker=dict(size=5, symbol='circle', color='lightblue',
+                                            line=dict(color='#4dff4d', width=2)),
+                                hoverinfo='text',
+                                hovertext=
+                                '<b>Country</b>: ' + 'Austria' + '<br>' +
+                                '<b>Quarterly job vacancy rate</b>: ' + df1[17].astype(str) + '<br>'),
+                     go.Scatter(x=labelSAWQE,
+                                y=valuePol1,
+                                mode='lines+markers',
+                                name='PL',
+                                line=dict(shape="spline", smoothing=1.3, width=3, color='#003300'),
+                                marker=dict(size=5, symbol='circle', color='lightblue',
+                                            line=dict(color='#003300', width=2)),
+                                hoverinfo='text',
+                                hovertext=
+                                '<b>Country</b>: ' + 'Poland' + '<br>' +
+                                '<b>Quarterly job vacancy rate</b>: ' + df1[18].astype(str) + '<br>'),
+                     go.Scatter(x=labelSAWQE,
+                                y=valuePor1,
+                                mode='lines+markers',
+                                name='PT',
+                                line=dict(shape="spline", smoothing=1.3, width=3, color='#662900'),
+                                marker=dict(size=5, symbol='circle', color='lightblue',
+                                            line=dict(color='#662900', width=2)),
+                                hoverinfo='text',
+                                hovertext=
+                                '<b>Country</b>: ' + 'Portugal' + '<br>' +
+                                '<b>Quarterly job vacancy rate</b>: ' + df1[19].astype(str) + '<br>'),
+                     go.Scatter(x=labelSAWQE,
+                                y=valueRom1,
+                                mode='lines+markers',
+                                name='RO',
+                                line=dict(shape="spline", smoothing=1.3, width=3, color='#993399'),
+                                marker=dict(size=5, symbol='circle', color='lightblue',
+                                            line=dict(color='#993399', width=2)),
+                                hoverinfo='text',
+                                hovertext=
+                                '<b>Country</b>: ' + 'Romania' + '<br>' +
+                                '<b>Quarterly job vacancy rate</b>: ' + df1[20].astype(str) + '<br>'),
+                     go.Scatter(x=labelSAWQE,
+                                y=valueSlo1,
+                                mode='lines+markers',
+                                name='SI',
+                                line=dict(shape="spline", smoothing=1.3, width=3, color='#d98cd9'),
+                                marker=dict(size=5, symbol='circle', color='lightblue',
+                                            line=dict(color='#d98cd9', width=2)),
+                                hoverinfo='text',
+                                hovertext=
+                                '<b>Country</b>: ' + 'Slovenia' + '<br>' +
+                                '<b>Quarterly job vacancy rate</b>: ' + df1[21].astype(str) + '<br>'),
+                     go.Scatter(x=labelSAWQE,
+                                y=valueSlovak1,
+                                mode='lines+markers',
+                                name='SK',
+                                line=dict(shape="spline", smoothing=1.3, width=3, color='#0033cc'),
+                                marker=dict(size=5, symbol='circle', color='lightblue',
+                                            line=dict(color='#0033cc', width=2)),
+                                hoverinfo='text',
+                                hovertext=
+                                '<b>Country</b>: ' + 'Slovakia' + '<br>' +
+                                '<b>Quarterly job vacancy rate</b>: ' + df1[22].astype(str) + '<br>'),
+                     go.Scatter(x=labelSAWQE,
+                                y=valueFin1,
+                                mode='lines+markers',
+                                name='FI',
+                                line=dict(shape="spline", smoothing=1.3, width=3, color='#99b3ff'),
+                                marker=dict(size=5, symbol='circle', color='lightblue',
+                                            line=dict(color='#99b3ff', width=2)),
+                                hoverinfo='text',
+                                hovertext=
+                                '<b>Country</b>: ' + 'Finland' + '<br>' +
+                                '<b>Quarterly job vacancy rate</b>: ' + df1[23].astype(str) + '<br>'),
+                     go.Scatter(x=labelSAWQE,
+                                y=valueSwe1,
+                                mode='lines+markers',
+                                name='SE',
+                                line=dict(shape="spline", smoothing=1.3, width=3, color='#001a66'),
+                                marker=dict(size=5, symbol='circle', color='lightblue',
+                                            line=dict(color='#001a66', width=2)),
+                                hoverinfo='text',
+                                hovertext=
+                                '<b>Country</b>: ' + 'Sweden' + '<br>' +
+                                '<b>Quarterly job vacancy rate</b>: ' + df1[24].astype(str) + '<br>'),
+                     go.Scatter(x=labelSAWQE,
+                                y=valueUk1,
+                                mode='lines+markers',
+                                name='UK',
+                                line=dict(shape="spline", smoothing=1.3, width=3, color='#00cc99'),
+                                marker=dict(size=5, symbol='circle', color='lightblue',
+                                            line=dict(color='#00cc99', width=2)),
+                                hoverinfo='text',
+                                hovertext=
+                                '<b>Country</b>: ' + 'United Kingdom' + '<br>' +
+                                '<b>Quarterly job vacancy rate</b>: ' + df1[27].astype(str) + '<br>'),
+                     go.Scatter(x=labelSAWQE,
+                                y=valueNor1,
+                                mode='lines+markers',
+                                name='NO',
+                                line=dict(shape="spline", smoothing=1.3, width=3, color='#73e600'),
+                                marker=dict(size=5, symbol='circle', color='lightblue',
+                                            line=dict(color='#73e600', width=2)),
+                                hoverinfo='text',
+                                hovertext=
+                                '<b>Country</b>: ' + 'Norway' + '<br>' +
+                                '<b>Quarterly job vacancy rate</b>: ' + df1[25].astype(str) + '<br>'),
+                     go.Scatter(x=labelSAWQE,
+                                y=valueSwi1,
+                                mode='lines+markers',
+                                name='CH',
+                                line=dict(shape="spline", smoothing=1.3, width=3, color='#bfff80'),
+                                marker=dict(size=5, symbol='circle', color='lightblue',
+                                            line=dict(color='#bfff80', width=2)),
+                                hoverinfo='text',
+                                hovertext=
+                                '<b>Country</b>: ' + 'Switzerland' + '<br>' +
+                                '<b>Quarterly job vacancy rate</b>: ' + df1[26].astype(str) + '<br>'),],
             'layout': go.Layout(
                 barmode='stack',
                 plot_bgcolor='#808080',
@@ -7533,9 +8175,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                            tickfont=dict(
                                family='Arial',
                                size=12,
-                               color='white'
-                           )
-                           ),
+                               color='white')),
                 yaxis=dict(title='<b>%</b>',
                            color='white',
                            showline=True,
@@ -7547,9 +8187,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                            tickfont=dict(
                                family='Arial',
                                size=12,
-                               color='white'
-                           )
-                           ),
+                               color='white')),
                 legend={
                     'orientation': 'h',
                     'bgcolor': '#010915',
@@ -7557,10 +8195,9 @@ def update_graph(w_countries, w_countries1, country_chosen):
                 font=dict(
                     family="sans-serif",
                     size=12,
-                    color='white'),
-            )
+                    color='white'),)
         }
-        # KRece podgrupa Society and work-Quarterly labour cost
+# KRece podgrupa Society and work-Quarterly labour cost
     elif (w_countries == 'Society and work') & (w_countries1 == 'Quarterly labour cost'):
         valueEu1 = []
         if ('European Union' in coun):
@@ -7570,32 +8207,409 @@ def update_graph(w_countries, w_countries1, country_chosen):
         if ('Belgium' in coun):
             valueBel1 = getSAWQLC('Belgium')
 
+        valueBul1 = []
+        if ('Bulgaria' in coun):
+            valueBul1 = getSAWQLC('Bulgaria')
+
+        valueChe1 = []
+        if ('Czechia' in coun):
+            valueChe1 = getSAWQLC('Czechia')
+
+        valueGer1 = []
+        if ('Germany' in coun):
+            valueGer1 = getSAWQLC('Germany')
+
+        valueEst1 = []
+        if ('Estonia' in coun):
+            valueEst1 = getSAWQLC('Estonia')
+
+        valueGree1 = []
+        if ('Greece' in coun):
+            valueGree1 = getSAWQLC('Greece')
+
+        valueSpa1 = []
+        if ('Spain' in coun):
+            valueSpa1 = getSAWQLC('Spain')
+
+        valueCyp1 = []
+        if ('Cyprus' in coun):
+            valueCyp1 = getSAWQLC('Cyprus')
+
+        valueLat1 = []
+        if ('Latvia' in coun):
+            valueLat1 = getSAWQLC('Latvia')
+
+        valueLith1 = []
+        if ('Lithuania' in coun):
+            valueLith1 = getSAWQLC('Lithuania')
+
+        valueLux1 = []
+        if ('Luxembourg' in coun):
+            valueLux1 = getSAWQLC('Luxembourg')
+
+        valueHun1 = []
+        if ('Hungary' in coun):
+            valueHun1 = getSAWQLC('Hungary')
+
+        valueNet1 = []
+        if ('Netherlands' in coun):
+            valueNet1 = getSAWQLC('Netherlands')
+
+        valueAus1 = []
+        if ('Austria' in coun):
+            valueAus1 = getSAWQLC('Austria')
+
+        valuePol1 = []
+        if ('Poland' in coun):
+            valuePol1 = getSAWQLC('Poland')
+
+        valuePor1 = []
+        if ('Portugal' in coun):
+            valuePor1 = getSAWQLC('Portugal')
+
+        valueRom1 = []
+        if ('Romania' in coun):
+            valueRom1 = getSAWQLC('Romania')
+
+        valueSlo1 = []
+        if ('Slovenia' in coun):
+            valueSlo1 = getSAWQLC('Slovenia')
+
+        valueSlovak1 = []
+        if ('Slovakia' in coun):
+            valueSlovak1 = getSAWQLC('Slovakia')
+
+        valueFin1 = []
+        if ('Finland' in coun):
+            valueFin1 = getSAWQLC('Finland')
+
+        valueSwe1 = []
+        if ('Sweden' in coun):
+            valueSwe1 = getSAWQLC('Sweden')
+
+        valueUk1 = []
+        if ('United Kingdom' in coun):
+            valueUk1 = getSAWQLC('United Kingdom')
+
+        valueNor1 = []
+        if ('Norway' in coun):
+            valueNor1 = getSAWQLC('Norway')
+
+        valueSwi1 = []
+        if ('Switzerland' in coun):
+            valueSwi1 = getSAWQLC('Switzerland')
+
+        valueEa1 = []
+        if ('Euro area' in coun):
+            valueEa1 = getSAWQLC('Euro area')
+
+        valueIre1 = []
+        if ('Ireland' in coun):
+            valueIre1 = getSAWQLC('Ireland')
+
+        qlc = pd.read_csv('data/Society and work-Quarterly labour cost.csv')
+        df1 = {}
+        for i in range(0, 29):
+            niz = qlc.loc[i, :]
+            df1[i] = niz
         return {
             'data': [go.Scatter(x=labelSAWQE,
                                 y=valueEu1,
                                 mode='lines+markers',
-                                name='European Union',
+                                name='EU',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#E6D1D1'),
                                 marker=dict(size=5, symbol='circle', color='lightblue',
-                                            line=dict(color='#E6D1D1', width=2)
-                                            ),
+                                            line=dict(color='#E6D1D1', width=2)),
                                 hoverinfo='text',
                                 hovertext=
-                                '<b>Country</b>: ' + 'European Union' + '<br>'
-                                ),
+                                '<b>Country</b>: ' + 'European Union' + '<br>'+
+                                '<b>Quarterly labour cost</b>: ' + df1[0].astype(str) + '<br>'),
                      go.Scatter(x=labelSAWQE,
                                 y=valueBel1,
                                 mode='lines+markers',
-                                name='Belgium',
+                                name='BE',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#FF0000'),
                                 marker=dict(size=5, symbol='circle', color='lightblue',
-                                            line=dict(color='#FF0000', width=2)
-                                            ),
+                                            line=dict(color='#FF0000', width=2)),
                                 hoverinfo='text',
                                 hovertext=
-                                '<b>Country</b>: ' + 'Belgium' + '<br>'
-                                )
-                     ],
+                                '<b>Country</b>: ' + 'Belgium' + '<br>'+
+                                '<b>Quarterly labour cost</b>: ' + df1[2].astype(str) + '<br>'),
+                     go.Scatter(x=labelSAWQE,
+                                y=valueEa1,
+                                mode='lines+markers',
+                                name='EA',
+                                line=dict(shape="spline", smoothing=1.3, width=3, color='#472727'),
+                                marker=dict(size=5, symbol='circle', color='lightblue',
+                                            line=dict(color='#472727', width=2)),
+                                hoverinfo='text',
+                                hovertext=
+                                '<b>Country</b>: ' + 'Euro area' + '<br>' +
+                                '<b>Quarterly labour cost</b>: ' + df1[1].astype(str) + '<br>'),
+                     go.Scatter(x=labelSAWQE,
+                                y=valueBul1,
+                                mode='lines+markers',
+                                name='BG',
+                                line=dict(shape="spline", smoothing=1.3, width=3, color='#353131'),
+                                marker=dict(size=5, symbol='circle', color='lightblue',
+                                            line=dict(color='#353131', width=2)),
+                                hoverinfo='text',
+                                hovertext=
+                                '<b>Country</b>: ' + 'Bulgaria' + '<br>' +
+                                '<b>Quarterly labour cost</b>: ' + df1[3].astype(str) + '<br>'),
+                     go.Scatter(x=labelSAWQE,
+                                y=valueChe1,
+                                mode='lines+markers',
+                                name='CZ',
+                                line=dict(shape="spline", smoothing=1.3, width=3, color='#49AF30'),
+                                marker=dict(size=5, symbol='circle', color='lightblue',
+                                            line=dict(color='#49AF30', width=2)),
+                                hoverinfo='text',
+                                hovertext=
+                                '<b>Country</b>: ' + 'Czechia' + '<br>' +
+                                '<b>Quarterly labour cost</b>: ' + df1[4].astype(str) + '<br>'),
+                     go.Scatter(x=labelSAWQE,
+                                y=valueGer1,
+                                mode='lines+markers',
+                                name='DE',
+                                line=dict(shape="spline", smoothing=1.3, width=3, color='#7B7D7B'),
+                                marker=dict(size=5, symbol='circle', color='lightblue',
+                                            line=dict(color='#7B7D7B', width=2)),
+                                hoverinfo='text',
+                                hovertext=
+                                '<b>Country</b>: ' + 'Germany' + '<br>' +
+                                '<b>Quarterly labour cost</b>: ' + df1[5].astype(str) + '<br>'),
+                     go.Scatter(x=labelSAWQE,
+                                y=valueEst1,
+                                mode='lines+markers',
+                                name='EE',
+                                line=dict(shape="spline", smoothing=1.3, width=3, color='#C4C048'),
+                                marker=dict(size=5, symbol='circle', color='lightblue',
+                                            line=dict(color='#C4C048', width=2)),
+                                hoverinfo='text',
+                                hovertext=
+                                '<b>Country</b>: ' + 'Estonia' + '<br>' +
+                                '<b>Quarterly labour cost</b>: ' + df1[6].astype(str) + '<br>'),
+                     go.Scatter(x=labelSAWQE,
+                                y=valueIre1,
+                                mode='lines+markers',
+                                name='IE',
+                                line=dict(shape="spline", smoothing=1.3, width=3, color='#9E9D7B'),
+                                marker=dict(size=5, symbol='circle', color='lightblue',
+                                            line=dict(color='#9E9D7B', width=2)),
+                                hoverinfo='text',
+                                hovertext=
+                                '<b>Country</b>: ' + 'Ireland' + '<br>' +
+                                '<b>Quarterly labour cost</b>: ' + df1[7].astype(str) + '<br>'),
+                     go.Scatter(x=labelSAWQE,
+                                y=valueGree1,
+                                mode='lines+markers',
+                                name='EL',
+                                line=dict(shape="spline", smoothing=1.3, width=3, color='#1A46C0'),
+                                marker=dict(size=5, symbol='circle', color='lightblue',
+                                            line=dict(color='#1A46C0', width=2)),
+                                hoverinfo='text',
+                                hovertext=
+                                '<b>Country</b>: ' + 'Greece' + '<br>' +
+                                '<b>Quarterly labour cost</b>: ' + df1[8].astype(str) + '<br>'),
+                     go.Scatter(x=labelSAWQE,
+                                y=valueSpa1,
+                                mode='lines+markers',
+                                name='ES',
+                                line=dict(shape="spline", smoothing=1.3, width=3, color='#2E063A'),
+                                marker=dict(size=5, symbol='circle', color='lightblue',
+                                            line=dict(color='#2E063A', width=2)),
+                                hoverinfo='text',
+                                hovertext=
+                                '<b>Country</b>: ' + 'Spain' + '<br>' +
+                                '<b>Quarterly labour cost</b>: ' + df1[9].astype(str) + '<br>'),
+                     go.Scatter(x=labelSAWQE,
+                                y=valueCyp1,
+                                mode='lines+markers',
+                                name='CY',
+                                line=dict(shape="spline", smoothing=1.3, width=3, color='#ff3399'),
+                                marker=dict(size=5, symbol='circle', color='lightblue',
+                                            line=dict(color='#ff3399', width=2)),
+                                hoverinfo='text',
+                                hovertext=
+                                '<b>Country</b>: ' + 'Cyprus' + '<br>' +
+                                '<b>Quarterly labour cost</b>: ' + df1[10].astype(str) + '<br>'),
+                     go.Scatter(x=labelSAWQE,
+                                y=valueLat1,
+                                mode='lines+markers',
+                                name='LV',
+                                line=dict(shape="spline", smoothing=1.3, width=3, color='#aaaa55'),
+                                marker=dict(size=5, symbol='circle', color='lightblue',
+                                            line=dict(color='#aaaa55', width=2)),
+                                hoverinfo='text',
+                                hovertext=
+                                '<b>Country</b>: ' + 'Latvia' + '<br>' +
+                                '<b>Quarterly labour cost</b>: ' + df1[11].astype(str) + '<br>'),
+                     go.Scatter(x=labelSAWQE,
+                                y=valueLith1,
+                                mode='lines+markers',
+                                name='LT',
+                                line=dict(shape="spline", smoothing=1.3, width=3, color='#ffff00'),
+                                marker=dict(size=5, symbol='circle', color='lightblue',
+                                            line=dict(color='#ffff00', width=2)),
+                                hoverinfo='text',
+                                hovertext=
+                                '<b>Country</b>: ' + 'Lithuania' + '<br>' +
+                                '<b>Quarterly labour cost</b>: ' + df1[12].astype(str) + '<br>'),
+                     go.Scatter(x=labelSAWQE,
+                                y=valueLux1,
+                                mode='lines+markers',
+                                name='LU',
+                                line=dict(shape="spline", smoothing=1.3, width=3, color='#007399'),
+                                marker=dict(size=5, symbol='circle', color='lightblue',
+                                            line=dict(color='#007399', width=2)),
+                                hoverinfo='text',
+                                hovertext=
+                                '<b>Country</b>: ' + 'Luxembourg' + '<br>' +
+                                '<b>Quarterly labour cost</b>: ' + df1[13].astype(str) + '<br>'),
+                     go.Scatter(x=labelSAWQE,
+                                y=valueHun1,
+                                mode='lines+markers',
+                                name='HU',
+                                line=dict(shape="spline", smoothing=1.3, width=3, color='#ff3300'),
+                                marker=dict(size=5, symbol='circle', color='lightblue',
+                                            line=dict(color='#ff3300', width=2)),
+                                hoverinfo='text',
+                                hovertext=
+                                '<b>Country</b>: ' + 'Hungary' + '<br>' +
+                                '<b>Quarterly labour cost</b>: ' + df1[14].astype(str) + '<br>'),
+                     go.Scatter(x=labelSAWQE,
+                                y=valueNet1,
+                                mode='lines+markers',
+                                name='NL',
+                                line=dict(shape="spline", smoothing=1.3, width=3, color='#00e600'),
+                                marker=dict(size=5, symbol='circle', color='lightblue',
+                                            line=dict(color='#00e600', width=2)),
+                                hoverinfo='text',
+                                hovertext=
+                                '<b>Country</b>: ' + 'Netherlands' + '<br>' +
+                                '<b>Quarterly labour cost</b>: ' + df1[16].astype(str) + '<br>'),
+                     go.Scatter(x=labelSAWQE,
+                                y=valueAus1,
+                                mode='lines+markers',
+                                name='AT',
+                                line=dict(shape="spline", smoothing=1.3, width=3, color='#4dff4d'),
+                                marker=dict(size=5, symbol='circle', color='lightblue',
+                                            line=dict(color='#4dff4d', width=2)),
+                                hoverinfo='text',
+                                hovertext=
+                                '<b>Country</b>: ' + 'Austria' + '<br>' +
+                                '<b>Quarterly labour cost</b>: ' + df1[17].astype(str) + '<br>'),
+                     go.Scatter(x=labelSAWQE,
+                                y=valuePol1,
+                                mode='lines+markers',
+                                name='PL',
+                                line=dict(shape="spline", smoothing=1.3, width=3, color='#003300'),
+                                marker=dict(size=5, symbol='circle', color='lightblue',
+                                            line=dict(color='#003300', width=2)),
+                                hoverinfo='text',
+                                hovertext=
+                                '<b>Country</b>: ' + 'Poland' + '<br>' +
+                                '<b>Quarterly labour cost</b>: ' + df1[18].astype(str) + '<br>'),
+                     go.Scatter(x=labelSAWQE,
+                                y=valuePor1,
+                                mode='lines+markers',
+                                name='PT',
+                                line=dict(shape="spline", smoothing=1.3, width=3, color='#662900'),
+                                marker=dict(size=5, symbol='circle', color='lightblue',
+                                            line=dict(color='#662900', width=2)),
+                                hoverinfo='text',
+                                hovertext=
+                                '<b>Country</b>: ' + 'Portugal' + '<br>' +
+                                '<b>Quarterly labour cost</b>: ' + df1[19].astype(str) + '<br>'),
+                     go.Scatter(x=labelSAWQE,
+                                y=valueRom1,
+                                mode='lines+markers',
+                                name='RO',
+                                line=dict(shape="spline", smoothing=1.3, width=3, color='#993399'),
+                                marker=dict(size=5, symbol='circle', color='lightblue',
+                                            line=dict(color='#993399', width=2)),
+                                hoverinfo='text',
+                                hovertext=
+                                '<b>Country</b>: ' + 'Romania' + '<br>' +
+                                '<b>Quarterly labour cost</b>: ' + df1[20].astype(str) + '<br>'),
+                     go.Scatter(x=labelSAWQE,
+                                y=valueSlo1,
+                                mode='lines+markers',
+                                name='SI',
+                                line=dict(shape="spline", smoothing=1.3, width=3, color='#d98cd9'),
+                                marker=dict(size=5, symbol='circle', color='lightblue',
+                                            line=dict(color='#d98cd9', width=2)),
+                                hoverinfo='text',
+                                hovertext=
+                                '<b>Country</b>: ' + 'Slovenia' + '<br>' +
+                                '<b>Quarterly labour cost</b>: ' + df1[21].astype(str) + '<br>'),
+                     go.Scatter(x=labelSAWQE,
+                                y=valueSlovak1,
+                                mode='lines+markers',
+                                name='SK',
+                                line=dict(shape="spline", smoothing=1.3, width=3, color='#0033cc'),
+                                marker=dict(size=5, symbol='circle', color='lightblue',
+                                            line=dict(color='#0033cc', width=2)),
+                                hoverinfo='text',
+                                hovertext=
+                                '<b>Country</b>: ' + 'Slovakia' + '<br>' +
+                                '<b>Quarterly labour cost</b>: ' + df1[22].astype(str) + '<br>'),
+                     go.Scatter(x=labelSAWQE,
+                                y=valueFin1,
+                                mode='lines+markers',
+                                name='FI',
+                                line=dict(shape="spline", smoothing=1.3, width=3, color='#99b3ff'),
+                                marker=dict(size=5, symbol='circle', color='lightblue',
+                                            line=dict(color='#99b3ff', width=2)),
+                                hoverinfo='text',
+                                hovertext=
+                                '<b>Country</b>: ' + 'Finland' + '<br>' +
+                                '<b>Quarterly labour cost</b>: ' + df1[23].astype(str) + '<br>'),
+                     go.Scatter(x=labelSAWQE,
+                                y=valueSwe1,
+                                mode='lines+markers',
+                                name='SE',
+                                line=dict(shape="spline", smoothing=1.3, width=3, color='#001a66'),
+                                marker=dict(size=5, symbol='circle', color='lightblue',
+                                            line=dict(color='#001a66', width=2)),
+                                hoverinfo='text',
+                                hovertext=
+                                '<b>Country</b>: ' + 'Sweden' + '<br>' +
+                                '<b>Quarterly labour cost</b>: ' + df1[24].astype(str) + '<br>'),
+                     go.Scatter(x=labelSAWQE,
+                                y=valueUk1,
+                                mode='lines+markers',
+                                name='UK',
+                                line=dict(shape="spline", smoothing=1.3, width=3, color='#00cc99'),
+                                marker=dict(size=5, symbol='circle', color='lightblue',
+                                            line=dict(color='#00cc99', width=2)),
+                                hoverinfo='text',
+                                hovertext=
+                                '<b>Country</b>: ' + 'United Kingdom' + '<br>' +
+                                '<b>Quarterly labour cost</b>: ' + df1[27].astype(str) + '<br>'),
+                     go.Scatter(x=labelSAWQE,
+                                y=valueNor1,
+                                mode='lines+markers',
+                                name='NO',
+                                line=dict(shape="spline", smoothing=1.3, width=3, color='#73e600'),
+                                marker=dict(size=5, symbol='circle', color='lightblue',
+                                            line=dict(color='#73e600', width=2)),
+                                hoverinfo='text',
+                                hovertext=
+                                '<b>Country</b>: ' + 'Norway' + '<br>' +
+                                '<b>Quarterly labour cost</b>: ' + df1[25].astype(str) + '<br>'),
+                     go.Scatter(x=labelSAWQE,
+                                y=valueSwi1,
+                                mode='lines+markers',
+                                name='CH',
+                                line=dict(shape="spline", smoothing=1.3, width=3, color='#bfff80'),
+                                marker=dict(size=5, symbol='circle', color='lightblue',
+                                            line=dict(color='#bfff80', width=2)),
+                                hoverinfo='text',
+                                hovertext=
+                                '<b>Country</b>: ' + 'Switzerland' + '<br>' +
+                                '<b>Quarterly labour cost</b>: ' + df1[26].astype(str) + '<br>'),],
             'layout': go.Layout(
                 barmode='stack',
                 plot_bgcolor='#808080',
@@ -7627,9 +8641,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                            tickfont=dict(
                                family='Arial',
                                size=12,
-                               color='white'
-                           )
-                           ),
+                               color='white')),
                 yaxis=dict(title='<b>%</b>',
                            color='white',
                            showline=True,
@@ -7641,9 +8653,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                            tickfont=dict(
                                family='Arial',
                                size=12,
-                               color='white'
-                           )
-                           ),
+                               color='white')),
                 legend={
                     'orientation': 'h',
                     'bgcolor': '#010915',
@@ -7651,11 +8661,8 @@ def update_graph(w_countries, w_countries1, country_chosen):
                 font=dict(
                     family="sans-serif",
                     size=12,
-                    color='white'),
-            )
+                    color='white'),)
         }
-#######################################################
-    ###################################################
     #KRECE OBLAST AGRICULTURE,ENERGY, TRANSPORT & TOURISM
     ###################################################
     #Krece oblast Agriculture, energy, transport & tourism-Monthly air passenger transport
@@ -7668,32 +8675,454 @@ def update_graph(w_countries, w_countries1, country_chosen):
         if ('Belgium' in coun):
             valueBel1 = getAETTMAPT('Belgium')
 
+        valueBul1 = []
+        if ('Bulgaria' in coun):
+            valueBul1 = getAETTMAPT('Bulgaria')
+
+        valueChe1 = []
+        if ('Czechia' in coun):
+            valueChe1 = getAETTMAPT('Czechia')
+
+        valueDen1 = []
+        if ('Denmark' in coun):
+            valueDen1 = getAETTMAPT('Denmark')
+
+        valueGer1 = []
+        if ('Germany' in coun):
+            valueGer1 = getAETTMAPT('Germany')
+
+        valueEst1 = []
+        if ('Estonia' in coun):
+            valueEst1 = getAETTMAPT('Estonia')
+
+        valueGree1 = []
+        if ('Greece' in coun):
+            valueGree1 = getAETTMAPT('Greece')
+
+        valueSpa1 = []
+        if ('Spain' in coun):
+            valueSpa1 = getAETTMAPT('Spain')
+
+        valueFra1 = []
+        if ('France' in coun):
+            valueFra1 = getAETTMAPT('France')
+
+        valueCro1 = []
+        if ('Croatia' in coun):
+            valueCro1 = getAETTMAPT('Croatia')
+
+        valueIta1 = []
+        if ('Italy' in coun):
+            valueIta1 = getAETTMAPT('Italy')
+
+        valueCyp1 = []
+        if ('Cyprus' in coun):
+            valueCyp1 = getAETTMAPT('Cyprus')
+
+        valueLat1 = []
+        if ('Latvia' in coun):
+            valueLat1 = getAETTMAPT('Latvia')
+
+        valueLith1 = []
+        if ('Lithuania' in coun):
+            valueLith1 = getAETTMAPT('Lithuania')
+
+        valueLux1 = []
+        if ('Luxembourg' in coun):
+            valueLux1 = getAETTMAPT('Luxembourg')
+
+        valueHun1 = []
+        if ('Hungary' in coun):
+            valueHun1 = getAETTMAPT('Hungary')
+
+        valueNet1 = []
+        if ('Netherlands' in coun):
+            valueNet1 = getAETTMAPT('Netherlands')
+
+        valueAus1 = []
+        if ('Austria' in coun):
+            valueAus1 = getAETTMAPT('Austria')
+
+        valuePol1 = []
+        if ('Poland' in coun):
+            valuePol1 = getAETTMAPT('Poland')
+
+        valuePor1 = []
+        if ('Portugal' in coun):
+            valuePor1 = getAETTMAPT('Portugal')
+
+        valueRom1 = []
+        if ('Romania' in coun):
+            valueRom1 = getAETTMAPT('Romania')
+
+        valueSlo1 = []
+        if ('Slovenia' in coun):
+            valueSlo1 = getAETTMAPT('Slovenia')
+
+        valueSlovak1 = []
+        if ('Slovakia' in coun):
+            valueSlovak1 = getAETTMAPT('Slovakia')
+
+        valueFin1 = []
+        if ('Finland' in coun):
+            valueFin1 = getAETTMAPT('Finland')
+
+        valueSwe1 = []
+        if ('Sweden' in coun):
+            valueSwe1 = getAETTMAPT('Sweden')
+
+        valueUk1 = []
+        if ('United Kingdom' in coun):
+            valueUk1 = getAETTMAPT('United Kingdom')
+
+        valueNor1 = []
+        if ('Norway' in coun):
+            valueNor1 = getAETTMAPT('Norway')
+
+        valueSwi1 = []
+        if ('Switzerland' in coun):
+            valueSwi1 = getAETTMAPT('Switzerland')
+
+        valueIre1 = []
+        if ('Ireland' in coun):
+            valueIre1 = getAETTMAPT('Ireland')
+
+        mapt = pd.read_csv('data/Agriculture, energy, transport & tourism-Monthly air passenger transport.csv')
+        df1 = {}
+        for i in range(0, 31):
+            niz = mapt.loc[i, :]
+            df1[i] = niz
         return {
             'data': [go.Scatter(x=labelsAETTMAPT,
                                 y=valueEu1,
                                 mode='lines+markers',
-                                name='European Union',
+                                name='EU',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#E6D1D1'),
                                 marker=dict(size=5, symbol='circle', color='lightblue',
-                                            line=dict(color='#E6D1D1', width=2)
-                                            ),
+                                            line=dict(color='#E6D1D1', width=2)),
                                 hoverinfo='text',
                                 hovertext=
-                                '<b>Country</b>: ' + 'European Union' + '<br>'
-                                ),
+                                '<b>Country</b>: ' + 'European Union' + '<br>' +
+                                '<b>Monthly air passenger transport</b>: ' + df1[0].astype(str) + '<br>'),
                      go.Scatter(x=labelsAETTMAPT,
                                 y=valueBel1,
                                 mode='lines+markers',
-                                name='Belgium',
+                                name='BE',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#FF0000'),
                                 marker=dict(size=5, symbol='circle', color='lightblue',
-                                            line=dict(color='#FF0000', width=2)
-                                            ),
+                                            line=dict(color='#FF0000', width=2)),
                                 hoverinfo='text',
                                 hovertext=
-                                '<b>Country</b>: ' + 'Belgium' + '<br>'
-                                )
-                     ],
+                                '<b>Country</b>: ' + 'Belgium' + '<br>'+
+                                '<b>Monthly air passenger transport</b>: ' + df1[1].astype(str) + '<br>'),
+                     go.Scatter(x=labelsAETTMAPT,
+                                y=valueBul1,
+                                mode='lines+markers',
+                                name='BG',
+                                line=dict(shape="spline", smoothing=1.3, width=3, color='#353131'),
+                                marker=dict(size=5, symbol='circle', color='lightblue',
+                                            line=dict(color='#353131', width=2)),
+                                hoverinfo='text',
+                                hovertext=
+                                '<b>Country</b>: ' + 'Bulgaria' + '<br>' +
+                                '<b>Monthly air passenger transport</b>: ' + df1[2].astype(str) + '<br>'),
+                     go.Scatter(x=labelsAETTMAPT,
+                                y=valueChe1,
+                                mode='lines+markers',
+                                name='CZ',
+                                line=dict(shape="spline", smoothing=1.3, width=3, color='#49AF30'),
+                                marker=dict(size=5, symbol='circle', color='lightblue',
+                                            line=dict(color='#49AF30', width=2)),
+                                hoverinfo='text',
+                                hovertext=
+                                '<b>Country</b>: ' + 'Czechia' + '<br>' +
+                                '<b>Monthly air passenger transport</b>: ' + df1[3].astype(str) + '<br>'),
+                     go.Scatter(x=labelsAETTMAPT,
+                                y=valueDen1,
+                                mode='lines+markers',
+                                name='DK',
+                                line=dict(shape="spline", smoothing=1.3, width=3, color='#2A4623'),
+                                marker=dict(size=5, symbol='circle', color='lightblue',
+                                            line=dict(color='#2A4623', width=2)),
+                                hoverinfo='text',
+                                hovertext=
+                                '<b>Country</b>: ' + 'Denmark' + '<br>' +
+                                '<b>Monthly air passenger transport</b>: ' + df1[5].astype(str) + '<br>'),
+                     go.Scatter(x=labelsAETTMAPT,
+                                y=valueGer1,
+                                mode='lines+markers',
+                                name='DE',
+                                line=dict(shape="spline", smoothing=1.3, width=3, color='#7B7D7B'),
+                                marker=dict(size=5, symbol='circle', color='lightblue',
+                                            line=dict(color='#7B7D7B', width=2)),
+                                hoverinfo='text',
+                                hovertext=
+                                '<b>Country</b>: ' + 'Germany' + '<br>' +
+                                '<b>Monthly air passenger transport</b>: ' + df1[5].astype(str) + '<br>'),
+                     go.Scatter(x=labelsAETTMAPT,
+                                y=valueEst1,
+                                mode='lines+markers',
+                                name='EE',
+                                line=dict(shape="spline", smoothing=1.3, width=3, color='#C4C048'),
+                                marker=dict(size=5, symbol='circle', color='lightblue',
+                                            line=dict(color='#C4C048', width=2)),
+                                hoverinfo='text',
+                                hovertext=
+                                '<b>Country</b>: ' + 'Estonia' + '<br>' +
+                                '<b>Monthly air passenger transport</b>: ' + df1[6].astype(str) + '<br>'),
+                     go.Scatter(x=labelsAETTMAPT,
+                                y=valueIre1,
+                                mode='lines+markers',
+                                name='IE',
+                                line=dict(shape="spline", smoothing=1.3, width=3, color='#9E9D7B'),
+                                marker=dict(size=5, symbol='circle', color='lightblue',
+                                            line=dict(color='#9E9D7B', width=2)),
+                                hoverinfo='text',
+                                hovertext=
+                                '<b>Country</b>: ' + 'Ireland' + '<br>' +
+                                '<b>Monthly air passenger transport</b>: ' + df1[7].astype(str) + '<br>'),
+                     go.Scatter(x=labelsAETTMAPT,
+                                y=valueGree1,
+                                mode='lines+markers',
+                                name='EL',
+                                line=dict(shape="spline", smoothing=1.3, width=3, color='#1A46C0'),
+                                marker=dict(size=5, symbol='circle', color='lightblue',
+                                            line=dict(color='#1A46C0', width=2)),
+                                hoverinfo='text',
+                                hovertext=
+                                '<b>Country</b>: ' + 'Greece' + '<br>' +
+                                '<b>Monthly air passenger transport</b>: ' + df1[8].astype(str) + '<br>'),
+                     go.Scatter(x=labelsAETTMAPT,
+                                y=valueSpa1,
+                                mode='lines+markers',
+                                name='ES',
+                                line=dict(shape="spline", smoothing=1.3, width=3, color='#2E063A'),
+                                marker=dict(size=5, symbol='circle', color='lightblue',
+                                            line=dict(color='#2E063A', width=2)),
+                                hoverinfo='text',
+                                hovertext=
+                                '<b>Country</b>: ' + 'Spain' + '<br>' +
+                                '<b>Monthly air passenger transport</b>: ' + df1[9].astype(str) + '<br>'),
+                     go.Scatter(x=labelsAETTMAPT,
+                                y=valueFra1,
+                                mode='lines+markers',
+                                name='FR',
+                                line=dict(shape="spline", smoothing=1.3, width=3, color='#39313C'),
+                                marker=dict(size=5, symbol='circle', color='lightblue',
+                                            line=dict(color='#39313C', width=2)),
+                                hoverinfo='text',
+                                hovertext=
+                                '<b>Country</b>: ' + 'France' + '<br>' +
+                                '<b>Monthly air passenger transport</b>: ' + df1[10].astype(str) + '<br>'),
+                     go.Scatter(x=labelsAETTMAPT,
+                                y=valueCro1,
+                                mode='lines+markers',
+                                name='HR',
+                                line=dict(shape="spline", smoothing=1.3, width=3, color='#189F96'),
+                                marker=dict(size=5, symbol='circle', color='lightblue',
+                                            line=dict(color='#189F96', width=2)),
+                                hoverinfo='text',
+                                hovertext=
+                                '<b>Country</b>: ' + 'Croatia' + '<br>' +
+                                '<b>Monthly air passenger transport</b>: ' + df1[11].astype(str) + '<br>'),
+                     go.Scatter(x=labelsAETTMAPT,
+                                y=valueIta1,
+                                mode='lines+markers',
+                                name='IT',
+                                line=dict(shape="spline", smoothing=1.3, width=3, color='#94A4A3'),
+                                marker=dict(size=5, symbol='circle', color='lightblue',
+                                            line=dict(color='#94A4A3', width=2)),
+                                hoverinfo='text',
+                                hovertext=
+                                '<b>Country</b>: ' + 'Italy' + '<br>' +
+                                '<b>Monthly air passenger transport</b>: ' + df1[12].astype(str) + '<br>'),
+                     go.Scatter(x=labelsAETTMAPT,
+                                y=valueCyp1,
+                                mode='lines+markers',
+                                name='CY',
+                                line=dict(shape="spline", smoothing=1.3, width=3, color='#ff3399'),
+                                marker=dict(size=5, symbol='circle', color='lightblue',
+                                            line=dict(color='#ff3399', width=2)),
+                                hoverinfo='text',
+                                hovertext=
+                                '<b>Country</b>: ' + 'Cyprus' + '<br>' +
+                                '<b>Monthly air passenger transport</b>: ' + df1[13].astype(str) + '<br>'),
+                     go.Scatter(x=labelsAETTMAPT,
+                                y=valueLat1,
+                                mode='lines+markers',
+                                name='LV',
+                                line=dict(shape="spline", smoothing=1.3, width=3, color='#aaaa55'),
+                                marker=dict(size=5, symbol='circle', color='lightblue',
+                                            line=dict(color='#aaaa55', width=2)),
+                                hoverinfo='text',
+                                hovertext=
+                                '<b>Country</b>: ' + 'Latvia' + '<br>' +
+                                '<b>Monthly air passenger transport</b>: ' + df1[14].astype(str) + '<br>'),
+                     go.Scatter(x=labelsAETTMAPT,
+                                y=valueLith1,
+                                mode='lines+markers',
+                                name='LT',
+                                line=dict(shape="spline", smoothing=1.3, width=3, color='#ffff00'),
+                                marker=dict(size=5, symbol='circle', color='lightblue',
+                                            line=dict(color='#ffff00', width=2)),
+                                hoverinfo='text',
+                                hovertext=
+                                '<b>Country</b>: ' + 'Lithuania' + '<br>' +
+                                '<b>Monthly air passenger transport</b>: ' + df1[15].astype(str) + '<br>'),
+                     go.Scatter(x=labelsAETTMAPT,
+                                y=valueLux1,
+                                mode='lines+markers',
+                                name='LU',
+                                line=dict(shape="spline", smoothing=1.3, width=3, color='#007399'),
+                                marker=dict(size=5, symbol='circle', color='lightblue',
+                                            line=dict(color='#007399', width=2)),
+                                hoverinfo='text',
+                                hovertext=
+                                '<b>Country</b>: ' + 'Luxembourg' + '<br>' +
+                                '<b>Monthly air passenger transport</b>: ' + df1[16].astype(str) + '<br>'),
+                     go.Scatter(x=labelsAETTMAPT,
+                                y=valueHun1,
+                                mode='lines+markers',
+                                name='HU',
+                                line=dict(shape="spline", smoothing=1.3, width=3, color='#ff3300'),
+                                marker=dict(size=5, symbol='circle', color='lightblue',
+                                            line=dict(color='#ff3300', width=2)),
+                                hoverinfo='text',
+                                hovertext=
+                                '<b>Country</b>: ' + 'Hungary' + '<br>' +
+                                '<b>Monthly air passenger transport</b>: ' + df1[17].astype(str) + '<br>'),
+                     go.Scatter(x=labelsAETTMAPT,
+                                y=valueNet1,
+                                mode='lines+markers',
+                                name='NL',
+                                line=dict(shape="spline", smoothing=1.3, width=3, color='#00e600'),
+                                marker=dict(size=5, symbol='circle', color='lightblue',
+                                            line=dict(color='#00e600', width=2)),
+                                hoverinfo='text',
+                                hovertext=
+                                '<b>Country</b>: ' + 'Netherlands' + '<br>' +
+                                '<b>Monthly air passenger transport</b>: ' + df1[19].astype(str) + '<br>'),
+                     go.Scatter(x=labelsAETTMAPT,
+                                y=valueAus1,
+                                mode='lines+markers',
+                                name='AT',
+                                line=dict(shape="spline", smoothing=1.3, width=3, color='#4dff4d'),
+                                marker=dict(size=5, symbol='circle', color='lightblue',
+                                            line=dict(color='#4dff4d', width=2)),
+                                hoverinfo='text',
+                                hovertext=
+                                '<b>Country</b>: ' + 'Austria' + '<br>' +
+                                '<b>Monthly air passenger transport</b>: ' + df1[20].astype(str) + '<br>'),
+                     go.Scatter(x=labelsAETTMAPT,
+                                y=valuePol1,
+                                mode='lines+markers',
+                                name='PL',
+                                line=dict(shape="spline", smoothing=1.3, width=3, color='#003300'),
+                                marker=dict(size=5, symbol='circle', color='lightblue',
+                                            line=dict(color='#003300', width=2)),
+                                hoverinfo='text',
+                                hovertext=
+                                '<b>Country</b>: ' + 'Poland' + '<br>' +
+                                '<b>Monthly air passenger transport</b>: ' + df1[21].astype(str) + '<br>'),
+                     go.Scatter(x=labelsAETTMAPT,
+                                y=valuePor1,
+                                mode='lines+markers',
+                                name='PT',
+                                line=dict(shape="spline", smoothing=1.3, width=3, color='#662900'),
+                                marker=dict(size=5, symbol='circle', color='lightblue',
+                                            line=dict(color='#662900', width=2)),
+                                hoverinfo='text',
+                                hovertext=
+                                '<b>Country</b>: ' + 'Portugal' + '<br>' +
+                                '<b>Monthly air passenger transport</b>: ' + df1[22].astype(str) + '<br>'),
+                     go.Scatter(x=labelsAETTMAPT,
+                                y=valueRom1,
+                                mode='lines+markers',
+                                name='RO',
+                                line=dict(shape="spline", smoothing=1.3, width=3, color='#993399'),
+                                marker=dict(size=5, symbol='circle', color='lightblue',
+                                            line=dict(color='#993399', width=2)),
+                                hoverinfo='text',
+                                hovertext=
+                                '<b>Country</b>: ' + 'Romania' + '<br>' +
+                                '<b>Monthly air passenger transport</b>: ' + df1[23].astype(str) + '<br>'),
+                     go.Scatter(x=labelsAETTMAPT,
+                                y=valueSlo1,
+                                mode='lines+markers',
+                                name='SI',
+                                line=dict(shape="spline", smoothing=1.3, width=3, color='#d98cd9'),
+                                marker=dict(size=5, symbol='circle', color='lightblue',
+                                            line=dict(color='#d98cd9', width=2)),
+                                hoverinfo='text',
+                                hovertext=
+                                '<b>Country</b>: ' + 'Slovenia' + '<br>' +
+                                '<b>Monthly air passenger transport</b>: ' + df1[24].astype(str) + '<br>'),
+                     go.Scatter(x=labelsAETTMAPT,
+                                y=valueSlovak1,
+                                mode='lines+markers',
+                                name='SK',
+                                line=dict(shape="spline", smoothing=1.3, width=3, color='#0033cc'),
+                                marker=dict(size=5, symbol='circle', color='lightblue',
+                                            line=dict(color='#0033cc', width=2)),
+                                hoverinfo='text',
+                                hovertext=
+                                '<b>Country</b>: ' + 'Slovakia' + '<br>' +
+                                '<b>Monthly air passenger transport</b>: ' + df1[25].astype(str) + '<br>'),
+                     go.Scatter(x=labelsAETTMAPT,
+                                y=valueFin1,
+                                mode='lines+markers',
+                                name='FI',
+                                line=dict(shape="spline", smoothing=1.3, width=3, color='#99b3ff'),
+                                marker=dict(size=5, symbol='circle', color='lightblue',
+                                            line=dict(color='#99b3ff', width=2)),
+                                hoverinfo='text',
+                                hovertext=
+                                '<b>Country</b>: ' + 'Finland' + '<br>' +
+                                '<b>Monthly air passenger transport</b>: ' + df1[26].astype(str) + '<br>'),
+                     go.Scatter(x=labelsAETTMAPT,
+                                y=valueSwe1,
+                                mode='lines+markers',
+                                name='SE',
+                                line=dict(shape="spline", smoothing=1.3, width=3, color='#001a66'),
+                                marker=dict(size=5, symbol='circle', color='lightblue',
+                                            line=dict(color='#001a66', width=2)),
+                                hoverinfo='text',
+                                hovertext=
+                                '<b>Country</b>: ' + 'Sweden' + '<br>' +
+                                '<b>Monthly air passenger transport</b>: ' + df1[27].astype(str) + '<br>'),
+                     go.Scatter(x=labelsAETTMAPT,
+                                y=valueUk1,
+                                mode='lines+markers',
+                                name='UK',
+                                line=dict(shape="spline", smoothing=1.3, width=3, color='#00cc99'),
+                                marker=dict(size=5, symbol='circle', color='lightblue',
+                                            line=dict(color='#00cc99', width=2)),
+                                hoverinfo='text',
+                                hovertext=
+                                '<b>Country</b>: ' + 'United Kingdom' + '<br>' +
+                                '<b>Monthly air passenger transport</b>: ' + df1[30].astype(str) + '<br>'),
+                     go.Scatter(x=labelsAETTMAPT,
+                                y=valueNor1,
+                                mode='lines+markers',
+                                name='NO',
+                                line=dict(shape="spline", smoothing=1.3, width=3, color='#73e600'),
+                                marker=dict(size=5, symbol='circle', color='lightblue',
+                                            line=dict(color='#73e600', width=2)),
+                                hoverinfo='text',
+                                hovertext=
+                                '<b>Country</b>: ' + 'Norway' + '<br>' +
+                                '<b>Monthly air passenger transport</b>: ' + df1[28].astype(str) + '<br>'),
+                     go.Scatter(x=labelsAETTMAPT,
+                                y=valueSwi1,
+                                mode='lines+markers',
+                                name='CH',
+                                line=dict(shape="spline", smoothing=1.3, width=3, color='#bfff80'),
+                                marker=dict(size=5, symbol='circle', color='lightblue',
+                                            line=dict(color='#bfff80', width=2)),
+                                hoverinfo='text',
+                                hovertext=
+                                '<b>Country</b>: ' + 'Switzerland' + '<br>' +
+                                '<b>Monthly air passenger transport</b>: ' + df1[29].astype(str) + '<br>'),],
             'layout': go.Layout(
                 barmode='stack',
                 plot_bgcolor='#808080',
@@ -7725,8 +9154,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                            tickfont=dict(
                                family='Arial',
                                size=12,
-                               color='white'
-                           )),
+                               color='white')),
                 yaxis=dict(title='<b>number of passengers</b>',
                            color='white',
                            showline=True,
@@ -7738,8 +9166,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                            tickfont=dict(
                                family='Arial',
                                size=12,
-                               color='white'
-                           )),
+                               color='white')),
                 legend={
                     'orientation': 'h',
                     'bgcolor': '#010915',
@@ -7747,8 +9174,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                 font=dict(
                     family="sans-serif",
                     size=12,
-                    color='white'),
-            )
+                    color='white'),)
         }
     # Krece oblast Agriculture, energy, transport & tourism-Monthly commercial air flights
     elif (w_countries == 'Agriculture, energy, transport & tourism') & (w_countries1 == 'Monthly commercial air flights'):
@@ -7760,29 +9186,484 @@ def update_graph(w_countries, w_countries1, country_chosen):
         if ('Belgium' in coun):
             valueBel1 = getAETTMCAF('Belgium')
 
+        valueBul1=[]
+        if ('Bulgaria' in coun):
+            valueBul1 = getAETTMCAF('Bulgaria')
+
+        valueChe1 = []
+        if ('Czechia' in coun):
+            valueChe1 = getAETTMCAF('Czechia')
+
+        valueDen1 = []
+        if ('Denmark' in coun):
+            valueDen1 = getAETTMCAF('Denmark')
+
+        valueGer1 = []
+        if ('Germany' in coun):
+            valueGer1 = getAETTMCAF('Germany')
+
+        valueEst1 = []
+        if ('Estonia' in coun):
+            valueEst1 = getAETTMCAF('Estonia')
+
+        valueGree1 = []
+        if ('Greece' in coun):
+            valueGree1 = getAETTMCAF('Greece')
+
+        valueSpa1 = []
+        if ('Spain' in coun):
+            valueSpa1 = getAETTMCAF('Spain')
+
+        valueFra1 = []
+        if ('France' in coun):
+            valueFra1 = getAETTMCAF('France')
+
+        valueCro1 = []
+        if ('Croatia' in coun):
+            valueCro1 = getAETTMCAF('Croatia')
+
+        valueIta1 = []
+        if ('Italy' in coun):
+            valueIta1 = getAETTMCAF('Italy')
+
+        valueCyp1 = []
+        if ('Cyprus' in coun):
+            valueCyp1 = getAETTMCAF('Cyprus')
+
+        valueLat1 = []
+        if ('Latvia' in coun):
+            valueLat1 = getAETTMCAF('Latvia')
+
+        valueLith1 = []
+        if ('Lithuania' in coun):
+            valueLith1 = getAETTMCAF('Lithuania')
+
+        valueLux1 = []
+        if ('Luxembourg' in coun):
+            valueLux1 = getAETTMCAF('Luxembourg')
+
+        valueHun1 = []
+        if ('Hungary' in coun):
+            valueHun1 = getAETTMCAF('Hungary')
+
+        valueNet1 = []
+        if ('Netherlands' in coun):
+            valueNet1 = getAETTMCAF('Netherlands')
+
+        valueAus1 = []
+        if ('Austria' in coun):
+            valueAus1 = getAETTMCAF('Austria')
+
+        valuePol1 = []
+        if ('Poland' in coun):
+            valuePol1 = getAETTMCAF('Poland')
+
+        valuePor1 = []
+        if ('Portugal' in coun):
+            valuePor1 = getAETTMCAF('Portugal')
+
+        valueRom1 = []
+        if ('Romania' in coun):
+            valueRom1 = getAETTMCAF('Romania')
+
+        valueSlo1 = []
+        if ('Slovenia' in coun):
+            valueSlo1 = getAETTMCAF('Slovenia')
+
+        valueSlovak1 = []
+        if ('Slovakia' in coun):
+            valueSlovak1 = getAETTMCAF('Slovakia')
+
+        valueFin1 = []
+        if ('Finland' in coun):
+            valueFin1 = getAETTMCAF('Finland')
+
+        valueSwe1 = []
+        if ('Sweden' in coun):
+            valueSwe1 = getAETTMCAF('Sweden')
+
+        valueUk1 = []
+        if ('United Kingdom' in coun):
+            valueUk1 = getAETTMCAF('United Kingdom')
+
+        valueIce1 = []
+        if ('Iceland' in coun):
+            valueIce1 = getAETTMCAF('Iceland')
+
+        valueNor1 = []
+        if ('Norway' in coun):
+            valueNor1 = getAETTMCAF('Norway')
+
+        valueSwi1 = []
+        if ('Switzerland' in coun):
+            valueSwi1 = getAETTMCAF('Switzerland')
+
+        valueTur1 = []
+        if ('Turkey' in coun):
+            valueTur1 = getAETTMCAF('Turkey')
+
+        valueIre1 = []
+        if ('Ireland' in coun):
+            valueIre1 = getAETTMCAF('Ireland')
+
+        mcaf = pd.read_csv('data/Agriculture, energy, transport & tourism-Monthly commercial air flights.csv')
+        df1 = {}
+        for i in range(0, 37):
+            niz = mcaf.loc[i, :]
+            df1[i] = niz
         return {
             'data': [go.Scatter(x=labelsAETTMCAF,
                                 y=valueEu1,
                                 mode='lines+markers',
-                                name='European Union',
+                                name='EU',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#E6D1D1'),
                                 marker=dict(size=5, symbol='circle', color='lightblue',
                                             line=dict(color='#E6D1D1', width=2)),
                                 hoverinfo='text',
                                 hovertext=
-                                '<b>Country</b>: ' + 'European Union' + '<br>'),
+                                '<b>Country</b>: ' + 'European Union' + '<br>' +
+                                '<b>Monthly commercial air flights</b>: ' + df1[1].astype(str) + '<br>'),
                      go.Scatter(x=labelsAETTMCAF,
                                 y=valueBel1,
                                 mode='lines+markers',
-                                name='Belgium',
+                                name='BE',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#FF0000'),
                                 marker=dict(size=5, symbol='circle', color='lightblue',
-                                            line=dict(color='#FF0000', width=2)
-                                            ),
+                                            line=dict(color='#FF0000', width=2)),
                                 hoverinfo='text',
                                 hovertext=
-                                '<b>Country</b>: ' + 'Belgium' + '<br>'
-                                )],
+                                '<b>Country</b>: ' + 'Belgium' + '<br>'+
+                                '<b>Monthly commercial air flights</b>: ' + df1[2].astype(str) + '<br>'),
+                     go.Scatter(x=labelsAETTMCAF,
+                                y=valueBul1,
+                                mode='lines+markers',
+                                name='BG',
+                                line=dict(shape="spline", smoothing=1.3, width=3, color='#353131'),
+                                marker=dict(size=5, symbol='circle', color='lightblue',
+                                            line=dict(color='#353131', width=2)),
+                                hoverinfo='text',
+                                hovertext=
+                                '<b>Country</b>: ' + 'Bulgaria' + '<br>' +
+                                '<b>Monthly commercial air flights</b>: ' + df1[2].astype(str) + '<br>'),
+                     go.Scatter(x=labelsAETTMCAF,
+                                y=valueChe1,
+                                mode='lines+markers',
+                                name='CZ',
+                                line=dict(shape="spline", smoothing=1.3, width=3, color='#49AF30'),
+                                marker=dict(size=5, symbol='circle', color='lightblue',
+                                            line=dict(color='#49AF30', width=2)),
+                                hoverinfo='text',
+                                hovertext=
+                                '<b>Country</b>: ' + 'Czechia' + '<br>' +
+                                '<b>Monthly commercial air flights</b>: ' + df1[3].astype(str) + '<br>'),
+                     go.Scatter(x=labelsAETTMCAF,
+                                y=valueDen1,
+                                mode='lines+markers',
+                                name='DK',
+                                line=dict(shape="spline", smoothing=1.3, width=3, color='#2A4623'),
+                                marker=dict(size=5, symbol='circle', color='lightblue',
+                                            line=dict(color='#2A4623', width=2)),
+                                hoverinfo='text',
+                                hovertext=
+                                '<b>Country</b>: ' + 'Denmark' + '<br>' +
+                                '<b>Monthly commercial air flights</b>: ' + df1[4].astype(str) + '<br>'),
+                     go.Scatter(x=labelsAETTMCAF,
+                                y=valueGer1,
+                                mode='lines+markers',
+                                name='DE',
+                                line=dict(shape="spline", smoothing=1.3, width=3, color='#7B7D7B'),
+                                marker=dict(size=5, symbol='circle', color='lightblue',
+                                            line=dict(color='#7B7D7B', width=2)),
+                                hoverinfo='text',
+                                hovertext=
+                                '<b>Country</b>: ' + 'Germany' + '<br>' +
+                                '<b>Monthly commercial air flights</b>: ' + df1[5].astype(str) + '<br>'),
+                     go.Scatter(x=labelsAETTMCAF,
+                                y=valueEst1,
+                                mode='lines+markers',
+                                name='EE',
+                                line=dict(shape="spline", smoothing=1.3, width=3, color='#C4C048'),
+                                marker=dict(size=5, symbol='circle', color='lightblue',
+                                            line=dict(color='#C4C048', width=2)),
+                                hoverinfo='text',
+                                hovertext=
+                                '<b>Country</b>: ' + 'Estonia' + '<br>' +
+                                '<b>Monthly commercial air flights</b>: ' + df1[6].astype(str) + '<br>'),
+                     go.Scatter(x=labelsAETTMCAF,
+                                y=valueIre1,
+                                mode='lines+markers',
+                                name='IE',
+                                line=dict(shape="spline", smoothing=1.3, width=3, color='#9E9D7B'),
+                                marker=dict(size=5, symbol='circle', color='lightblue',
+                                            line=dict(color='#9E9D7B', width=2)),
+                                hoverinfo='text',
+                                hovertext=
+                                '<b>Country</b>: ' + 'Ireland' + '<br>' +
+                                '<b>Monthly commercial air flights</b>: ' + df1[7].astype(str) + '<br>'),
+                     go.Scatter(x=labelsAETTMCAF,
+                                y=valueGree1,
+                                mode='lines+markers',
+                                name='EL',
+                                line=dict(shape="spline", smoothing=1.3, width=3, color='#1A46C0'),
+                                marker=dict(size=5, symbol='circle', color='lightblue',
+                                            line=dict(color='#1A46C0', width=2)),
+                                hoverinfo='text',
+                                hovertext=
+                                '<b>Country</b>: ' + 'Greece' + '<br>' +
+                                '<b>Monthly commercial air flights</b>: ' + df1[8].astype(str) + '<br>'),
+                     go.Scatter(x=labelsAETTMCAF,
+                                y=valueSpa1,
+                                mode='lines+markers',
+                                name='ES',
+                                line=dict(shape="spline", smoothing=1.3, width=3, color='#2E063A'),
+                                marker=dict(size=5, symbol='circle', color='lightblue',
+                                            line=dict(color='#2E063A', width=2)),
+                                hoverinfo='text',
+                                hovertext=
+                                '<b>Country</b>: ' + 'Spain' + '<br>' +
+                                '<b>Monthly commercial air flights</b>: ' + df1[9].astype(str) + '<br>'),
+                     go.Scatter(x=labelsAETTMCAF,
+                                y=valueFra1,
+                                mode='lines+markers',
+                                name='FR',
+                                line=dict(shape="spline", smoothing=1.3, width=3, color='#39313C'),
+                                marker=dict(size=5, symbol='circle', color='lightblue',
+                                            line=dict(color='#39313C', width=2)),
+                                hoverinfo='text',
+                                hovertext=
+                                '<b>Country</b>: ' + 'France' + '<br>' +
+                                '<b>Monthly commercial air flights</b>: ' + df1[10].astype(str) + '<br>'),
+                     go.Scatter(x=labelsAETTMCAF,
+                                y=valueCro1,
+                                mode='lines+markers',
+                                name='HR',
+                                line=dict(shape="spline", smoothing=1.3, width=3, color='#189F96'),
+                                marker=dict(size=5, symbol='circle', color='lightblue',
+                                            line=dict(color='#189F96', width=2)),
+                                hoverinfo='text',
+                                hovertext=
+                                '<b>Country</b>: ' + 'Croatia' + '<br>' +
+                                '<b>Monthly commercial air flights</b>: ' + df1[11].astype(str) + '<br>'),
+                     go.Scatter(x=labelsAETTMCAF,
+                                y=valueIta1,
+                                mode='lines+markers',
+                                name='IT',
+                                line=dict(shape="spline", smoothing=1.3, width=3, color='#94A4A3'),
+                                marker=dict(size=5, symbol='circle', color='lightblue',
+                                            line=dict(color='#94A4A3', width=2)),
+                                hoverinfo='text',
+                                hovertext=
+                                '<b>Country</b>: ' + 'Italy' + '<br>' +
+                                '<b>Monthly commercial air flights</b>: ' + df1[12].astype(str) + '<br>'),
+                     go.Scatter(x=labelsAETTMCAF,
+                                y=valueCyp1,
+                                mode='lines+markers',
+                                name='CY',
+                                line=dict(shape="spline", smoothing=1.3, width=3, color='#ff3399'),
+                                marker=dict(size=5, symbol='circle', color='lightblue',
+                                            line=dict(color='#ff3399', width=2)),
+                                hoverinfo='text',
+                                hovertext=
+                                '<b>Country</b>: ' + 'Cyprus' + '<br>' +
+                                '<b>Monthly commercial air flights</b>: ' + df1[13].astype(str) + '<br>'),
+                     go.Scatter(x=labelsAETTMCAF,
+                                y=valueLat1,
+                                mode='lines+markers',
+                                name='LV',
+                                line=dict(shape="spline", smoothing=1.3, width=3, color='#aaaa55'),
+                                marker=dict(size=5, symbol='circle', color='lightblue',
+                                            line=dict(color='#aaaa55', width=2)),
+                                hoverinfo='text',
+                                hovertext=
+                                '<b>Country</b>: ' + 'Latvia' + '<br>' +
+                                '<b>Monthly commercial air flights</b>: ' + df1[14].astype(str) + '<br>'),
+                     go.Scatter(x=labelsAETTMCAF,
+                                y=valueLith1,
+                                mode='lines+markers',
+                                name='LT',
+                                line=dict(shape="spline", smoothing=1.3, width=3, color='#ffff00'),
+                                marker=dict(size=5, symbol='circle', color='lightblue',
+                                            line=dict(color='#ffff00', width=2)),
+                                hoverinfo='text',
+                                hovertext=
+                                '<b>Country</b>: ' + 'Lithuania' + '<br>' +
+                                '<b>Monthly commercial air flights</b>: ' + df1[15].astype(str) + '<br>'),
+                     go.Scatter(x=labelsAETTMCAF,
+                                y=valueLux1,
+                                mode='lines+markers',
+                                name='LU',
+                                line=dict(shape="spline", smoothing=1.3, width=3, color='#007399'),
+                                marker=dict(size=5, symbol='circle', color='lightblue',
+                                            line=dict(color='#007399', width=2)),
+                                hoverinfo='text',
+                                hovertext=
+                                '<b>Country</b>: ' + 'Luxembourg' + '<br>' +
+                                '<b>Monthly commercial air flights</b>: ' + df1[16].astype(str) + '<br>'),
+                     go.Scatter(x=labelsAETTMCAF,
+                                y=valueHun1,
+                                mode='lines+markers',
+                                name='HU',
+                                line=dict(shape="spline", smoothing=1.3, width=3, color='#ff3300'),
+                                marker=dict(size=5, symbol='circle', color='lightblue',
+                                            line=dict(color='#ff3300', width=2)),
+                                hoverinfo='text',
+                                hovertext=
+                                '<b>Country</b>: ' + 'Hungary' + '<br>' +
+                                '<b>Monthly commercial air flights</b>: ' + df1[17].astype(str) + '<br>'),
+                     go.Scatter(x=labelsAETTMCAF,
+                                y=valueNet1,
+                                mode='lines+markers',
+                                name='NL',
+                                line=dict(shape="spline", smoothing=1.3, width=3, color='#00e600'),
+                                marker=dict(size=5, symbol='circle', color='lightblue',
+                                            line=dict(color='#00e600', width=2)),
+                                hoverinfo='text',
+                                hovertext=
+                                '<b>Country</b>: ' + 'Netherlands' + '<br>' +
+                                '<b>Monthly commercial air flights</b>: ' + df1[18].astype(str) + '<br>'),
+                     go.Scatter(x=labelsAETTMCAF,
+                                y=valueAus1,
+                                mode='lines+markers',
+                                name='AT',
+                                line=dict(shape="spline", smoothing=1.3, width=3, color='#4dff4d'),
+                                marker=dict(size=5, symbol='circle', color='lightblue',
+                                            line=dict(color='#4dff4d', width=2)),
+                                hoverinfo='text',
+                                hovertext=
+                                '<b>Country</b>: ' + 'Austria' + '<br>' +
+                                '<b>Monthly commercial air flights</b>: ' + df1[20].astype(str) + '<br>'),
+                     go.Scatter(x=labelsAETTMCAF,
+                                y=valuePol1,
+                                mode='lines+markers',
+                                name='PL',
+                                line=dict(shape="spline", smoothing=1.3, width=3, color='#003300'),
+                                marker=dict(size=5, symbol='circle', color='lightblue',
+                                            line=dict(color='#003300', width=2)),
+                                hoverinfo='text',
+                                hovertext=
+                                '<b>Country</b>: ' + 'Poland' + '<br>' +
+                                '<b>Monthly commercial air flights</b>: ' + df1[21].astype(str) + '<br>'),
+                     go.Scatter(x=labelsAETTMCAF,
+                                y=valuePor1,
+                                mode='lines+markers',
+                                name='PT',
+                                line=dict(shape="spline", smoothing=1.3, width=3, color='#662900'),
+                                marker=dict(size=5, symbol='circle', color='lightblue',
+                                            line=dict(color='#662900', width=2)),
+                                hoverinfo='text',
+                                hovertext=
+                                '<b>Country</b>: ' + 'Portugal' + '<br>' +
+                                '<b>Monthly commercial air flights</b>: ' + df1[22].astype(str) + '<br>'),
+                     go.Scatter(x=labelsAETTMCAF,
+                                y=valueRom1,
+                                mode='lines+markers',
+                                name='RO',
+                                line=dict(shape="spline", smoothing=1.3, width=3, color='#993399'),
+                                marker=dict(size=5, symbol='circle', color='lightblue',
+                                            line=dict(color='#993399', width=2)),
+                                hoverinfo='text',
+                                hovertext=
+                                '<b>Country</b>: ' + 'Romania' + '<br>' +
+                                '<b>Monthly commercial air flights</b>: ' + df1[23].astype(str) + '<br>'),
+                     go.Scatter(x=labelsAETTMCAF,
+                                y=valueSlo1,
+                                mode='lines+markers',
+                                name='SI',
+                                line=dict(shape="spline", smoothing=1.3, width=3, color='#d98cd9'),
+                                marker=dict(size=5, symbol='circle', color='lightblue',
+                                            line=dict(color='#d98cd9', width=2)),
+                                hoverinfo='text',
+                                hovertext=
+                                '<b>Country</b>: ' + 'Slovenia' + '<br>' +
+                                '<b>Monthly commercial air flights</b>: ' + df1[24].astype(str) + '<br>'),
+                     go.Scatter(x=labelsAETTMCAF,
+                                y=valueSlovak1,
+                                mode='lines+markers',
+                                name='SK',
+                                line=dict(shape="spline", smoothing=1.3, width=3, color='#0033cc'),
+                                marker=dict(size=5, symbol='circle', color='lightblue',
+                                            line=dict(color='#0033cc', width=2)),
+                                hoverinfo='text',
+                                hovertext=
+                                '<b>Country</b>: ' + 'Slovakia' + '<br>' +
+                                '<b>Monthly commercial air flights</b>: ' + df1[25].astype(str) + '<br>'),
+                     go.Scatter(x=labelsAETTMCAF,
+                                y=valueFin1,
+                                mode='lines+markers',
+                                name='FI',
+                                line=dict(shape="spline", smoothing=1.3, width=3, color='#99b3ff'),
+                                marker=dict(size=5, symbol='circle', color='lightblue',
+                                            line=dict(color='#99b3ff', width=2)),
+                                hoverinfo='text',
+                                hovertext=
+                                '<b>Country</b>: ' + 'Finland' + '<br>' +
+                                '<b>Monthly commercial air flights</b>: ' + df1[26].astype(str) + '<br>'),
+                     go.Scatter(x=labelsAETTMCAF,
+                                y=valueSwe1,
+                                mode='lines+markers',
+                                name='SE',
+                                line=dict(shape="spline", smoothing=1.3, width=3, color='#001a66'),
+                                marker=dict(size=5, symbol='circle', color='lightblue',
+                                            line=dict(color='#001a66', width=2)),
+                                hoverinfo='text',
+                                hovertext=
+                                '<b>Country</b>: ' + 'Sweden' + '<br>' +
+                                '<b>Monthly commercial air flights</b>: ' + df1[27].astype(str) + '<br>'),
+                     go.Scatter(x=labelsAETTMCAF,
+                                y=valueUk1,
+                                mode='lines+markers',
+                                name='UK',
+                                line=dict(shape="spline", smoothing=1.3, width=3, color='#00cc99'),
+                                marker=dict(size=5, symbol='circle', color='lightblue',
+                                            line=dict(color='#00cc99', width=2)),
+                                hoverinfo='text',
+                                hovertext=
+                                '<b>Country</b>: ' + 'United Kingdom' + '<br>' +
+                                '<b>Monthly commercial air flights</b>: ' + df1[28].astype(str) + '<br>'),
+                     go.Scatter(x=labelsAETTMCAF,
+                                y=valueIce1,
+                                mode='lines+markers',
+                                name='IS',
+                                line=dict(shape="spline", smoothing=1.3, width=3, color='#336600'),
+                                marker=dict(size=5, symbol='circle', color='lightblue',
+                                            line=dict(color='#336600', width=2)),
+                                hoverinfo='text',
+                                hovertext=
+                                '<b>Country</b>: ' + 'Iceland' + '<br>' +
+                                '<b>Monthly commercial air flights</b>: ' + df1[29].astype(str) + '<br>'),
+                     go.Scatter(x=labelsAETTMCAF,
+                                y=valueNor1,
+                                mode='lines+markers',
+                                name='NO',
+                                line=dict(shape="spline", smoothing=1.3, width=3, color='#73e600'),
+                                marker=dict(size=5, symbol='circle', color='lightblue',
+                                            line=dict(color='#73e600', width=2)),
+                                hoverinfo='text',
+                                hovertext=
+                                '<b>Country</b>: ' + 'Norway' + '<br>' +
+                                '<b>Monthly commercial air flights</b>: ' + df1[30].astype(str) + '<br>'),
+                     go.Scatter(x=labelsAETTMCAF,
+                                y=valueSwi1,
+                                mode='lines+markers',
+                                name='CH',
+                                line=dict(shape="spline", smoothing=1.3, width=3, color='#bfff80'),
+                                marker=dict(size=5, symbol='circle', color='lightblue',
+                                            line=dict(color='#bfff80', width=2)),
+                                hoverinfo='text',
+                                hovertext=
+                                '<b>Country</b>: ' + 'Switzerland' + '<br>' +
+                                '<b>Monthly commercial air flights</b>: ' + df1[31].astype(str) + '<br>'),
+                     go.Scatter(x=labelsAETTMCAF,
+                                y=valueTur1,
+                                mode='lines+markers',
+                                name='TR',
+                                line=dict(shape="spline", smoothing=1.3, width=3, color='#ff4da6'),
+                                marker=dict(size=5, symbol='circle', color='lightblue',
+                                            line=dict(color='#ff4da6', width=2)),
+                                hoverinfo='text',
+                                hovertext=
+                                '<b>Country</b>: ' + 'Turkey' + '<br>' +
+                                '<b>Monthly commercial air flights</b>: ' + df1[36].astype(str) + '<br>'),],
             'layout': go.Layout(
                 barmode='stack',
                 plot_bgcolor='#808080',
@@ -7814,8 +9695,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                            tickfont=dict(
                                family='Arial',
                                size=12,
-                               color='white'
-                           )),
+                               color='white')),
                 yaxis=dict(title='<b>% changing</b>',
                            color='white',
                            showline=True,
@@ -7827,8 +9707,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                            tickfont=dict(
                                family='Arial',
                                size=12,
-                               color='white'
-                           )),
+                               color='white')),
                 legend={
                     'orientation': 'h',
                     'bgcolor': '#010915',
@@ -7836,8 +9715,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                 font=dict(
                     family="sans-serif",
                     size=12,
-                    color='white'),
-            )
+                    color='white'),)
         }
     # Krece oblast Agriculture, energy, transport & tourism-Monthly arrivals at tourist accommodation
     elif (w_countries == 'Agriculture, energy, transport & tourism') & (w_countries1 == 'Monthly arrivals at tourist accommodation'):
@@ -7849,29 +9727,395 @@ def update_graph(w_countries, w_countries1, country_chosen):
         if ('Belgium' in coun):
             valueBel1 = getAETTMATA('Belgium')
 
+        valueBul1 = []
+        if ('Bulgaria' in coun):
+            valueBul1 = getAETTMATA('Bulgaria')
+
+        valueChe1 = []
+        if ('Czechia' in coun):
+            valueChe1 = getAETTMATA('Czechia')
+
+        valueGer1 = []
+        if ('Germany' in coun):
+            valueGer1 = getAETTMATA('Germany')
+
+        valueEst1 = []
+        if ('Estonia' in coun):
+            valueEst1 = getAETTMATA('Estonia')
+
+        valueGree1 = []
+        if ('Greece' in coun):
+            valueGree1 = getAETTMATA('Greece')
+
+        valueSpa1 = []
+        if ('Spain' in coun):
+            valueSpa1 = getAETTMATA('Spain')
+
+        valueCyp1 = []
+        if ('Cyprus' in coun):
+            valueCyp1 = getAETTMATA('Cyprus')
+
+        valueLat1 = []
+        if ('Latvia' in coun):
+            valueLat1 = getAETTMATA('Latvia')
+
+        valueLith1 = []
+        if ('Lithuania' in coun):
+            valueLith1 = getAETTMATA('Lithuania')
+
+        valueLux1 = []
+        if ('Luxembourg' in coun):
+            valueLux1 = getAETTMATA('Luxembourg')
+
+        valueHun1 = []
+        if ('Hungary' in coun):
+            valueHun1 = getAETTMATA('Hungary')
+
+        valueNet1 = []
+        if ('Netherlands' in coun):
+            valueNet1 = getAETTMATA('Netherlands')
+
+        valueAus1 = []
+        if ('Austria' in coun):
+            valueAus1 = getAETTMATA('Austria')
+
+        valuePol1 = []
+        if ('Poland' in coun):
+            valuePol1 = getAETTMATA('Poland')
+
+        valuePor1 = []
+        if ('Portugal' in coun):
+            valuePor1 = getAETTMATA('Portugal')
+
+        valueRom1 = []
+        if ('Romania' in coun):
+            valueRom1 = getAETTMATA('Romania')
+
+        valueSlo1 = []
+        if ('Slovenia' in coun):
+            valueSlo1 = getAETTMATA('Slovenia')
+
+        valueSlovak1 = []
+        if ('Slovakia' in coun):
+            valueSlovak1 = getAETTMATA('Slovakia')
+
+        valueFin1 = []
+        if ('Finland' in coun):
+            valueFin1 = getAETTMATA('Finland')
+
+        valueSwe1 = []
+        if ('Sweden' in coun):
+            valueSwe1 = getAETTMATA('Sweden')
+
+        valueIre1 = []
+        if ('Ireland' in coun):
+            valueIre1 = getAETTMATA('Ireland')
+
+        valueFra1 = []
+        if ('France' in coun):
+            valueFra1 = getAETTMATA('France')
+
+        valueCro1 = []
+        if ('Croatia' in coun):
+            valueCro1 = getAETTMATA('Croatia')
+
+        valueIta1 = []
+        if ('Italy' in coun):
+            valueIta1 = getAETTMATA('Italy')
+
+        mata = pd.read_csv('data/Agriculture, energy, transport & tourism-Monthly arrivals at tourist accommodation.csv')
+
+        df1 = {}
+        for i in range(0, 29):
+            niz = mata.loc[i, :]
+            df1[i] = niz
         return {
             'data': [go.Scatter(x=labelsAETTMCAF,
                                 y=valueEu1,
                                 mode='lines+markers',
-                                name='European Union',
+                                name='EU',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#E6D1D1'),
                                 marker=dict(size=5, symbol='circle', color='lightblue',
-                                            line=dict(color='#E6D1D1', width=2)
-                                            ),
+                                            line=dict(color='#E6D1D1', width=2)),
                                 hoverinfo='text',
                                 hovertext=
-                                '<b>Country</b>: ' + 'European Union' + '<br>'),
+                                '<b>Country</b>: ' + 'European Union' + '<br>'+
+                                '<b>Monthly arrivals at tourist accommodation</b>: ' + df1[0].astype(str) + '<br>'),
                      go.Scatter(x=labelsAETTMCAF,
                                 y=valueBel1,
                                 mode='lines+markers',
-                                name='Belgium',
+                                name='BE',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#FF0000'),
                                 marker=dict(size=5, symbol='circle', color='lightblue',
                                             line=dict(color='#FF0000', width=2)),
                                 hoverinfo='text',
                                 hovertext=
-                                '<b>Country</b>: ' + 'Belgium' + '<br>'
-                                )],
+                                '<b>Country</b>: ' + 'Belgium' + '<br>'+
+                                '<b>Monthly arrivals at tourist accommodation</b>: ' + df1[1].astype(str) + '<br>'),
+                     go.Scatter(x=labelsAETTMCAF,
+                                y=valueBul1,
+                                mode='lines+markers',
+                                name='BG',
+                                line=dict(shape="spline", smoothing=1.3, width=3, color='#353131'),
+                                marker=dict(size=5, symbol='circle', color='lightblue',
+                                            line=dict(color='#353131', width=2)),
+                                hoverinfo='text',
+                                hovertext=
+                                '<b>Country</b>: ' + 'Bulgaria' + '<br>' +
+                                '<b>Monthly arrivals at tourist accommodation</b>: ' + df1[2].astype(str) + '<br>'),
+                     go.Scatter(x=labelsAETTMCAF,
+                                y=valueChe1,
+                                mode='lines+markers',
+                                name='CZ',
+                                line=dict(shape="spline", smoothing=1.3, width=3, color='#49AF30'),
+                                marker=dict(size=5, symbol='circle', color='lightblue',
+                                            line=dict(color='#49AF30', width=2)),
+                                hoverinfo='text',
+                                hovertext=
+                                '<b>Country</b>: ' + 'Czechia' + '<br>' +
+                                '<b>Monthly arrivals at tourist accommodation</b>: ' + df1[3].astype(str) + '<br>'),
+                     go.Scatter(x=labelsAETTMCAF,
+                                y=valueGer1,
+                                mode='lines+markers',
+                                name='DE',
+                                line=dict(shape="spline", smoothing=1.3, width=3, color='#7B7D7B'),
+                                marker=dict(size=5, symbol='circle', color='lightblue',
+                                            line=dict(color='#7B7D7B', width=2)),
+                                hoverinfo='text',
+                                hovertext=
+                                '<b>Country</b>: ' + 'Germany' + '<br>' +
+                                '<b>Monthly arrivals at tourist accommodation</b>: ' + df1[5].astype(str) + '<br>'),
+                     go.Scatter(x=labelsAETTMCAF,
+                                y=valueEst1,
+                                mode='lines+markers',
+                                name='EE',
+                                line=dict(shape="spline", smoothing=1.3, width=3, color='#C4C048'),
+                                marker=dict(size=5, symbol='circle', color='lightblue',
+                                            line=dict(color='#C4C048', width=2)),
+                                hoverinfo='text',
+                                hovertext=
+                                '<b>Country</b>: ' + 'Estonia' + '<br>' +
+                                '<b>Monthly arrivals at tourist accommodation</b>: ' + df1[6].astype(str) + '<br>'),
+                     go.Scatter(x=labelsAETTMCAF,
+                                y=valueIre1,
+                                mode='lines+markers',
+                                name='IE',
+                                line=dict(shape="spline", smoothing=1.3, width=3, color='#9E9D7B'),
+                                marker=dict(size=5, symbol='circle', color='lightblue',
+                                            line=dict(color='#9E9D7B', width=2)),
+                                hoverinfo='text',
+                                hovertext=
+                                '<b>Country</b>: ' + 'Ireland' + '<br>' +
+                                '<b>Monthly arrivals at tourist accommodation</b>: ' + df1[7].astype(str) + '<br>'),
+                     go.Scatter(x=labelsAETTMCAF,
+                                y=valueGree1,
+                                mode='lines+markers',
+                                name='EL',
+                                line=dict(shape="spline", smoothing=1.3, width=3, color='#1A46C0'),
+                                marker=dict(size=5, symbol='circle', color='lightblue',
+                                            line=dict(color='#1A46C0', width=2)),
+                                hoverinfo='text',
+                                hovertext=
+                                '<b>Country</b>: ' + 'Greece' + '<br>' +
+                                '<b>Monthly arrivals at tourist accommodation</b>: ' + df1[8].astype(str) + '<br>'),
+                     go.Scatter(x=labelsAETTMCAF,
+                                y=valueSpa1,
+                                mode='lines+markers',
+                                name='ES',
+                                line=dict(shape="spline", smoothing=1.3, width=3, color='#2E063A'),
+                                marker=dict(size=5, symbol='circle', color='lightblue',
+                                            line=dict(color='#2E063A', width=2)),
+                                hoverinfo='text',
+                                hovertext=
+                                '<b>Country</b>: ' + 'Spain' + '<br>' +
+                                '<b>Monthly arrivals at tourist accommodation</b>: ' + df1[9].astype(str) + '<br>'),
+                     go.Scatter(x=labelsAETTMCAF,
+                                y=valueFra1,
+                                mode='lines+markers',
+                                name='FR',
+                                line=dict(shape="spline", smoothing=1.3, width=3, color='#39313C'),
+                                marker=dict(size=5, symbol='circle', color='lightblue',
+                                            line=dict(color='#39313C', width=2)),
+                                hoverinfo='text',
+                                hovertext=
+                                '<b>Country</b>: ' + 'France' + '<br>' +
+                                '<b>Monthly arrivals at tourist accommodation</b>: ' + df1[10].astype(str) + '<br>'),
+                     go.Scatter(x=labelsAETTMCAF,
+                                y=valueCro1,
+                                mode='lines+markers',
+                                name='HR',
+                                line=dict(shape="spline", smoothing=1.3, width=3, color='#189F96'),
+                                marker=dict(size=5, symbol='circle', color='lightblue',
+                                            line=dict(color='#189F96', width=2)),
+                                hoverinfo='text',
+                                hovertext=
+                                '<b>Country</b>: ' + 'Croatia' + '<br>' +
+                                '<b>Monthly arrivals at tourist accommodation</b>: ' + df1[11].astype(str) + '<br>'),
+                     go.Scatter(x=labelsAETTMCAF,
+                                y=valueIta1,
+                                mode='lines+markers',
+                                name='IT',
+                                line=dict(shape="spline", smoothing=1.3, width=3, color='#94A4A3'),
+                                marker=dict(size=5, symbol='circle', color='lightblue',
+                                            line=dict(color='#94A4A3', width=2)),
+                                hoverinfo='text',
+                                hovertext=
+                                '<b>Country</b>: ' + 'Italy' + '<br>' +
+                                '<b>Monthly arrivals at tourist accommodation</b>: ' + df1[12].astype(str) + '<br>'),
+                     go.Scatter(x=labelsAETTMCAF,
+                                y=valueCyp1,
+                                mode='lines+markers',
+                                name='CY',
+                                line=dict(shape="spline", smoothing=1.3, width=3, color='#ff3399'),
+                                marker=dict(size=5, symbol='circle', color='lightblue',
+                                            line=dict(color='#ff3399', width=2)),
+                                hoverinfo='text',
+                                hovertext=
+                                '<b>Country</b>: ' + 'Cyprus' + '<br>' +
+                                '<b>Monthly arrivals at tourist accommodation</b>: ' + df1[13].astype(str) + '<br>'),
+                     go.Scatter(x=labelsAETTMCAF,
+                                y=valueLat1,
+                                mode='lines+markers',
+                                name='LV',
+                                line=dict(shape="spline", smoothing=1.3, width=3, color='#aaaa55'),
+                                marker=dict(size=5, symbol='circle', color='lightblue',
+                                            line=dict(color='#aaaa55', width=2)),
+                                hoverinfo='text',
+                                hovertext=
+                                '<b>Country</b>: ' + 'Latvia' + '<br>' +
+                                '<b>Monthly arrivals at tourist accommodation</b>: ' + df1[14].astype(str) + '<br>'),
+                     go.Scatter(x=labelsAETTMCAF,
+                                y=valueLith1,
+                                mode='lines+markers',
+                                name='LT',
+                                line=dict(shape="spline", smoothing=1.3, width=3, color='#ffff00'),
+                                marker=dict(size=5, symbol='circle', color='lightblue',
+                                            line=dict(color='#ffff00', width=2)),
+                                hoverinfo='text',
+                                hovertext=
+                                '<b>Country</b>: ' + 'Lithuania' + '<br>' +
+                                '<b>Monthly arrivals at tourist accommodation</b>: ' + df1[15].astype(str) + '<br>'),
+                     go.Scatter(x=labelsAETTMCAF,
+                                y=valueLux1,
+                                mode='lines+markers',
+                                name='LU',
+                                line=dict(shape="spline", smoothing=1.3, width=3, color='#007399'),
+                                marker=dict(size=5, symbol='circle', color='lightblue',
+                                            line=dict(color='#007399', width=2)),
+                                hoverinfo='text',
+                                hovertext=
+                                '<b>Country</b>: ' + 'Luxembourg' + '<br>' +
+                                '<b>Monthly arrivals at tourist accommodation</b>: ' + df1[16].astype(str) + '<br>'),
+                     go.Scatter(x=labelsAETTMCAF,
+                                y=valueHun1,
+                                mode='lines+markers',
+                                name='HU',
+                                line=dict(shape="spline", smoothing=1.3, width=3, color='#ff3300'),
+                                marker=dict(size=5, symbol='circle', color='lightblue',
+                                            line=dict(color='#ff3300', width=2)),
+                                hoverinfo='text',
+                                hovertext=
+                                '<b>Country</b>: ' + 'Hungary' + '<br>' +
+                                '<b>Monthly arrivals at tourist accommodation</b>: ' + df1[17].astype(str) + '<br>'),
+                     go.Scatter(x=labelsAETTMCAF,
+                                y=valueNet1,
+                                mode='lines+markers',
+                                name='NL',
+                                line=dict(shape="spline", smoothing=1.3, width=3, color='#00e600'),
+                                marker=dict(size=5, symbol='circle', color='lightblue',
+                                            line=dict(color='#00e600', width=2)),
+                                hoverinfo='text',
+                                hovertext=
+                                '<b>Country</b>: ' + 'Netherlands' + '<br>' +
+                                '<b>Monthly arrivals at tourist accommodation</b>: ' + df1[19].astype(str) + '<br>'),
+                     go.Scatter(x=labelsAETTMCAF,
+                                y=valueAus1,
+                                mode='lines+markers',
+                                name='AT',
+                                line=dict(shape="spline", smoothing=1.3, width=3, color='#4dff4d'),
+                                marker=dict(size=5, symbol='circle', color='lightblue',
+                                            line=dict(color='#4dff4d', width=2)),
+                                hoverinfo='text',
+                                hovertext=
+                                '<b>Country</b>: ' + 'Austria' + '<br>' +
+                                '<b>Monthly arrivals at tourist accommodation</b>: ' + df1[20].astype(str) + '<br>'),
+                     go.Scatter(x=labelsAETTMCAF,
+                                y=valuePol1,
+                                mode='lines+markers',
+                                name='PL',
+                                line=dict(shape="spline", smoothing=1.3, width=3, color='#003300'),
+                                marker=dict(size=5, symbol='circle', color='lightblue',
+                                            line=dict(color='#003300', width=2)),
+                                hoverinfo='text',
+                                hovertext=
+                                '<b>Country</b>: ' + 'Poland' + '<br>' +
+                                '<b>Monthly arrivals at tourist accommodation</b>: ' + df1[21].astype(str) + '<br>'),
+                     go.Scatter(x=labelsAETTMCAF,
+                                y=valuePor1,
+                                mode='lines+markers',
+                                name='PT',
+                                line=dict(shape="spline", smoothing=1.3, width=3, color='#662900'),
+                                marker=dict(size=5, symbol='circle', color='lightblue',
+                                            line=dict(color='#662900', width=2)),
+                                hoverinfo='text',
+                                hovertext=
+                                '<b>Country</b>: ' + 'Portugal' + '<br>' +
+                                '<b>Monthly arrivals at tourist accommodation</b>: ' + df1[22].astype(str) + '<br>'),
+                     go.Scatter(x=labelsAETTMCAF,
+                                y=valueRom1,
+                                mode='lines+markers',
+                                name='RO',
+                                line=dict(shape="spline", smoothing=1.3, width=3, color='#993399'),
+                                marker=dict(size=5, symbol='circle', color='lightblue',
+                                            line=dict(color='#993399', width=2)),
+                                hoverinfo='text',
+                                hovertext=
+                                '<b>Country</b>: ' + 'Romania' + '<br>' +
+                                '<b>Monthly arrivals at tourist accommodation</b>: ' + df1[23].astype(str) + '<br>'),
+                     go.Scatter(x=labelsAETTMCAF,
+                                y=valueSlo1,
+                                mode='lines+markers',
+                                name='SI',
+                                line=dict(shape="spline", smoothing=1.3, width=3, color='#d98cd9'),
+                                marker=dict(size=5, symbol='circle', color='lightblue',
+                                            line=dict(color='#d98cd9', width=2)),
+                                hoverinfo='text',
+                                hovertext=
+                                '<b>Country</b>: ' + 'Slovenia' + '<br>' +
+                                '<b>Monthly arrivals at tourist accommodation</b>: ' + df1[24].astype(str) + '<br>'),
+                     go.Scatter(x=labelsAETTMCAF,
+                                y=valueSlovak1,
+                                mode='lines+markers',
+                                name='SK',
+                                line=dict(shape="spline", smoothing=1.3, width=3, color='#0033cc'),
+                                marker=dict(size=5, symbol='circle', color='lightblue',
+                                            line=dict(color='#0033cc', width=2)),
+                                hoverinfo='text',
+                                hovertext=
+                                '<b>Country</b>: ' + 'Slovakia' + '<br>' +
+                                '<b>Monthly arrivals at tourist accommodation</b>: ' + df1[25].astype(str) + '<br>'),
+                     go.Scatter(x=labelsAETTMCAF,
+                                y=valueFin1,
+                                mode='lines+markers',
+                                name='FI',
+                                line=dict(shape="spline", smoothing=1.3, width=3, color='#99b3ff'),
+                                marker=dict(size=5, symbol='circle', color='lightblue',
+                                            line=dict(color='#99b3ff', width=2)),
+                                hoverinfo='text',
+                                hovertext=
+                                '<b>Country</b>: ' + 'Finland' + '<br>' +
+                                '<b>Monthly arrivals at tourist accommodation</b>: ' + df1[26].astype(str) + '<br>'),
+                     go.Scatter(x=labelsAETTMCAF,
+                                y=valueSwe1,
+                                mode='lines+markers',
+                                name='SE',
+                                line=dict(shape="spline", smoothing=1.3, width=3, color='#001a66'),
+                                marker=dict(size=5, symbol='circle', color='lightblue',
+                                            line=dict(color='#001a66', width=2)),
+                                hoverinfo='text',
+                                hovertext=
+                                '<b>Country</b>: ' + 'Sweden' + '<br>' +
+                                '<b>Monthly arrivals at tourist accommodation</b>: ' + df1[27].astype(str) + '<br>'),],
             'layout': go.Layout(
                 barmode='stack',
                 plot_bgcolor='#808080',
@@ -7903,8 +10147,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                            tickfont=dict(
                                family='Arial',
                                size=12,
-                               color='white'
-                           )),
+                               color='white')),
                 yaxis=dict(title='<b>Number of arrrivals</b>',
                            color='white',
                            showline=True,
@@ -7916,8 +10159,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                            tickfont=dict(
                                family='Arial',
                                size=12,
-                               color='white'
-                           )),
+                               color='white')),
                 legend={
                     'orientation': 'h',
                     'bgcolor': '#010915',
@@ -7925,10 +10167,9 @@ def update_graph(w_countries, w_countries1, country_chosen):
                 font=dict(
                     family="sans-serif",
                     size=12,
-                    color='white'),
-            )
+                    color='white'),)
         }
-    # Krece oblast Agriculture, energy, transport & tourism-Monthly arrivals at tourist accommodation
+    # Krece oblast Agriculture, energy, transport & tourism-Monthly nights spent at tourist accommodation
     elif (w_countries == 'Agriculture, energy, transport & tourism') & (w_countries1 == 'Monthly nights spent at tourist accommodation'):
         valueEu1 = []
         if ('European Union' in coun):
@@ -7938,29 +10179,439 @@ def update_graph(w_countries, w_countries1, country_chosen):
         if ('Belgium' in coun):
             valueBel1 = getAETTMNSTA('Belgium')
 
+        valueBul1 = []
+        if ('Bulgaria' in coun):
+            valueBul1 = getAETTMNSTA('Bulgaria')
+
+        valueChe1 = []
+        if ('Czechia' in coun):
+            valueChe1 = getAETTMNSTA('Czechia')
+
+        valueDen1 = []
+        if ('Denmark' in coun):
+            valueDen1 = getAETTMNSTA('Denmark')
+
+        valueGer1 = []
+        if ('Germany' in coun):
+            valueGer1 = getAETTMNSTA('Germany')
+
+        valueEst1 = []
+        if ('Estonia' in coun):
+            valueEst1 = getAETTMNSTA('Estonia')
+
+        valueGree1 = []
+        if ('Greece' in coun):
+            valueGree1 = getAETTMNSTA('Greece')
+
+        valueSpa1 = []
+        if ('Spain' in coun):
+            valueSpa1 = getAETTMNSTA('Spain')
+
+        valueFra1 = []
+        if ('France' in coun):
+            valueFra1 = getAETTMNSTA('France')
+
+        valueCro1 = []
+        if ('Croatia' in coun):
+            valueCro1 = getAETTMNSTA('Croatia')
+
+        valueIta1 = []
+        if ('Italy' in coun):
+            valueIta1 = getAETTMNSTA('Italy')
+
+        valueCyp1 = []
+        if ('Cyprus' in coun):
+            valueCyp1 = getAETTMNSTA('Cyprus')
+
+        valueLat1 = []
+        if ('Latvia' in coun):
+            valueLat1 = getAETTMNSTA('Latvia')
+
+        valueLith1 = []
+        if ('Lithuania' in coun):
+            valueLith1 = getAETTMNSTA('Lithuania')
+
+        valueLux1 = []
+        if ('Luxembourg' in coun):
+            valueLux1 = getAETTMNSTA('Luxembourg')
+
+        valueHun1 = []
+        if ('Hungary' in coun):
+            valueHun1 = getAETTMNSTA('Hungary')
+
+        valueNet1 = []
+        if ('Netherlands' in coun):
+            valueNet1 = getAETTMNSTA('Netherlands')
+
+        valueAus1 = []
+        if ('Austria' in coun):
+            valueAus1 = getAETTMNSTA('Austria')
+
+        valuePol1 = []
+        if ('Poland' in coun):
+            valuePol1 = getAETTMNSTA('Poland')
+
+        valuePor1 = []
+        if ('Portugal' in coun):
+            valuePor1 = getAETTMNSTA('Portugal')
+
+        valueRom1 = []
+        if ('Romania' in coun):
+            valueRom1 = getAETTMNSTA('Romania')
+
+        valueSlo1 = []
+        if ('Slovenia' in coun):
+            valueSlo1 = getAETTMNSTA('Slovenia')
+
+        valueSlovak1 = []
+        if ('Slovakia' in coun):
+            valueSlovak1 = getAETTMNSTA('Slovakia')
+
+        valueFin1 = []
+        if ('Finland' in coun):
+            valueFin1 = getAETTMNSTA('Finland')
+
+        valueSwe1 = []
+        if ('Sweden' in coun):
+            valueSwe1 = getAETTMNSTA('Sweden')
+
+        valueUk1 = []
+        if ('United Kingdom' in coun):
+            valueUk1 = getAETTMNSTA('United Kingdom')
+
+        valueNor1 = []
+        if ('Norway' in coun):
+            valueNor1 = getAETTMNSTA('Norway')
+
+        valueIre1 = []
+        if ('Ireland' in coun):
+            valueIre1 = getAETTMNSTA('Ireland')
+
+        mnsta = pd.read_csv('data/Agriculture, energy, transport & tourism-Monthly nights spent at tourist accommodation.csv')
+        df1 = {}
+        for i in range(0, 32):
+            niz = mnsta.loc[i, :]
+            df1[i] = niz
         return {
             'data': [go.Scatter(x=labelsAETTMCAF,
                                 y=valueEu1,
                                 mode='lines+markers',
-                                name='European Union',
+                                name='EU',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#E6D1D1'),
                                 marker=dict(size=5, symbol='circle', color='lightblue',
                                             line=dict(color='#E6D1D1', width=2)),
                                 hoverinfo='text',
                                 hovertext=
-                                '<b>Country</b>: ' + 'European Union' + '<br>'
-                                ),
+                                '<b>Country</b>: ' + 'European Union' + '<br>'+
+                                '<b>Monthly nights spent at tourist accommodation</b>: ' + df1[0].astype(str) + '<br>'),
                      go.Scatter(x=labelsAETTMCAF,
                                 y=valueBel1,
                                 mode='lines+markers',
-                                name='Belgium',
+                                name='BE',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#FF0000'),
                                 marker=dict(size=5, symbol='circle', color='lightblue',
                                             line=dict(color='#FF0000', width=2)),
                                 hoverinfo='text',
                                 hovertext=
-                                '<b>Country</b>: ' + 'Belgium' + '<br>'
-                                )],
+                                '<b>Country</b>: ' + 'Belgium' + '<br>'+
+                                '<b>Monthly nights spent at tourist accommodation</b>: ' + df1[1].astype(str) + '<br>'),
+                     go.Scatter(x=labelsAETTMCAF,
+                                y=valueBul1,
+                                mode='lines+markers',
+                                name='BG',
+                                line=dict(shape="spline", smoothing=1.3, width=3, color='#353131'),
+                                marker=dict(size=5, symbol='circle', color='lightblue',
+                                            line=dict(color='#353131', width=2)),
+                                hoverinfo='text',
+                                hovertext=
+                                '<b>Country</b>: ' + 'Bulgaria' + '<br>' +
+                                '<b>Monthly nights spent at tourist accommodation</b>: ' + df1[2].astype(str) + '<br>'),
+                     go.Scatter(x=labelsAETTMCAF,
+                                y=valueChe1,
+                                mode='lines+markers',
+                                name='CZ',
+                                line=dict(shape="spline", smoothing=1.3, width=3, color='#49AF30'),
+                                marker=dict(size=5, symbol='circle', color='lightblue',
+                                            line=dict(color='#49AF30', width=2)),
+                                hoverinfo='text',
+                                hovertext=
+                                '<b>Country</b>: ' + 'Czechia' + '<br>' +
+                                '<b>Monthly nights spent at tourist accommodation</b>: ' + df1[3].astype(str) + '<br>'),
+                     go.Scatter(x=labelsAETTMCAF,
+                                y=valueDen1,
+                                mode='lines+markers',
+                                name='DK',
+                                line=dict(shape="spline", smoothing=1.3, width=3, color='#2A4623'),
+                                marker=dict(size=5, symbol='circle', color='lightblue',
+                                            line=dict(color='#2A4623', width=2)),
+                                hoverinfo='text',
+                                hovertext=
+                                '<b>Country</b>: ' + 'Denmark' + '<br>' +
+                                '<b>Monthly nights spent at tourist accommodation</b>: ' + df1[5].astype(str) + '<br>'),
+                     go.Scatter(x=labelsAETTMCAF,
+                                y=valueGer1,
+                                mode='lines+markers',
+                                name='DE',
+                                line=dict(shape="spline", smoothing=1.3, width=3, color='#7B7D7B'),
+                                marker=dict(size=5, symbol='circle', color='lightblue',
+                                            line=dict(color='#7B7D7B', width=2)),
+                                hoverinfo='text',
+                                hovertext=
+                                '<b>Country</b>: ' + 'Germany' + '<br>' +
+                                '<b>Monthly nights spent at tourist accommodation</b>: ' + df1[5].astype(str) + '<br>'),
+                     go.Scatter(x=labelsAETTMCAF,
+                                y=valueEst1,
+                                mode='lines+markers',
+                                name='EE',
+                                line=dict(shape="spline", smoothing=1.3, width=3, color='#C4C048'),
+                                marker=dict(size=5, symbol='circle', color='lightblue',
+                                            line=dict(color='#C4C048', width=2)),
+                                hoverinfo='text',
+                                hovertext=
+                                '<b>Country</b>: ' + 'Estonia' + '<br>' +
+                                '<b>Monthly nights spent at tourist accommodation</b>: ' + df1[6].astype(str) + '<br>'),
+                     go.Scatter(x=labelsAETTMCAF,
+                                y=valueIre1,
+                                mode='lines+markers',
+                                name='IE',
+                                line=dict(shape="spline", smoothing=1.3, width=3, color='#9E9D7B'),
+                                marker=dict(size=5, symbol='circle', color='lightblue',
+                                            line=dict(color='#9E9D7B', width=2)),
+                                hoverinfo='text',
+                                hovertext=
+                                '<b>Country</b>: ' + 'Ireland' + '<br>' +
+                                '<b>Monthly nights spent at tourist accommodation</b>: ' + df1[7].astype(str) + '<br>'),
+                     go.Scatter(x=labelsAETTMCAF,
+                                y=valueGree1,
+                                mode='lines+markers',
+                                name='EL',
+                                line=dict(shape="spline", smoothing=1.3, width=3, color='#1A46C0'),
+                                marker=dict(size=5, symbol='circle', color='lightblue',
+                                            line=dict(color='#1A46C0', width=2)),
+                                hoverinfo='text',
+                                hovertext=
+                                '<b>Country</b>: ' + 'Greece' + '<br>' +
+                                '<b>Monthly nights spent at tourist accommodation</b>: ' + df1[8].astype(str) + '<br>'),
+                     go.Scatter(x=labelsAETTMCAF,
+                                y=valueSpa1,
+                                mode='lines+markers',
+                                name='ES',
+                                line=dict(shape="spline", smoothing=1.3, width=3, color='#2E063A'),
+                                marker=dict(size=5, symbol='circle', color='lightblue',
+                                            line=dict(color='#2E063A', width=2)),
+                                hoverinfo='text',
+                                hovertext=
+                                '<b>Country</b>: ' + 'Spain' + '<br>' +
+                                '<b>Monthly nights spent at tourist accommodation</b>: ' + df1[9].astype(str) + '<br>'),
+                     go.Scatter(x=labelsAETTMCAF,
+                                y=valueFra1,
+                                mode='lines+markers',
+                                name='FR',
+                                line=dict(shape="spline", smoothing=1.3, width=3, color='#39313C'),
+                                marker=dict(size=5, symbol='circle', color='lightblue',
+                                            line=dict(color='#39313C', width=2)),
+                                hoverinfo='text',
+                                hovertext=
+                                '<b>Country</b>: ' + 'France' + '<br>' +
+                                '<b>Monthly nights spent at tourist accommodation</b>: ' + df1[10].astype(str) + '<br>'),
+                     go.Scatter(x=labelsAETTMCAF,
+                                y=valueCro1,
+                                mode='lines+markers',
+                                name='HR',
+                                line=dict(shape="spline", smoothing=1.3, width=3, color='#189F96'),
+                                marker=dict(size=5, symbol='circle', color='lightblue',
+                                            line=dict(color='#189F96', width=2)),
+                                hoverinfo='text',
+                                hovertext=
+                                '<b>Country</b>: ' + 'Croatia' + '<br>' +
+                                '<b>Monthly nights spent at tourist accommodation</b>: ' + df1[11].astype(str) + '<br>'),
+                     go.Scatter(x=labelsAETTMCAF,
+                                y=valueIta1,
+                                mode='lines+markers',
+                                name='IT',
+                                line=dict(shape="spline", smoothing=1.3, width=3, color='#94A4A3'),
+                                marker=dict(size=5, symbol='circle', color='lightblue',
+                                            line=dict(color='#94A4A3', width=2)),
+                                hoverinfo='text',
+                                hovertext=
+                                '<b>Country</b>: ' + 'Italy' + '<br>' +
+                                '<b>Monthly nights spent at tourist accommodation</b>: ' + df1[12].astype(str) + '<br>'),
+                     go.Scatter(x=labelsAETTMCAF,
+                                y=valueCyp1,
+                                mode='lines+markers',
+                                name='CY',
+                                line=dict(shape="spline", smoothing=1.3, width=3, color='#ff3399'),
+                                marker=dict(size=5, symbol='circle', color='lightblue',
+                                            line=dict(color='#ff3399', width=2)),
+                                hoverinfo='text',
+                                hovertext=
+                                '<b>Country</b>: ' + 'Cyprus' + '<br>' +
+                                '<b>Monthly nights spent at tourist accommodation</b>: ' + df1[13].astype(str) + '<br>'),
+                     go.Scatter(x=labelsAETTMCAF,
+                                y=valueLat1,
+                                mode='lines+markers',
+                                name='LV',
+                                line=dict(shape="spline", smoothing=1.3, width=3, color='#aaaa55'),
+                                marker=dict(size=5, symbol='circle', color='lightblue',
+                                            line=dict(color='#aaaa55', width=2)),
+                                hoverinfo='text',
+                                hovertext=
+                                '<b>Country</b>: ' + 'Latvia' + '<br>' +
+                                '<b>Monthly nights spent at tourist accommodation</b>: ' + df1[14].astype(str) + '<br>'),
+                     go.Scatter(x=labelsAETTMCAF,
+                                y=valueLith1,
+                                mode='lines+markers',
+                                name='LT',
+                                line=dict(shape="spline", smoothing=1.3, width=3, color='#ffff00'),
+                                marker=dict(size=5, symbol='circle', color='lightblue',
+                                            line=dict(color='#ffff00', width=2)),
+                                hoverinfo='text',
+                                hovertext=
+                                '<b>Country</b>: ' + 'Lithuania' + '<br>' +
+                                '<b>Monthly nights spent at tourist accommodation</b>: ' + df1[15].astype(str) + '<br>'),
+                     go.Scatter(x=labelsAETTMCAF,
+                                y=valueLux1,
+                                mode='lines+markers',
+                                name='LU',
+                                line=dict(shape="spline", smoothing=1.3, width=3, color='#007399'),
+                                marker=dict(size=5, symbol='circle', color='lightblue',
+                                            line=dict(color='#007399', width=2)),
+                                hoverinfo='text',
+                                hovertext=
+                                '<b>Country</b>: ' + 'Luxembourg' + '<br>' +
+                                '<b>Monthly nights spent at tourist accommodation</b>: ' + df1[16].astype(str) + '<br>'),
+                     go.Scatter(x=labelsAETTMCAF,
+                                y=valueHun1,
+                                mode='lines+markers',
+                                name='HU',
+                                line=dict(shape="spline", smoothing=1.3, width=3, color='#ff3300'),
+                                marker=dict(size=5, symbol='circle', color='lightblue',
+                                            line=dict(color='#ff3300', width=2)),
+                                hoverinfo='text',
+                                hovertext=
+                                '<b>Country</b>: ' + 'Hungary' + '<br>' +
+                                '<b>Monthly nights spent at tourist accommodation</b>: ' + df1[17].astype(str) + '<br>'),
+                     go.Scatter(x=labelsAETTMCAF,
+                                y=valueNet1,
+                                mode='lines+markers',
+                                name='NL',
+                                line=dict(shape="spline", smoothing=1.3, width=3, color='#00e600'),
+                                marker=dict(size=5, symbol='circle', color='lightblue',
+                                            line=dict(color='#00e600', width=2)),
+                                hoverinfo='text',
+                                hovertext=
+                                '<b>Country</b>: ' + 'Netherlands' + '<br>' +
+                                '<b>Monthly nights spent at tourist accommodation</b>: ' + df1[19].astype(str) + '<br>'),
+                     go.Scatter(x=labelsAETTMCAF,
+                                y=valueAus1,
+                                mode='lines+markers',
+                                name='AT',
+                                line=dict(shape="spline", smoothing=1.3, width=3, color='#4dff4d'),
+                                marker=dict(size=5, symbol='circle', color='lightblue',
+                                            line=dict(color='#4dff4d', width=2)),
+                                hoverinfo='text',
+                                hovertext=
+                                '<b>Country</b>: ' + 'Austria' + '<br>' +
+                                '<b>Monthly nights spent at tourist accommodation</b>: ' + df1[20].astype(str) + '<br>'),
+                     go.Scatter(x=labelsAETTMCAF,
+                                y=valuePol1,
+                                mode='lines+markers',
+                                name='PL',
+                                line=dict(shape="spline", smoothing=1.3, width=3, color='#003300'),
+                                marker=dict(size=5, symbol='circle', color='lightblue',
+                                            line=dict(color='#003300', width=2)),
+                                hoverinfo='text',
+                                hovertext=
+                                '<b>Country</b>: ' + 'Poland' + '<br>' +
+                                '<b>Monthly nights spent at tourist accommodation</b>: ' + df1[21].astype(str) + '<br>'),
+                     go.Scatter(x=labelsAETTMCAF,
+                                y=valuePor1,
+                                mode='lines+markers',
+                                name='PT',
+                                line=dict(shape="spline", smoothing=1.3, width=3, color='#662900'),
+                                marker=dict(size=5, symbol='circle', color='lightblue',
+                                            line=dict(color='#662900', width=2)),
+                                hoverinfo='text',
+                                hovertext=
+                                '<b>Country</b>: ' + 'Portugal' + '<br>' +
+                                '<b>Monthly nights spent at tourist accommodation</b>: ' + df1[22].astype(str) + '<br>'),
+                     go.Scatter(x=labelsAETTMCAF,
+                                y=valueRom1,
+                                mode='lines+markers',
+                                name='RO',
+                                line=dict(shape="spline", smoothing=1.3, width=3, color='#993399'),
+                                marker=dict(size=5, symbol='circle', color='lightblue',
+                                            line=dict(color='#993399', width=2)),
+                                hoverinfo='text',
+                                hovertext=
+                                '<b>Country</b>: ' + 'Romania' + '<br>' +
+                                '<b>Monthly nights spent at tourist accommodation</b>: ' + df1[23].astype(str) + '<br>'),
+                     go.Scatter(x=labelsAETTMCAF,
+                                y=valueSlo1,
+                                mode='lines+markers',
+                                name='SI',
+                                line=dict(shape="spline", smoothing=1.3, width=3, color='#d98cd9'),
+                                marker=dict(size=5, symbol='circle', color='lightblue',
+                                            line=dict(color='#d98cd9', width=2)),
+                                hoverinfo='text',
+                                hovertext=
+                                '<b>Country</b>: ' + 'Slovenia' + '<br>' +
+                                '<b>Monthly nights spent at tourist accommodation</b>: ' + df1[24].astype(str) + '<br>'),
+                     go.Scatter(x=labelsAETTMCAF,
+                                y=valueSlovak1,
+                                mode='lines+markers',
+                                name='SK',
+                                line=dict(shape="spline", smoothing=1.3, width=3, color='#0033cc'),
+                                marker=dict(size=5, symbol='circle', color='lightblue',
+                                            line=dict(color='#0033cc', width=2)),
+                                hoverinfo='text',
+                                hovertext=
+                                '<b>Country</b>: ' + 'Slovakia' + '<br>' +
+                                '<b>Monthly nights spent at tourist accommodation</b>: ' + df1[25].astype(str) + '<br>'),
+                     go.Scatter(x=labelsAETTMCAF,
+                                y=valueFin1,
+                                mode='lines+markers',
+                                name='FI',
+                                line=dict(shape="spline", smoothing=1.3, width=3, color='#99b3ff'),
+                                marker=dict(size=5, symbol='circle', color='lightblue',
+                                            line=dict(color='#99b3ff', width=2)),
+                                hoverinfo='text',
+                                hovertext=
+                                '<b>Country</b>: ' + 'Finland' + '<br>' +
+                                '<b>Monthly nights spent at tourist accommodation</b>: ' + df1[26].astype(str) + '<br>'),
+                     go.Scatter(x=labelsAETTMCAF,
+                                y=valueSwe1,
+                                mode='lines+markers',
+                                name='SE',
+                                line=dict(shape="spline", smoothing=1.3, width=3, color='#001a66'),
+                                marker=dict(size=5, symbol='circle', color='lightblue',
+                                            line=dict(color='#001a66', width=2)),
+                                hoverinfo='text',
+                                hovertext=
+                                '<b>Country</b>: ' + 'Sweden' + '<br>' +
+                                '<b>Monthly nights spent at tourist accommodation</b>: ' + df1[27].astype(str) + '<br>'),
+                     go.Scatter(x=labelsAETTMCAF,
+                                y=valueUk1,
+                                mode='lines+markers',
+                                name='UK',
+                                line=dict(shape="spline", smoothing=1.3, width=3, color='#00cc99'),
+                                marker=dict(size=5, symbol='circle', color='lightblue',
+                                            line=dict(color='#00cc99', width=2)),
+                                hoverinfo='text',
+                                hovertext=
+                                '<b>Country</b>: ' + 'United Kingdom' + '<br>' +
+                                '<b>Monthly nights spent at tourist accommodation</b>: ' + df1[30].astype(str) + '<br>'),
+                     go.Scatter(x=labelsAETTMCAF,
+                                y=valueNor1,
+                                mode='lines+markers',
+                                name='NO',
+                                line=dict(shape="spline", smoothing=1.3, width=3, color='#73e600'),
+                                marker=dict(size=5, symbol='circle', color='lightblue',
+                                            line=dict(color='#73e600', width=2)),
+                                hoverinfo='text',
+                                hovertext=
+                                '<b>Country</b>: ' + 'Norway' + '<br>' +
+                                '<b>Monthly nights spent at tourist accommodation</b>: ' + df1[28].astype(str) + '<br>'),],
             'layout': go.Layout(
                 barmode='stack',
                 plot_bgcolor='#808080',
@@ -7993,8 +10644,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                     tickfont=dict(
                         family='Arial',
                         size=12,
-                        color='white'
-                    )),
+                        color='white')),
                 yaxis=dict(title='<b>Number of nights spent</b>',
                            color='white',
                            showline=True,
@@ -8006,8 +10656,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                            tickfont=dict(
                                family='Arial',
                                size=12,
-                               color='white'
-                           )),
+                               color='white')),
                 legend={
                     'orientation': 'h',
                     'bgcolor': '#010915',
@@ -8015,8 +10664,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                 font=dict(
                     family="sans-serif",
                     size=12,
-                    color='white'),
-            )
+                    color='white'),)
         }
     # Krece oblast Agriculture, energy, transport & tourism-Monthly electricity consumed by end-users
     elif (w_countries == 'Agriculture, energy, transport & tourism') & (w_countries1 == 'Monthly electricity consumed by end-users'):
@@ -8024,35 +10672,443 @@ def update_graph(w_countries, w_countries1, country_chosen):
         if ('European Union' in coun):
             valueEu1 = getAETTMEC('European Union')
 
+        valueBul1 = []
+        if ('Bulgaria' in coun):
+            valueBul1 = getAETTMEC('Bulgaria')
+
         valueBel1 = []
         if ('Belgium' in coun):
             valueBel1 = getAETTMEC('Belgium')
 
+        valueChe1 = []
+        if ('Czechia' in coun):
+            valueChe1 = getAETTMEC('Czechia')
+
+        valueDen1 = []
+        if ('Denmark' in coun):
+            valueDen1 = getAETTMEC('Denmark')
+
+        valueGer1 = []
+        if ('Germany' in coun):
+            valueGer1 = getAETTMEC('Germany')
+
+        valueEst1 = []
+        if ('Estonia' in coun):
+            valueEst1 = getAETTMEC('Estonia')
+
+        valueGree1 = []
+        if ('Greece' in coun):
+            valueGree1 = getAETTMEC('Greece')
+
+        valueSpa1 = []
+        if ('Spain' in coun):
+            valueSpa1 = getAETTMEC('Spain')
+
+        valueFra1 = []
+        if ('France' in coun):
+            valueFra1 = getAETTMEC('France')
+
+        valueCro1 = []
+        if ('Croatia' in coun):
+            valueCro1 = getAETTMEC('Croatia')
+
+        valueIta1 = []
+        if ('Italy' in coun):
+            valueIta1 = getAETTMEC('Italy')
+
+        valueCyp1 = []
+        if ('Cyprus' in coun):
+            valueCyp1 = getAETTMEC('Cyprus')
+
+        valueLat1 = []
+        if ('Latvia' in coun):
+            valueLat1 = getAETTMEC('Latvia')
+
+        valueLith1 = []
+        if ('Lithuania' in coun):
+            valueLith1 = getAETTMEC('Lithuania')
+
+        valueLux1 = []
+        if ('Luxembourg' in coun):
+            valueLux1 = getAETTMEC('Luxembourg')
+
+        valueHun1 = []
+        if ('Hungary' in coun):
+            valueHun1 = getAETTMEC('Hungary')
+
+        valueNet1 = []
+        if ('Netherlands' in coun):
+            valueNet1 = getAETTMEC('Netherlands')
+
+        valueAus1 = []
+        if ('Austria' in coun):
+            valueAus1 = getAETTMEC('Austria')
+
+        valuePol1 = []
+        if ('Poland' in coun):
+            valuePol1 = getAETTMEC('Poland')
+
+        valuePor1 = []
+        if ('Portugal' in coun):
+            valuePor1 = getAETTMEC('Portugal')
+
+        valueRom1 = []
+        if ('Romania' in coun):
+            valueRom1 = getAETTMEC('Romania')
+
+        valueSlo1 = []
+        if ('Slovenia' in coun):
+            valueSlo1 = getAETTMEC('Slovenia')
+
+        valueSlovak1 = []
+        if ('Slovakia' in coun):
+            valueSlovak1 = getAETTMEC('Slovakia')
+
+        valueFin1 = []
+        if ('Finland' in coun):
+            valueFin1 = getAETTMEC('Finland')
+
+        valueSwe1 = []
+        if ('Sweden' in coun):
+            valueSwe1 = getAETTMEC('Sweden')
+
+        valueUk1 = []
+        if ('United Kingdom' in coun):
+            valueUk1 = getAETTMEC('United Kingdom')
+
+        valueNor1 = []
+        if ('Norway' in coun):
+            valueNor1 = getAETTMEC('Norway')
+
+        valueIre1 = []
+        if ('Ireland' in coun):
+            valueIre1 = getAETTMEC('Ireland')
+
+        mecbu = pd.read_csv('data/Agriculture, energy, transport & tourism-Monthly electricity consumed by end-users.csv')
+        df1 = {}
+        for i in range(0, 30):
+            niz = mecbu.loc[i, :]
+            df1[i] = niz
         return {
             'data': [go.Scatter(x=labelsAETTMCAF,
                                 y=valueEu1,
                                 mode='lines+markers',
-                                name='European Union',
+                                name='EU',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#E6D1D1'),
                                 marker=dict(size=5, symbol='circle', color='lightblue',
-                                            line=dict(color='#E6D1D1', width=2)
-                                            ),
+                                            line=dict(color='#E6D1D1', width=2)),
                                 hoverinfo='text',
                                 hovertext=
-                                '<b>Country</b>: ' + 'European Union' + '<br>'
-                                ),
+                                '<b>Country</b>: ' + 'European Union' + '<br>' +
+                                '<b>Monthly electricity consumed by end-users</b>: ' + df1[0].astype(str) + '<br>'),
                      go.Scatter(x=labelsAETTMCAF,
                                 y=valueBel1,
                                 mode='lines+markers',
-                                name='Belgium',
+                                name='BE',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#FF0000'),
                                 marker=dict(size=5, symbol='circle', color='lightblue',
-                                            line=dict(color='#FF0000', width=2)
-                                            ),
+                                            line=dict(color='#FF0000', width=2)),
                                 hoverinfo='text',
                                 hovertext=
-                                '<b>Country</b>: ' + 'Belgium' + '<br>'
-                                )],
+                                '<b>Country</b>: ' + 'Belgium' + '<br>'+
+                                '<b>Monthly electricity consumed by end-users</b>: ' + df1[1].astype(str) + '<br>'),
+                     go.Scatter(x=labelsAETTMCAF,
+                                y=valueBul1,
+                                mode='lines+markers',
+                                name='BG',
+                                line=dict(shape="spline", smoothing=1.3, width=3, color='#353131'),
+                                marker=dict(size=5, symbol='circle', color='lightblue',
+                                            line=dict(color='#353131', width=2)),
+                                hoverinfo='text',
+                                hovertext=
+                                '<b>Country</b>: ' + 'Bulgaria' + '<br>' +
+                                '<b>Monthly electricity consumed by end-users</b>: ' + df1[2].astype(str) + '<br>'),
+                     go.Scatter(x=labelsAETTMCAF,
+                                y=valueChe1,
+                                mode='lines+markers',
+                                name='CZ',
+                                line=dict(shape="spline", smoothing=1.3, width=3, color='#49AF30'),
+                                marker=dict(size=5, symbol='circle', color='lightblue',
+                                            line=dict(color='#49AF30', width=2)),
+                                hoverinfo='text',
+                                hovertext=
+                                '<b>Country</b>: ' + 'Czechia' + '<br>' +
+                                '<b>Monthly electricity consumed by end-users</b>: ' + df1[3].astype(str) + '<br>'),
+                     go.Scatter(x=labelsAETTMCAF,
+                                y=valueDen1,
+                                mode='lines+markers',
+                                name='DK',
+                                line=dict(shape="spline", smoothing=1.3, width=3, color='#2A4623'),
+                                marker=dict(size=5, symbol='circle', color='lightblue',
+                                            line=dict(color='#2A4623', width=2)),
+                                hoverinfo='text',
+                                hovertext=
+                                '<b>Country</b>: ' + 'Denmark' + '<br>' +
+                                '<b>Monthly electricity consumed by end-users</b>: ' + df1[5].astype(str) + '<br>'),
+                     go.Scatter(x=labelsAETTMCAF,
+                                y=valueGer1,
+                                mode='lines+markers',
+                                name='DE',
+                                line=dict(shape="spline", smoothing=1.3, width=3, color='#7B7D7B'),
+                                marker=dict(size=5, symbol='circle', color='lightblue',
+                                            line=dict(color='#7B7D7B', width=2)),
+                                hoverinfo='text',
+                                hovertext=
+                                '<b>Country</b>: ' + 'Germany' + '<br>' +
+                                '<b>Monthly electricity consumed by end-users</b>: ' + df1[5].astype(str) + '<br>'),
+                     go.Scatter(x=labelsAETTMCAF,
+                                y=valueEst1,
+                                mode='lines+markers',
+                                name='EE',
+                                line=dict(shape="spline", smoothing=1.3, width=3, color='#C4C048'),
+                                marker=dict(size=5, symbol='circle', color='lightblue',
+                                            line=dict(color='#C4C048', width=2)),
+                                hoverinfo='text',
+                                hovertext=
+                                '<b>Country</b>: ' + 'Estonia' + '<br>' +
+                                '<b>Monthly electricity consumed by end-users</b>: ' + df1[6].astype(str) + '<br>'),
+                     go.Scatter(x=labelsAETTMCAF,
+                                y=valueIre1,
+                                mode='lines+markers',
+                                name='IE',
+                                line=dict(shape="spline", smoothing=1.3, width=3, color='#9E9D7B'),
+                                marker=dict(size=5, symbol='circle', color='lightblue',
+                                            line=dict(color='#9E9D7B', width=2)),
+                                hoverinfo='text',
+                                hovertext=
+                                '<b>Country</b>: ' + 'Ireland' + '<br>' +
+                                '<b>Monthly electricity consumed by end-users</b>: ' + df1[7].astype(str) + '<br>'),
+                     go.Scatter(x=labelsAETTMCAF,
+                                y=valueGree1,
+                                mode='lines+markers',
+                                name='EL',
+                                line=dict(shape="spline", smoothing=1.3, width=3, color='#1A46C0'),
+                                marker=dict(size=5, symbol='circle', color='lightblue',
+                                            line=dict(color='#1A46C0', width=2)),
+                                hoverinfo='text',
+                                hovertext=
+                                '<b>Country</b>: ' + 'Greece' + '<br>' +
+                                '<b>Monthly electricity consumed by end-users</b>: ' + df1[8].astype(str) + '<br>'),
+                     go.Scatter(x=labelsAETTMCAF,
+                                y=valueSpa1,
+                                mode='lines+markers',
+                                name='ES',
+                                line=dict(shape="spline", smoothing=1.3, width=3, color='#2E063A'),
+                                marker=dict(size=5, symbol='circle', color='lightblue',
+                                            line=dict(color='#2E063A', width=2)),
+                                hoverinfo='text',
+                                hovertext=
+                                '<b>Country</b>: ' + 'Spain' + '<br>' +
+                                '<b>Monthly electricity consumed by end-users</b>: ' + df1[9].astype(str) + '<br>'),
+                     go.Scatter(x=labelsAETTMCAF,
+                                y=valueFra1,
+                                mode='lines+markers',
+                                name='FR',
+                                line=dict(shape="spline", smoothing=1.3, width=3, color='#39313C'),
+                                marker=dict(size=5, symbol='circle', color='lightblue',
+                                            line=dict(color='#39313C', width=2)),
+                                hoverinfo='text',
+                                hovertext=
+                                '<b>Country</b>: ' + 'France' + '<br>' +
+                                '<b>Monthly electricity consumed by end-users</b>: ' + df1[10].astype(str) + '<br>'),
+                     go.Scatter(x=labelsAETTMCAF,
+                                y=valueCro1,
+                                mode='lines+markers',
+                                name='HR',
+                                line=dict(shape="spline", smoothing=1.3, width=3, color='#189F96'),
+                                marker=dict(size=5, symbol='circle', color='lightblue',
+                                            line=dict(color='#189F96', width=2)),
+                                hoverinfo='text',
+                                hovertext=
+                                '<b>Country</b>: ' + 'Croatia' + '<br>' +
+                                '<b>Monthly electricity consumed by end-users</b>: ' + df1[11].astype(str) + '<br>'),
+                     go.Scatter(x=labelsAETTMCAF,
+                                y=valueIta1,
+                                mode='lines+markers',
+                                name='IT',
+                                line=dict(shape="spline", smoothing=1.3, width=3, color='#94A4A3'),
+                                marker=dict(size=5, symbol='circle', color='lightblue',
+                                            line=dict(color='#94A4A3', width=2)),
+                                hoverinfo='text',
+                                hovertext=
+                                '<b>Country</b>: ' + 'Italy' + '<br>' +
+                                '<b>Monthly electricity consumed by end-users</b>: ' + df1[12].astype(str) + '<br>'),
+                     go.Scatter(x=labelsAETTMCAF,
+                                y=valueCyp1,
+                                mode='lines+markers',
+                                name='CY',
+                                line=dict(shape="spline", smoothing=1.3, width=3, color='#ff3399'),
+                                marker=dict(size=5, symbol='circle', color='lightblue',
+                                            line=dict(color='#ff3399', width=2)),
+                                hoverinfo='text',
+                                hovertext=
+                                '<b>Country</b>: ' + 'Cyprus' + '<br>' +
+                                '<b>Monthly electricity consumed by end-users</b>: ' + df1[13].astype(str) + '<br>'),
+                     go.Scatter(x=labelsAETTMCAF,
+                                y=valueLat1,
+                                mode='lines+markers',
+                                name='LV',
+                                line=dict(shape="spline", smoothing=1.3, width=3, color='#aaaa55'),
+                                marker=dict(size=5, symbol='circle', color='lightblue',
+                                            line=dict(color='#aaaa55', width=2)),
+                                hoverinfo='text',
+                                hovertext=
+                                '<b>Country</b>: ' + 'Latvia' + '<br>' +
+                                '<b>Monthly electricity consumed by end-users</b>: ' + df1[14].astype(str) + '<br>'),
+                     go.Scatter(x=labelsAETTMCAF,
+                                y=valueLith1,
+                                mode='lines+markers',
+                                name='LT',
+                                line=dict(shape="spline", smoothing=1.3, width=3, color='#ffff00'),
+                                marker=dict(size=5, symbol='circle', color='lightblue',
+                                            line=dict(color='#ffff00', width=2)),
+                                hoverinfo='text',
+                                hovertext=
+                                '<b>Country</b>: ' + 'Lithuania' + '<br>' +
+                                '<b>Monthly electricity consumed by end-users</b>: ' + df1[15].astype(str) + '<br>'),
+                     go.Scatter(x=labelsAETTMCAF,
+                                y=valueLux1,
+                                mode='lines+markers',
+                                name='LU',
+                                line=dict(shape="spline", smoothing=1.3, width=3, color='#007399'),
+                                marker=dict(size=5, symbol='circle', color='lightblue',
+                                            line=dict(color='#007399', width=2)),
+                                hoverinfo='text',
+                                hovertext=
+                                '<b>Country</b>: ' + 'Luxembourg' + '<br>' +
+                                '<b>Monthly electricity consumed by end-users</b>: ' + df1[16].astype(str) + '<br>'),
+                     go.Scatter(x=labelsAETTMCAF,
+                                y=valueHun1,
+                                mode='lines+markers',
+                                name='HU',
+                                line=dict(shape="spline", smoothing=1.3, width=3, color='#ff3300'),
+                                marker=dict(size=5, symbol='circle', color='lightblue',
+                                            line=dict(color='#ff3300', width=2)),
+                                hoverinfo='text',
+                                hovertext=
+                                '<b>Country</b>: ' + 'Hungary' + '<br>' +
+                                '<b>Monthly electricity consumed by end-users</b>: ' + df1[17].astype(str) + '<br>'),
+                     go.Scatter(x=labelsAETTMCAF,
+                                y=valueNet1,
+                                mode='lines+markers',
+                                name='NL',
+                                line=dict(shape="spline", smoothing=1.3, width=3, color='#00e600'),
+                                marker=dict(size=5, symbol='circle', color='lightblue',
+                                            line=dict(color='#00e600', width=2)),
+                                hoverinfo='text',
+                                hovertext=
+                                '<b>Country</b>: ' + 'Netherlands' + '<br>' +
+                                '<b>Monthly electricity consumed by end-users</b>: ' + df1[19].astype(str) + '<br>'),
+                     go.Scatter(x=labelsAETTMCAF,
+                                y=valueAus1,
+                                mode='lines+markers',
+                                name='AT',
+                                line=dict(shape="spline", smoothing=1.3, width=3, color='#4dff4d'),
+                                marker=dict(size=5, symbol='circle', color='lightblue',
+                                            line=dict(color='#4dff4d', width=2)),
+                                hoverinfo='text',
+                                hovertext=
+                                '<b>Country</b>: ' + 'Austria' + '<br>' +
+                                '<b>Monthly electricity consumed by end-users</b>: ' + df1[20].astype(str) + '<br>'),
+                     go.Scatter(x=labelsAETTMCAF,
+                                y=valuePol1,
+                                mode='lines+markers',
+                                name='PL',
+                                line=dict(shape="spline", smoothing=1.3, width=3, color='#003300'),
+                                marker=dict(size=5, symbol='circle', color='lightblue',
+                                            line=dict(color='#003300', width=2)),
+                                hoverinfo='text',
+                                hovertext=
+                                '<b>Country</b>: ' + 'Poland' + '<br>' +
+                                '<b>Monthly electricity consumed by end-users</b>: ' + df1[21].astype(str) + '<br>'),
+                     go.Scatter(x=labelsAETTMCAF,
+                                y=valuePor1,
+                                mode='lines+markers',
+                                name='PT',
+                                line=dict(shape="spline", smoothing=1.3, width=3, color='#662900'),
+                                marker=dict(size=5, symbol='circle', color='lightblue',
+                                            line=dict(color='#662900', width=2)),
+                                hoverinfo='text',
+                                hovertext=
+                                '<b>Country</b>: ' + 'Portugal' + '<br>' +
+                                '<b>Monthly electricity consumed by end-users</b>: ' + df1[22].astype(str) + '<br>'),
+                     go.Scatter(x=labelsAETTMCAF,
+                                y=valueRom1,
+                                mode='lines+markers',
+                                name='RO',
+                                line=dict(shape="spline", smoothing=1.3, width=3, color='#993399'),
+                                marker=dict(size=5, symbol='circle', color='lightblue',
+                                            line=dict(color='#993399', width=2)),
+                                hoverinfo='text',
+                                hovertext=
+                                '<b>Country</b>: ' + 'Romania' + '<br>' +
+                                '<b>Monthly electricity consumed by end-users</b>: ' + df1[23].astype(str) + '<br>'),
+                     go.Scatter(x=labelsAETTMCAF,
+                                y=valueSlo1,
+                                mode='lines+markers',
+                                name='SI',
+                                line=dict(shape="spline", smoothing=1.3, width=3, color='#d98cd9'),
+                                marker=dict(size=5, symbol='circle', color='lightblue',
+                                            line=dict(color='#d98cd9', width=2)),
+                                hoverinfo='text',
+                                hovertext=
+                                '<b>Country</b>: ' + 'Slovenia' + '<br>' +
+                                '<b>Monthly electricity consumed by end-users</b>: ' + df1[24].astype(str) + '<br>'),
+                     go.Scatter(x=labelsAETTMCAF,
+                                y=valueSlovak1,
+                                mode='lines+markers',
+                                name='SK',
+                                line=dict(shape="spline", smoothing=1.3, width=3, color='#0033cc'),
+                                marker=dict(size=5, symbol='circle', color='lightblue',
+                                            line=dict(color='#0033cc', width=2)),
+                                hoverinfo='text',
+                                hovertext=
+                                '<b>Country</b>: ' + 'Slovakia' + '<br>' +
+                                '<b>Monthly electricity consumed by end-users</b>: ' + df1[25].astype(str) + '<br>'),
+                     go.Scatter(x=labelsAETTMCAF,
+                                y=valueFin1,
+                                mode='lines+markers',
+                                name='FI',
+                                line=dict(shape="spline", smoothing=1.3, width=3, color='#99b3ff'),
+                                marker=dict(size=5, symbol='circle', color='lightblue',
+                                            line=dict(color='#99b3ff', width=2)),
+                                hoverinfo='text',
+                                hovertext=
+                                '<b>Country</b>: ' + 'Finland' + '<br>' +
+                                '<b>Monthly electricity consumed by end-users</b>: ' + df1[26].astype(str) + '<br>'),
+                     go.Scatter(x=labelsAETTMCAF,
+                                y=valueSwe1,
+                                mode='lines+markers',
+                                name='SE',
+                                line=dict(shape="spline", smoothing=1.3, width=3, color='#001a66'),
+                                marker=dict(size=5, symbol='circle', color='lightblue',
+                                            line=dict(color='#001a66', width=2)),
+                                hoverinfo='text',
+                                hovertext=
+                                '<b>Country</b>: ' + 'Sweden' + '<br>' +
+                                '<b>Monthly electricity consumed by end-users</b>: ' + df1[27].astype(str) + '<br>'),
+                     go.Scatter(x=labelsAETTMCAF,
+                                y=valueUk1,
+                                mode='lines+markers',
+                                name='UK',
+                                line=dict(shape="spline", smoothing=1.3, width=3, color='#00cc99'),
+                                marker=dict(size=5, symbol='circle', color='lightblue',
+                                            line=dict(color='#00cc99', width=2)),
+                                hoverinfo='text',
+                                hovertext=
+                                '<b>Country</b>: ' + 'United Kingdom' + '<br>' +
+                                '<b>Monthly electricity consumed by end-users</b>: ' + df1[28].astype(str) + '<br>'),
+                     go.Scatter(x=labelsAETTMCAF,
+                                y=valueNor1,
+                                mode='lines+markers',
+                                name='NO',
+                                line=dict(shape="spline", smoothing=1.3, width=3, color='#73e600'),
+                                marker=dict(size=5, symbol='circle', color='lightblue',
+                                            line=dict(color='#73e600', width=2)),
+                                hoverinfo='text',
+                                hovertext=
+                                '<b>Country</b>: ' + 'Norway' + '<br>' +
+                                '<b>Monthly electricity consumed by end-users</b>: ' + df1[29].astype(str) + '<br>'),],
             'layout': go.Layout(
                 barmode='stack',
                 plot_bgcolor='#808080',
@@ -8085,9 +11141,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                     tickfont=dict(
                         family='Arial',
                         size=12,
-                        color='white'
-                    )
-                ),
+                        color='white')),
                 yaxis=dict(title='<b>% change</b>',
                            color='white',
                            showline=True,
@@ -8099,8 +11153,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                            tickfont=dict(
                                family='Arial',
                                size=12,
-                               color='white'
-                           )),
+                               color='white')),
                 legend={
                     'orientation': 'h',
                     'bgcolor': '#010915',
@@ -8108,21 +11161,14 @@ def update_graph(w_countries, w_countries1, country_chosen):
                 font=dict(
                     family="sans-serif",
                     size=12,
-                    color='white'),
-            )
+                    color='white'),)
         }
-
     else:
         return dash.no_update
 #################################################
 #KRAJ LINE CHART GRAFIKA
 #################################################
-#################################################
-
-#################################################
-#################################################
 # Kreiranje pie chart grafika
-#################################################
 #################################################
 #Uzimanje podataka za Podgrupu Economy Inflation
 def getPieArr(countryName):
@@ -8185,7 +11231,6 @@ def getPieNOD(countryName):
     for i in range(0, 94):
         suma = suma + float(value3[i])
     return suma
-
 #Uzimanje podataka za podgrupu:Population and health-Monthly first-time asylum
 def getPieMFTA(countryName):
     data2 = dataPAHMFTA.where(dataPAHMFTA.GEOLABEL == countryName).collect()
@@ -8193,7 +11238,6 @@ def getPieMFTA(countryName):
     value1 = []
     value2 = []
     value3 = []
-
     for i in range(1, 146):
         val = data2[0][i]
         value.append(val)
@@ -8206,7 +11250,6 @@ def getPieMFTA(countryName):
     for i in range(0, 144):
         suma = suma + float(value3[i])
     return suma
-##############################################
 #############################################
 #Krece grupa: Society and work
 #####################################
@@ -8220,7 +11263,6 @@ def getPieMUR(countryName):
     formsuma = suma / 35
     formsuma = f"{formsuma:.2f}"
     return formsuma
-
 #Uzimanje podataka za podgrupu:Society and work-Monthly youth unemployment rate
 def getPieMYUR(countryName):
     data2 = dataSAWMYUR.where(dataSAWMYUR.GEOLABEL == countryName).collect()
@@ -8253,7 +11295,6 @@ def getPieQE(countryName):
     formsuma = suma / 18
     formsuma = f"{formsuma:.2f}"
     return formsuma
-
 #Uzimanje podataka za podgrupu:Society and work-Quarterly labour market slack
 def getPieQLMS(countryName):
     data2 = dataSAWQLMS.where(dataSAWQLMS.GEOLABEL == countryName).collect()
@@ -8264,7 +11305,6 @@ def getPieQLMS(countryName):
     formsuma=suma/10
     formsuma=f"{formsuma:.2f}"
     return formsuma
-
 #Uzimanje podataka za podgrupu:Society and work-Quarterly job vacancy rate
 def getPieQJVR(countryName):
     data2 = dataSAWQJVR.where(dataSAWQJVR.GEOLABEL == countryName).collect()
@@ -8275,7 +11315,6 @@ def getPieQJVR(countryName):
     formsuma=suma/19
     formsuma=f"{formsuma:.2f}"
     return formsuma
-
 #Uzimanje podataka za podgrupu:Society and work-Quarterly labour cost
 def getPieQLC(countryName):
     data2 = dataSAWQLC.where(dataSAWQLC.GEOLABEL == countryName).collect()
@@ -8287,11 +11326,9 @@ def getPieQLC(countryName):
     formsuma=f"{formsuma:.2f}"
     return formsuma
 ##########################################
-##########################################
 #UZIMANJE PODATAKA ZA GRUPU:AGRICULTURE, ENERGY, TRANSPORT & TOURISM
 ############################
 #Uzimanje podataka za: AGRICULTURE, ENERGY, TRANSPORT & TOURISM-Monthly air passenger transport
-
 def getPieMAPT(countryName):
     data2 = dataAETTMAPT.where(dataAETTMAPT.GEOLABEL == countryName).collect()
     value = []
@@ -8323,7 +11360,6 @@ def getPieMCAF(countryName):
     formsuma=suma/24
     formsuma=f"{formsuma:.2f}"
     return formsuma
-
 #AGRICULTURE, ENERGY, TRANSPORT & TOURISM-Monthly arrivals at tourist accommodation
 def getPieMATA(countryName):
     data2 = dataAETTMATA.where(dataAETTMATA.GEOLABEL == countryName).collect()
@@ -8346,7 +11382,6 @@ def getPieMATA(countryName):
     formsuma = suma / 18
     formsuma = f"{formsuma:.2f}"
     return formsuma
-
 #AGRICULTURE, ENERGY, TRANSPORT & TOURISM-Monthly nights spent at tourist accommodation
 def getPieMNSTA(countryName):
     data2 = dataAETTMNSTA.where(dataAETTMNSTA.GEOLABEL == countryName).collect()
@@ -8369,7 +11404,6 @@ def getPieMNSTA(countryName):
     formsuma = suma / 18
     formsuma = f"{formsuma:.2f}"
     return formsuma
-
 #AGRICULTURE, ENERGY, TRANSPORT & TOURISM-Monthly electricity consumed by end-users
 def getPieMEC(countryName):
     data2 = dataAETTMEC.where(dataAETTMEC.GEOLABEL == countryName).collect()
@@ -8386,7 +11420,6 @@ def getPieMEC(countryName):
               [Input('w_countries1', 'value')],
               [Input('w_countries2', 'value')])
 def display_content(w_countries, w_countries1, country_chosen):
-    coun = []
     coun = np.array(country_chosen)
     colors = ['#FF00FF', '#9C0C38', 'orange', 'lightblue']
     #Pocinje deo Economy- Inflation
@@ -8538,7 +11571,6 @@ def display_content(w_countries, w_countries1, country_chosen):
         valueUs1 = ''
         if ('United States' in coun):
             valueUs1 = getPieArr('United States')
-
         return {
             'data': [go.Pie(labels=['EU','BE','RS','BG','CZ','DK','DE','EE','IE','El','ES','FR','HR','IT','CY','LV','LT','LU','HU','MT','NL','AT','PL','PT','RO','SI','SK','FI','SE','UK','EEA','IS','NO','CH','MK','TR','US'],
                         values=[valueEu1, valueBel1,valueSer1,valueBul1,valueChe1,valueDen1,valueGer1,valueEst1,valueIre1,valueGree1,valueSpa1,valueFra1,valueCro1,valueIta1,valueCyp1,valueLat1,valueLith1,valueLux1,valueHun1,
@@ -8546,8 +11578,7 @@ def display_content(w_countries, w_countries1, country_chosen):
                         marker=dict(colors=colors),
                         hoverinfo='label+value+percent',
                         textinfo='label+value',
-                        textfont=dict(size=13)
-                        )],
+                        textfont=dict(size=13))],
             'layout': go.Layout(
                     plot_bgcolor='#808080',
                     paper_bgcolor='#A8A8A8',
@@ -8568,12 +11599,9 @@ def display_content(w_countries, w_countries1, country_chosen):
                     font=dict(
                         family="sans-serif",
                         size=12,
-                        color='white')
-              ),
+                        color='white')),
         }
-    ##
     # Pocinje ECONOMY GDP
-    ##
     elif (w_countries == 'Economy') & (w_countries1 == 'GDP – quarterly growth rate'):
         valueEu1 = ''
         if('European Union' in coun):
@@ -8710,7 +11738,6 @@ def display_content(w_countries, w_countries1, country_chosen):
         valueTur1 = ''
         if ('Turkey' in coun):
             valueTur1 = getPieGDP('Turkey')
-
         return {
             'data': [go.Pie(labels=['EU', 'BE', 'SR','BG','CZ','DK','DE','EE','IE','El','ES','FR','HR','IT','CY','LV','LT','LU','HU','MT','NL','AT','PL','PT','RO','SI','SK','FI','SE','UK','NO','CH','MK','TR'],
                             values=[valueEu1, valueBel1, valueSer1,valueBul1,valueChe1,valueDen1,valueGer1,valueEst1,valueIre1,valueGree1,valueSpa1,valueFra1,valueCro1,valueIta1,valueCyp1,valueLat1,valueLith1,valueLux1,valueHun1,
@@ -8718,8 +11745,7 @@ def display_content(w_countries, w_countries1, country_chosen):
                             marker=dict(colors=colors),
                             hoverinfo='label+value+percent',
                             textinfo='label+value',
-                            textfont=dict(size=13)
-                            )],
+                            textfont=dict(size=13))],
             'layout': go.Layout(
                 plot_bgcolor='#808080',
                 paper_bgcolor='#A8A8A8',
@@ -8740,12 +11766,10 @@ def display_content(w_countries, w_countries1, country_chosen):
                 font=dict(
                     family="sans-serif",
                     size=12,
-                    color='white')
-            ),
+                    color='white')),
         }
     #
     # ECONOMY Monthly industrial production
-    #
     elif (w_countries == 'Economy') & (w_countries1 == 'Monthly industrial production'):
         valueEu1 = ''
         if ('European Union' in coun):
@@ -8882,7 +11906,6 @@ def display_content(w_countries, w_countries1, country_chosen):
         valueTur1 = ''
         if ('Turkey' in coun):
             valueTur1 = getPieMIP('Turkey')
-
         return {
             'data': [go.Pie(labels=['EU', 'BE', 'SR','BG','CZ','DK','DE','EE','IE','El','ES','FR','HR','IT','CY','LV','LT','LU','HU','MT','NL','AT','PL','PT','RO','SI','SK','FI','SE','UK','NO','CH','MK','TR'],
                             values=[valueEu1, valueBel1, valueSer1,valueBul1,valueChe1,valueDen1,valueGer1,valueEst1,valueIre1,valueGree1,valueSpa1,valueFra1,valueCro1,valueIta1,valueCyp1,valueLat1,valueLith1,valueLux1,valueHun1,
@@ -8890,9 +11913,7 @@ def display_content(w_countries, w_countries1, country_chosen):
                             marker=dict(colors=colors),
                             hoverinfo='label+value+percent',
                             textinfo='label+value',
-                            textfont=dict(size=13)
-
-                            )],
+                            textfont=dict(size=13))],
             'layout': go.Layout(
                 plot_bgcolor='#808080',
                 paper_bgcolor='#A8A8A8',
@@ -8913,11 +11934,9 @@ def display_content(w_countries, w_countries1, country_chosen):
                 font=dict(
                     family="sans-serif",
                     size=12,
-                    color='white')
-            ),
+                    color='white')),
         }
     # ECONOMY MV
-    #
     elif (w_countries == 'Economy') & (w_countries1 == 'Monthly volume of retail trade'):
         valueEu1 = ''
         if ('European Union' in coun):
@@ -9054,7 +12073,6 @@ def display_content(w_countries, w_countries1, country_chosen):
         valueTur1 = ''
         if ('Turkey' in coun):
             valueTur1 = getPieMV('Turkey')
-
         return {
             'data': [go.Pie(labels=['EU', 'BE', 'SR','BG','CZ','DK','DE','EE','IE','El','ES','FR','HR','IT','CY','LV','LT','LU','HU','MT','NL','AT','PL','PT','RO','SI','SK','FI','SE','UK','NO','CH','MK','TR'],
                             values=[valueEu1, valueBel1, valueSer1,valueBul1,valueChe1,valueDen1,valueGer1,valueEst1,valueIre1,valueGree1,valueSpa1,valueFra1,valueCro1,valueIta1,valueCyp1,valueLat1,valueLith1,valueLux1,valueHun1,
@@ -9062,8 +12080,7 @@ def display_content(w_countries, w_countries1, country_chosen):
                             marker=dict(colors=colors),
                             hoverinfo='label+value+percent',
                             textinfo='label+value',
-                            textfont=dict(size=13)
-                            )],
+                            textfont=dict(size=13))],
             'layout': go.Layout(
                 plot_bgcolor='#808080',
                 paper_bgcolor='#A8A8A8',
@@ -9084,8 +12101,7 @@ def display_content(w_countries, w_countries1, country_chosen):
                 font=dict(
                     family="sans-serif",
                     size=12,
-                    color='white')
-            ),
+                    color='white')),
         }
     # Pocinje Economy-Monthly production in construction
     #
@@ -9181,7 +12197,6 @@ def display_content(w_countries, w_countries1, country_chosen):
         valueMake1 = ''
         if ('North Macedonia' in coun):
             valueMake1 = getPieMPIC('North Macedonia')
-
         return {
             'data': [go.Pie(labels=['EU', 'BE', 'BG','CZ','DK','DE''ES','FR','HR','IT','LU','HU','NL','AT','PL','PT','RO','SI','SK','FI','SE','UK','MK'],
                             values=[valueEu1, valueBel1, valueBul1,valueChe1,valueDen1,valueGer1,valueSpa1,valueFra1,valueCro1,valueIta1,valueLux1,valueHun1,
@@ -9189,8 +12204,7 @@ def display_content(w_countries, w_countries1, country_chosen):
                             marker=dict(colors=colors),
                             hoverinfo='label+value+percent',
                             textinfo='label+value',
-                            textfont=dict(size=13)
-                            )],
+                            textfont=dict(size=13))],
             'layout': go.Layout(
                 plot_bgcolor='#808080',
                 paper_bgcolor='#A8A8A8',
@@ -9211,17 +12225,12 @@ def display_content(w_countries, w_countries1, country_chosen):
                 font=dict(
                     family="sans-serif",
                     size=12,
-                    color='white')
-            ),
+                    color='white')),
         }
-
-###############################################
-###############################################
     #Pocinje deo Population and health
     #########################################
     ###########################################
     # POPULATION AND HEALTH-Monthly excess mortality
-    #
     elif (w_countries == 'Population and health') & (w_countries1 == 'Monthly excess mortality'):
         valueEu1 = ''
         if ('European Union' in coun):
@@ -9342,7 +12351,6 @@ def display_content(w_countries, w_countries1, country_chosen):
         valueSwi1 = ''
         if ('Switzerland' in coun):
             valueSwi1 = getPieMEM('Switzerland')
-
         return {
             'data': [go.Pie(labels=['EU','BE', 'BG','CZ','DK','DE','EE','IE','El','ES','FR','HR','IT','CY','LV','LT','LU','HU','MT','NL','AT','PL','PT','RO','SI','SK','FI','SE','IS','NO','CH'],
                             values=[valueEu1,valueBel1, valueBul1,valueChe1,valueDen1,valueGer1,valueEst1,valueGree1,valueSpa1,valueFra1,valueCro1,valueIta1,valueCyp1,valueLat1,valueLith1,valueLux1,valueHun1,
@@ -9350,8 +12358,7 @@ def display_content(w_countries, w_countries1, country_chosen):
                             marker=dict(colors=colors),
                             hoverinfo='label+value+percent',
                             textinfo='label+value',
-                            textfont=dict(size=13)
-                            )],
+                            textfont=dict(size=13))],
             'layout': go.Layout(
                 plot_bgcolor='#808080',
                 paper_bgcolor='#A8A8A8',
@@ -9372,8 +12379,7 @@ def display_content(w_countries, w_countries1, country_chosen):
                 font=dict(
                     family="sans-serif",
                     size=12,
-                    color='white')
-            ),
+                    color='white')),
         }
     #
     # Pocinje Number of deaths by week
@@ -9501,7 +12507,6 @@ def display_content(w_countries, w_countries1, country_chosen):
         valueSwi1 = ''
         if ('Switzerland' in coun):
             valueSwi1 = getPieNOD('Switzerland')
-
         return {
             'data': [go.Pie(labels=['BE', 'BG', 'SR','CZ','DK','DE','EE','IE','El','ES','FR','HR','IT','CY','LV','LT','LU','HU','MT','NL','AT','PL','PT','RO','SI','SK','FI','SE','UK','NO','CH'],
                             values=[valueBel1, valueBul1, valueSer1,valueChe1,valueDen1,valueGer1,valueEst1,valueGree1,valueSpa1,valueFra1,valueCro1,valueIta1,valueCyp1,valueLat1,valueLith1,valueLux1,valueHun1,
@@ -9509,8 +12514,7 @@ def display_content(w_countries, w_countries1, country_chosen):
                             marker=dict(colors=colors),
                             hoverinfo='label+value+percent',
                             textinfo='label+value',
-                            textfont=dict(size=13)
-                            )],
+                            textfont=dict(size=13))],
             'layout': go.Layout(
                 plot_bgcolor='#808080',
                 paper_bgcolor='#A8A8A8',
@@ -9531,8 +12535,7 @@ def display_content(w_countries, w_countries1, country_chosen):
                 font=dict(
                     family="sans-serif",
                     size=12,
-                    color='white')
-            ),
+                    color='white')),
         }
     #####################Pocinje Polulation and healht-Monthly first-time asylum applicants
     elif (w_countries == 'Population and health') & (w_countries1 == 'Monthly first-time asylum applicants'):
@@ -9659,7 +12662,6 @@ def display_content(w_countries, w_countries1, country_chosen):
         valueSwi1 = ''
         if ('Switzerland' in coun):
             valueSwi1 = getPieMFTA('Switzerland')
-
         return {
             'data': [go.Pie(labels=['EU', 'BE', 'BG','CZ','DK','DE','EE','IE','El','ES','FR','HR','IT','CY','LV','LT','LU','HU','MT','NL','AT','PL','PT','RO','SI','SK','FI','SE','UK','NO','CH'],
                             values=[valueEu1, valueBel1, valueBul1,valueChe1,valueDen1,valueGer1,valueEst1,valueIre1,valueGree1,valueSpa1,valueFra1,valueCro1,valueIta1,valueCyp1,valueLat1,valueLith1,valueLux1,valueHun1,
@@ -9667,8 +12669,7 @@ def display_content(w_countries, w_countries1, country_chosen):
                             marker=dict(colors=colors),
                             hoverinfo='label+value+percent',
                             textinfo='label+value',
-                            textfont=dict(size=13)
-                            )],
+                            textfont=dict(size=13))],
             'layout': go.Layout(
                 plot_bgcolor='#808080',
                 paper_bgcolor='#A8A8A8',
@@ -9689,8 +12690,7 @@ def display_content(w_countries, w_countries1, country_chosen):
                 font=dict(
                     family="sans-serif",
                     size=12,
-                    color='white')
-            ),
+                    color='white')),
         }
 
     #####################Pocinje Society and work-Monthly unemployment rate
@@ -9822,7 +12822,6 @@ def display_content(w_countries, w_countries1, country_chosen):
         valueTur1 = ''
         if ('Turkey' in coun):
             valueTur1 = getPieMUR('Turkey')
-
         return {
             'data': [go.Pie(labels=['EU', 'BE', 'BG','CZ','DK','DE','EE','IE','El','ES','FR','HR','IT','CY','LV','LT','LU','HU','MT','NL','AT','PL','PT','RO','SI','SK','FI','SE','UK','NO','CH','TR'],
                             values=[valueEu1, valueBel1, valueBul1,valueChe1,valueDen1,valueGer1,valueEst1,valueIre1,valueGree1,valueSpa1,valueFra1,valueCro1,valueIta1,valueCyp1,valueLat1,valueLith1,valueLux1,valueHun1,
@@ -9830,8 +12829,7 @@ def display_content(w_countries, w_countries1, country_chosen):
                             marker=dict(colors=colors),
                             hoverinfo='label+value+percent',
                             textinfo='label+value',
-                            textfont=dict(size=13)
-                            )],
+                            textfont=dict(size=13))],
             'layout': go.Layout(
                 plot_bgcolor='#808080',
                 paper_bgcolor='#A8A8A8',
@@ -9852,8 +12850,7 @@ def display_content(w_countries, w_countries1, country_chosen):
                 font=dict(
                     family="sans-serif",
                     size=12,
-                    color='white')
-            ),
+                    color='white')),
         }
     #####################Society and work-Monthly youth unemployment rate
     elif (w_countries == 'Society and work') & (w_countries1 == 'Monthly youth unemployment rate'):
@@ -9984,7 +12981,6 @@ def display_content(w_countries, w_countries1, country_chosen):
         valueTur1 = ''
         if ('Turkey' in coun):
             valueTur1 = getPieMYUR('Turkey')
-
         return {
             'data': [go.Pie(labels=['EU', 'BE', 'BG','CZ','DK','DE','EE','IE','El','ES','FR','HR','IT','CY','LV','LT','LU','HU','MT','NL','AT','PL','PT','RO','SI','SK','FI','SE','UK','NO','CH','TR'],
                             values=[valueEu1, valueBel1, valueBul1,valueChe1,valueDen1,valueGer1,valueEst1,valueIre1,valueGree1,valueSpa1,valueFra1,valueCro1,valueIta1,valueCyp1,valueLat1,valueLith1,valueLux1,valueHun1,
@@ -9992,8 +12988,7 @@ def display_content(w_countries, w_countries1, country_chosen):
                             marker=dict(colors=colors),
                             hoverinfo='label+value+percent',
                             textinfo='label+value',
-                            textfont=dict(size=13)
-                            )],
+                            textfont=dict(size=13))],
             'layout': go.Layout(
                 plot_bgcolor='#808080',
                 paper_bgcolor='#A8A8A8',
@@ -10014,8 +13009,7 @@ def display_content(w_countries, w_countries1, country_chosen):
                 font=dict(
                     family="sans-serif",
                     size=12,
-                    color='white')
-            ),
+                    color='white')),
         }
     #####################Society and work-Quarterly employment
     elif (w_countries == 'Society and work') & (w_countries1 == 'Quarterly employment'):
@@ -10114,7 +13108,6 @@ def display_content(w_countries, w_countries1, country_chosen):
         valueNor1 = ''
         if ('Norway' in coun):
             valueNor1 = getPieQE('Norway')
-
         return {
             'data': [go.Pie(labels=['EU', 'BE', 'BG','DK','DE','EE','IE','ES','HR','IT','CY','LV','LT','LU','HU','NL','AT','RO','SI','SK','FI','SE','UK','NO'],
                             values=[valueEu1, valueBel1, valueBul1,valueDen1,valueGer1,valueEst1,valueIre1,valueSpa1,valueCro1,valueIta1,valueCyp1,valueLat1,valueLith1,valueLux1,valueHun1,
@@ -10122,8 +13115,7 @@ def display_content(w_countries, w_countries1, country_chosen):
                             marker=dict(colors=colors),
                             hoverinfo='label+value+percent',
                             textinfo='label+value',
-                            textfont=dict(size=13)
-                            )],
+                            textfont=dict(size=13))],
             'layout': go.Layout(
                 plot_bgcolor='#808080',
                 paper_bgcolor='#A8A8A8',
@@ -10144,8 +13136,7 @@ def display_content(w_countries, w_countries1, country_chosen):
                 font=dict(
                     family="sans-serif",
                     size=12,
-                    color='white')
-            ),
+                    color='white')),
         }
     #####################Society and work-Quarterly labour market slack
     elif (w_countries == 'Society and work') & (w_countries1 == 'Quarterly labour market slack'):
@@ -10276,7 +13267,6 @@ def display_content(w_countries, w_countries1, country_chosen):
         valueTur1 = ''
         if ('Turkey' in coun):
             valueTur1 = getPieQLMS('Turkey')
-
         return {
             'data': [go.Pie(labels=['EU', 'BE', 'BG','CZ','DK','DE','EE','IE','El','ES','FR','HR','IT','CY','LV','LT','LU','HU','MT','NL','AT','PL','PT','RO','SI','SK','FI','SE','NO','CH','RS','TR'],
                             values=[valueEu1, valueBel1, valueBul1,valueChe1,valueDen1,valueGer1,valueEst1,valueIre1,valueGree1,valueSpa1,valueFra1,valueCro1,valueIta1,valueCyp1,valueLat1,valueLith1,valueLux1,valueHun1,
@@ -10284,15 +13274,13 @@ def display_content(w_countries, w_countries1, country_chosen):
                             marker=dict(colors=colors),
                             hoverinfo='label+value+percent',
                             textinfo='label+value',
-                            textfont=dict(size=13)
-                            )],
+                            textfont=dict(size=13))],
             'layout': go.Layout(
                 plot_bgcolor='#808080',
                 paper_bgcolor='#A8A8A8',
                 hovermode='closest',
                 title={
                     'text': 'Average labour market slack' + '</br>',
-
                     'y': 0.93,
                     'x': 0.5,
                     'xanchor': 'center',
@@ -10307,12 +13295,10 @@ def display_content(w_countries, w_countries1, country_chosen):
                 font=dict(
                     family="sans-serif",
                     size=12,
-                    color='white')
-            ),
+                    color='white')),
         }
     #####################Society and work-Quarterly job vacancy rate
     elif (w_countries == 'Society and work') & (w_countries1 == 'Quarterly job vacancy rate'):
-
         valueEu1 = ''
         if ('European Union' in coun):
             valueEu1 = getPieQJVR('European Union')
@@ -10424,7 +13410,6 @@ def display_content(w_countries, w_countries1, country_chosen):
         valueMake1 = ''
         if ('North Macedonia' in coun):
             valueMake1 = getPieQJVR('North Macedonia')
-
         return {
             'data': [go.Pie(labels=['EU', 'BE', 'BG','CZ','DE','EE','IE','El','ES','CY','LV','LT','LU','HU','MT','NL','AT','PL','PT','RO','SI','SK','FI','SE','NO','CH','UK','NM'],
                             values=[valueEu1, valueBel1, valueBul1,valueChe1,valueGer1,valueEst1,valueIre1,valueGree1,valueSpa1,valueCyp1,valueLat1,valueLith1,valueLux1,valueHun1,
@@ -10432,15 +13417,13 @@ def display_content(w_countries, w_countries1, country_chosen):
                             marker=dict(colors=colors),
                             hoverinfo='label+value+percent',
                             textinfo='label+value',
-                            textfont=dict(size=13)
-                            )],
+                            textfont=dict(size=13))],
             'layout': go.Layout(
                 plot_bgcolor='#808080',
                 paper_bgcolor='#A8A8A8',
                 hovermode='closest',
                 title={
                     'text': 'Average job vacancy rate' + '</br>',
-
                     'y': 0.93,
                     'x': 0.5,
                     'xanchor': 'center',
@@ -10455,8 +13438,7 @@ def display_content(w_countries, w_countries1, country_chosen):
                 font=dict(
                     family="sans-serif",
                     size=12,
-                    color='white')
-            ),
+                    color='white')),
         }
     #####################Society and work-Quarterly labour cost
     elif (w_countries == 'Society and work') & (w_countries1 == 'Quarterly labour cost'):
@@ -10584,7 +13566,6 @@ def display_content(w_countries, w_countries1, country_chosen):
         valueSer1 = ''
         if ('Serbia' in coun):
             valueSer1 = getPieQLC('Serbia')
-
         return {
             'data': [go.Pie(labels=['EU', 'BE', 'BG','CZ','DK','DE','EE','IE','El','ES','FR','HR','IT','CY','LV','LT','LU','HU','MT','NL','AT','PL','PT','RO','SI','SK','FI','SE','NO','UK','RS'],
                             values=[valueEu1, valueBel1, valueBul1,valueChe1,valueDen1,valueGer1,valueEst1,valueIre1,valueGree1,valueSpa1,valueFra1,valueCro1,valueIta1,valueCyp1,valueLat1,valueLith1,valueLux1,valueHun1,
@@ -10592,8 +13573,7 @@ def display_content(w_countries, w_countries1, country_chosen):
                             marker=dict(colors=colors),
                             hoverinfo='label+value+percent',
                             textinfo='label+value',
-                            textfont=dict(size=13)
-                            )],
+                            textfont=dict(size=13))],
             'layout': go.Layout(
                 plot_bgcolor='#808080',
                 paper_bgcolor='#A8A8A8',
@@ -11245,7 +14225,7 @@ def display_content(w_countries, w_countries1, country_chosen):
                     family="sans-serif",
                     size=12,
                     color='white')),}
-    ######################AGRICULTURE, ENERGY, TRANSPORT & TOURISM-Monthly electricity consumed by end-users
+######################AGRICULTURE, ENERGY, TRANSPORT & TOURISM-Monthly electricity consumed by end-users
     elif (w_countries == 'Agriculture, energy, transport & tourism') & (w_countries1 == 'Monthly electricity consumed by end-users'):
         valueEu1 = ''
         if ('European Union' in coun):
