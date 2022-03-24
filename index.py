@@ -7,7 +7,8 @@ import pandas as pd
 from pyspark import SparkContext, SparkConf
 from pyspark.sql import SQLContext
 import numpy as np
-from gunicorn.app.wsgiapp import run
+import arrow
+from pyspark.ml.regression import LinearRegression
 
 app = dash.Dash(__name__, )
 app.title = 'Spark Visual Data'
@@ -17,7 +18,7 @@ location1 = terr2[['subproducts']]
 list_locations = location1.set_index('subproducts').T.to_dict('dict')
 region = terr2['products'].unique()
 
-conf = SparkConf().setAppName('Spark visual')
+conf = SparkConf().setAppName('Spark visual').setMaster('local[*]')
 sc = SparkContext(conf=conf)
 sqlContext = SQLContext(sc)
 
@@ -107,34 +108,25 @@ csv_AETTMEC = 'data/Agriculture, energy, transport & tourism-Monthly electricity
 dataAETTMEC = sqlContext.read.format("csv").options(header='true').load(csv_AETTMEC)
 ############################################
 # labels for Economy inflation
-labels = ["6-2019", "7-2019", "8-2019", "9-2019", "10-2019", "11-2019", "12-2019", "1-2020", "2-2020", "3-2020",
-          "4-2020", "5-2020", "6-2020", "7-2020", "8-2020", "9-2020", "10-2020", "11-2020", "12-2020", "1-2021",
-          "2-2021", "3-2021", "4-2021", "5-2021", "6-2021", "7-2021", "8-2021", "9-2021", "10-2021", "11-2021", ]
-lab = np.array(labels)
+labels = data.columns[2:32]
+lab= [arrow.get(s, 'YYYY-MM').format('MM-YYYY') for s in labels]
+
 # labels for Economy GDP
 labelsGDP = ["Q1-2017", "Q2-2017", "Q3-2017", "Q4-2017", "Q1-2018", "Q2-2018", "Q3-2018", "Q4-2018", "Q1-2019",
              "Q2-2019", "Q3-2019", "Q4-2019", "Q1-2020", "Q2-2020", "Q3-2020", "Q4-2020", "Q1-2021", "Q2-2021",
              "Q3-2021", "Q4-2021"]
 labGDP = np.array(labelsGDP)
 # labels for Economy Montly volume
-labelsMV = ["1-2015", "2-2015", "3-2015", "4-2015", "5-2015", "6-2015", "7-2015", "8-2015", "9-2015", "10-2015",
-            "11-2015", "12-2015", "1-2016", "2-2016", "3-2016", "4-2016", "5-2016", "6-2016", "7-2016", "8-2016",
-            "9-2016", "10-2016", "11-2016", "12-2016", "1-2017", "2-2017", "3-2017", "4-2017", "5-2017", "6-2017",
-            "7-2017", "8-2017", "9-2017", "10-2017", "11-2017", "12-2017", "1-2018", "2-2018", "3-2018", "4-2018",
-            "5-2018", "6-2018", "7-2018", "8-2018", "9-2018", "10-2018", "11-2018", "12-2018", "1-2019", "2-2019",
-            "3-2019", "4-2019", "5-2019",
-            "6-2019", "7-2019", "8-2019", "9-2019", "10-2019", "11-2019", "12-2019", "1-2020", "2-2020", "3-2020",
-            "4-2020", "5-2020", "6-2020", "7-2020", "8-2020", "9-2020", "10-2020", "11-2020", "12-2020", "1-2021",
-            "2-2021", "3-2021", "4-2021", "5-2021", "6-2021", "7-2021", "8-2021", "9-2021", "10-2021", "11-2021", ]
-labMV = np.array(labelsMV)
+labelsMV = dataMV.columns[1:85]
+labMV= [arrow.get(s, 'YYYY-MM').format('MM-YYYY') for s in labelsMV]
+
 #######################################
 #######################################
 # LABELS FOR POPULATION AND HEALTH
 # labels population and health-montly excess mortality
-labelsPAHMEM = ["1-2020", "2-2020", "3-2020",
-                "4-2020", "5-2020", "6-2020", "7-2020", "8-2020", "9-2020", "10-2020", "11-2020", "12-2020", "1-2021",
-                "2-2021", "3-2021", "4-2021", "5-2021", "6-2021", "7-2021", "8-2021", "9-2021", "10-2021"]
-labPAHMEM = np.array(labelsPAHMEM)
+labelsMEM = dataPAHMEM.columns[1:25]
+labPAHMEM= [arrow.get(s, 'YYYY-MM').format('MM-YYYY') for s in labelsMEM]
+
 # labela za population and health-Number of deaths by week
 csv_PAHDBW2 = 'data/Population and health-Number of deaths by week.csv'
 dataPAHDBW2 = sqlContext.read.format("csv").options(header='false').load(csv_PAHDBW)
@@ -164,41 +156,24 @@ def getLabelPAHMFTA2():
 ##############################################
 #Labele za Society and work
 #Society and work-Monthly unemployment rate
-csv_SAWMUR2 = 'data/Society and work-Monthly unemployment rate.csv'
-dataSAWMUR2 = sqlContext.read.format("csv").options(header='false').load(csv_SAWMUR2)
-def getLabelSAWMUR2():
-    value = []
-    value1 = []
-    data2 = dataSAWMUR2.first()
-    for i in range(1, 35):
-        value.append(data2[i])
-    value1 = np.array(value)
-    return value1
-labelSAWMUR=["01-2019","02-2019","03-2019","04-2019","05-2019","06-2019","07-2019","08-2019","09-2019","10-2019","11-2019","12-2019",
-"01-2020","02-2020","03-2020","04-2020","05-2020","06-2020","07-2020","08-2020","09-2020","10-2020","11-2020","12-2020","01-2021",
-"02-2021","03-2021","04-2021","05-2021","06-2021","07-2021","08-2021","09-2021","10-2021","11-2021","12-2021"]
+d=dataSAWMUR.columns[1:38]
+labelSAWMUR = [arrow.get(s, 'YYYY-MM').format('MM-YYYY') for s in d]
+
 #Labele za Society work-Monthly youth unemployment rate
-labelSAWMYUR = ["01-2019", "02-2019", "03-2019", "04-2019", "05-2019", "06-2019", "07-2019", "08-2019", "09-2019",
-"10-2019", "11-2019", "12-2019", "01-2020", "02-2020", "03-2020", "04-2020", "05-2020", "06-2020", "07-2020",
-"08-2020", "09-2020","10-2020", "11-2020", "12-2020", "01-2021","02-2021", "03-2021", "04-2021", "05-2021", "06-2021",
-               "07-2021", "08-2021", "09-2021", "10-2021","11-2021", "12-2021"]
+d=dataSAWMYUR.columns[1:38]
+labelSAWMYUR = [arrow.get(s, 'YYYY-MM').format('MM-YYYY') for s in d]
 #Labele za Society and work-Quarterly employment
 labelSAWQE=["Q1-2017","Q2-2017","Q3-2017","Q4-2017","Q1-2018","Q2-2018","Q3-2018","Q4-2018","Q1-2019","Q2-2019","Q3-2019","Q4-2019",
             "Q1-2020","Q2-2020","Q3-2020","Q4-2020","Q1-2021","Q2-2021","Q3-2021","Q3-2021"]
 #Labele za Society and work-Quarterly labour market slack
 labelSAWQLMS=["Q2-2019","Q3-2019","Q4-2019","Q1-2020","Q2-2020","Q3-2020","Q4-2020","Q1-2021","Q2-2021","Q3-2021","Q3-2021"]
 ############################
-############################
-##############
-#Labele za Agriculture,energy, transport & tourism
-###############
 #Labele za Agriculture,energy, transport & tourism-Monthly air passenger transport
-labelsAETTMAPT = ["1-2019","2-2019","3-2019","4-2019","5-2019","6-2019", "7-2019", "8-2019", "9-2019", "10-2019", "11-2019", "12-2019", "1-2020", "2-2020", "3-2020",
-          "4-2020", "5-2020", "6-2020", "7-2020", "8-2020", "9-2020", "10-2020", "11-2020", "12-2020", "1-2021",
-          "2-2021", "3-2021", "4-2021", "5-2021"]
+d=dataAETTMAPT.columns[1:30]
+labelsAETTMAPT = [arrow.get(s, 'YYYY-MM').format('MM-YYYY') for s in d]
 #LAbele za: Agriculture,energy, transport & tourism-Monthly commercial air flights
-labelsAETTMCAF=["1-2020","2-2020","3-2020","4-2020","5-2020","6-2020","7-2020","8-2020","9-2020","10-2020","11-2020","12-2020",
-                "1-2021","2-2021", "3-2021", "4-2021", "5-2021","6-2021","7-2021","8-2021","9-2021","10-2021","11-2021","12-2021"]
+d=dataAETTMCAF.columns[1:25]
+labelsAETTMCAF= [arrow.get(s, 'YYYY-MM').format('MM-YYYY') for s in d]
 ################################################
 app.layout = html.Div([
     html.Div([
@@ -957,227 +932,6 @@ def update_graph(w_countries, w_countries1):
         return dash.no_update
 ############# LINE CHART ###########
 ####################################
-# get Data for Economy Inflation
-def getArr(countryName):
-    value = []
-    value1 = []
-    data2 = data.where(data.GEOLABEL == countryName).collect()
-    for i in range(2, 31):
-        value.append(float(data2[0][i]))
-    value1 = np.array(value)
-    return value1
-# get Data for Economy GDP
-def getGDP(countryName):
-    value = []
-    value1 = []
-    data2 = dataGDP.where(dataGDP.GEOLABEL == countryName).collect()
-    for i in range(1, 19):
-        value.append(float(data2[0][i]))
-    value1 = np.array(value)
-    return value1
-# get Data for Economy Monthly industrial production
-def getMIN(countryName):
-    value = []
-    value1 = []
-    data2 = dataMIN.where(dataMIN.GEOLABEL == countryName).collect()
-    for i in range(1, 29):
-        value.append(float(data2[0][i]))
-    value1 = np.array(value)
-    return value1
-# get Data for Economy Monthly volume
-def getMV(countryName):
-    value = []
-    value1 = []
-    data2 = dataMV.where(dataMV.GEOLABEL == countryName).collect()
-    for i in range(1, 83):
-        value.append(float(data2[0][i]))
-    value1 = np.array(value)
-    return value1
-# get Data for Economy Monthly production in contruction
-def getMPIC(countryName):
-    value = []
-    value1 = []
-    data2 = dataMPIC.where(dataMPIC.GEOLABEL == countryName).collect()
-    for i in range(1, 29):
-        value.append(float(data2[0][i]))
-    value1 = np.array(value)
-    return value1
-######################################
-# Get data for population and health
-def getPAHMEM(countryName):
-    value = []
-    value1 = []
-    data2 = dataPAHMEM.where(dataPAHMEM.GEOLABEL == countryName).collect()
-    for i in range(1, 22):
-        value.append(float(data2[0][i]))
-    value1 = np.array(value)
-    return value1
-###Uzimanje podataka iz fajla Population and health-number of deaths by week
-def getPAHDBW(countryName):
-    value = []
-    value1 = []
-    value2 = []
-    value3 = []
-    data2 = dataPAHDBW.where(dataPAHDBW.GEOLABEL == countryName).collect()
-    for i in range(1, 109):
-        val=data2[0][i]
-        value.append(val)
-    value1 = np.array(value)
-    for i in range(1,95):
-        val=float(value[i].replace(',',''))
-        value2.append(val)
-    value3=np.array(value2)
-    return value3
-##########################
-###Uzimanje podataka iz fajle: POpulation and health-Monthly first-time asylum
-def getPAHMFTA(countryName):
-    value = []
-    value1 = []
-    value2 = []
-    value3 = []
-    data2 = dataPAHMFTA.where(dataPAHMFTA.GEOLABEL == countryName).collect()
-    for i in range(1, 160):
-        val=data2[0][i]
-        value.append(val)
-    value1 = np.array(value)
-    for i in range(1,150):
-        val=float(value[i].replace(',',''))
-        value2.append(val)
-    value3=np.array(value2)
-    return value3
-############################################
-#############################################
-#UZIMANJE PODATAKA ZA GRUPU: SOCIETY AND WOKR
-#Society and work-Monthly unemployment rate
-def getSAWMUR(countryName):
-    value = []
-    value1 = []
-    data2 = dataSAWMUR.where(dataSAWMUR.GEOLABEL == countryName).collect()
-    for i in range(1, 36):
-        value.append(float(data2[0][i]))
-    value1 = np.array(value)
-    return value1
-#Society and work-Monthly youth unemployment rate
-def getSAWMYUR(countryName):
-    value = []
-    value1 = []
-    data2 = dataSAWMYUR.where(dataSAWMYUR.GEOLABEL == countryName).collect()
-    for i in range(1, 33):
-        value.append(float(data2[0][i]))
-    value1 = np.array(value)
-    return value1
-#Society and work-Quarterly employment
-def getSAWQE(countryName):
-    value = []
-    value1 = []
-    value2 = []
-    value3 = []
-    data2 = dataSAWQE.where(dataSAWQE.GEOLABEL == countryName).collect()
-    for i in range(1, 20):
-        val=data2[0][i]
-        value.append(val)
-    value1 = np.array(value)
-    for i in range(0,18):
-        val=float(value[i].replace(',',''))
-        value2.append(val)
-    value3=np.array(value2)
-    return value3
-#Society and work-Quarterly labour market slack
-def getSAWQLMS(countryName):
-    value = []
-    value1 = []
-    data2 = dataSAWQLMS.where(dataSAWQLMS.GEOLABEL == countryName).collect()
-    for i in range(1, 10):
-        value.append(float(data2[0][i]))
-    value1 = np.array(value)
-    return value1
-#Society and work-Quarterly job vacancy rate
-def getSAWQJVR(countryName):
-    value = []
-    value1 = []
-    data2 = dataSAWQJVR.where(dataSAWQJVR.GEOLABEL == countryName).collect()
-    for i in range(1, 19):
-        value.append(float(data2[0][i]))
-    value1 = np.array(value)
-    return value1
-#Society and work-Quarterly labour cost
-def getSAWQLC(countryName):
-    value = []
-    value1 = []
-    data2 = dataSAWQLC.where(dataSAWQLC.GEOLABEL == countryName).collect()
-    for i in range(1, 19):
-        value.append(float(data2[0][i]))
-    value1 = np.array(value)
-    return value1
-##########################################
-##########################################
-#UZIMANJE PODATAKA ZA GRUPU:AGRICULTURE, ENERGY, TRANSPORT & TOURISM
-#AGRICULTURE, ENERGY, TRANSPORT & TOURISM-Monthly air passenger transport
-def getAETTMAPT(countryName):
-    value = []
-    value1 = []
-    value2 = []
-    value3 = []
-    data2 = dataAETTMAPT.where(dataAETTMAPT.GEOLABEL == countryName).collect()
-    for i in range(1, 30):
-        val=data2[0][i]
-        value.append(val)
-    value1 = np.array(value)
-    for i in range(0,28):
-        val=float(value[i].replace(',',''))
-        value2.append(val)
-    value3=np.array(value2)
-    return value3
-#AGRICULTURE, ENERGY, TRANSPORT & TOURISM-Monthly commercial air flights
-def getAETTMCAF(countryName):
-    value = []
-    value1 = []
-    data2 = dataAETTMCAF.where(dataAETTMCAF.GEOLABEL == countryName).collect()
-    for i in range(1, 24):
-        value.append(float(data2[0][i]))
-    value1 = np.array(value)
-    return value1
-#AGRICULTURE, ENERGY, TRANSPORT & TOURISM-Monthly arrivals at tourist accommodation
-def getAETTMATA(countryName):
-    value = []
-    value1 = []
-    value2 = []
-    value3 = []
-    data2 = dataAETTMATA.where(dataAETTMATA.GEOLABEL == countryName).collect()
-    for i in range(1, 20):
-        val=data2[0][i]
-        value.append(val)
-    value1 = np.array(value)
-    for i in range(0,18):
-        val=float(value[i].replace(',',''))
-        value2.append(val)
-    value3=np.array(value2)
-    return value3
-#AGRICULTURE, ENERGY, TRANSPORT & TOURISM-Monthly nights spent at tourist accommodation
-def getAETTMNSTA(countryName):
-    value = []
-    value1 = []
-    value2 = []
-    value3 = []
-    data2 = dataAETTMNSTA.where(dataAETTMNSTA.GEOLABEL == countryName).collect()
-    for i in range(1, 20):
-        val=data2[0][i]
-        value.append(val)
-    value1 = np.array(value)
-    for i in range(0,18):
-        val=float(value[i].replace(',',''))
-        value2.append(val)
-    value3=np.array(value2)
-    return value3
-#AGRICULTURE, ENERGY, TRANSPORT & TOURISM-Monthly electricity consumed by end-users
-def getAETTMEC(countryName):
-    value = []
-    value1 = []
-    data2 = dataAETTMEC.where(dataAETTMEC.GEOLABEL == countryName).collect()
-    for i in range(1, 24):
-        value.append(float(data2[0][i]))
-    value1 = np.array(value)
-    return value1
 # Create line  chart
 @app.callback(Output('bar_line_1', 'figure'),
               [Input('w_countries', 'value')],
@@ -1189,154 +943,6 @@ def update_graph(w_countries, w_countries1, country_chosen):
     #
     # ECONOMY INFLATION
     if (w_countries == 'Economy') & (w_countries1 == 'Inflation - annual growth rate'):
-        valueEu1 = []
-        if ('European Union' in coun):
-            valueEu1 = getArr('European Union')
-
-        valueMal1 = []
-        if ('Malta' in coun):
-            valueMal1 = getArr('Malta')
-
-        valueSer1 = []
-        if ('Serbia' in coun):
-            valueSer1 = getArr('Serbia')
-
-        valueEa1 = []
-        if ('Euro area' in coun):
-            valueEa1 = getArr('Euro area')
-
-        valueBel1 = []
-        if ('Belgium' in coun):
-            valueBel1 = getArr('Belgium')
-
-        valueBul1 = []
-        if ('Bulgaria' in coun):
-            valueBul1 = getArr('Bulgaria')
-
-        valueChe1 = []
-        if ('Czechia' in coun):
-            valueChe1 = getArr('Czechia')
-
-        valueDen1 = []
-        if ('Denmark' in coun):
-            valueDen1 = getArr('Denmark')
-
-        valueGer1 = []
-        if ('Germany' in coun):
-            valueGer1 = getArr('Germany')
-
-        valueEst1 = []
-        if ('Estonia' in coun):
-            valueEst1 = getArr('Estonia')
-
-        valueIre1 = []
-        if ('Ireland' in coun):
-            valueIre1 = getArr('Ireland')
-
-        valueGree1 = []
-        if ('Greece' in coun):
-            valueGree1 = getArr('Greece')
-
-        valueSpa1 = []
-        if ('Spain' in coun):
-            valueSpa1 = getArr('Spain')
-
-        valueFra1 = []
-        if ('France' in coun):
-            valueFra1 = getArr('France')
-
-        valueCro1 = []
-        if ('Croatia' in coun):
-            valueCro1 = getArr('Croatia')
-
-        valueIta1 = []
-        if ('Italy' in coun):
-            valueIta1 = getArr('Italy')
-
-        valueCyp1 = []
-        if ('Cyprus' in coun):
-            valueCyp1 = getArr('Cyprus')
-
-        valueLat1 = []
-        if ('Latvia' in coun):
-            valueLat1 = getArr('Latvia')
-
-        valueLith1 = []
-        if ('Lithuania' in coun):
-            valueLith1 = getArr('Lithuania')
-
-        valueLux1 = []
-        if ('Luxembourg' in coun):
-            valueLux1 = getArr('Luxembourg')
-
-        valueHun1 = []
-        if ('Hungary' in coun):
-            valueHun1 = getArr('Hungary')
-
-        valueNet1 = []
-        if ('Netherlands' in coun):
-            valueNet1 = getArr('Netherlands')
-
-        valueAus1 = []
-        if ('Austria' in coun):
-            valueAus1 = getArr('Austria')
-
-        valuePol1 = []
-        if ('Poland' in coun):
-            valuePol1 = getArr('Poland')
-
-        valuePor1 = []
-        if ('Portugal' in coun):
-            valuePor1 = getArr('Portugal')
-
-        valueRom1 = []
-        if ('Romania' in coun):
-            valueRom1 = getArr('Romania')
-
-        valueSlo1 = []
-        if ('Slovenia' in coun):
-            valueSlo1 = getArr('Slovenia')
-
-        valueSlovak1 = []
-        if ('Slovakia' in coun):
-            valueSlovak1 = getArr('Slovakia')
-
-        valueFin1 = []
-        if ('Finland' in coun):
-            valueFin1 = getArr('Finland')
-
-        valueSwe1 = []
-        if ('Sweden' in coun):
-            valueSwe1 = getArr('Sweden')
-
-        valueUk1 = []
-        if ('United Kingdom' in coun):
-            valueUk1 = getArr('United Kingdom')
-
-        valueIce1 = []
-        if ('Iceland' in coun):
-            valueIce1 = getArr('Iceland')
-
-        valueNor1 = []
-        if ('Norway' in coun):
-            valueNor1 = getArr('Norway')
-
-        valueSwi1 = []
-        if ('Switzerland' in coun):
-            valueSwi1 = getArr('Switzerland')
-
-        valueMake1 = []
-        if ('North Macedonia' in coun):
-            valueMake1 = getArr('North Macedonia')
-
-        valueTur1 = []
-        if ('Turkey' in coun):
-            valueTur1 = getArr('Turkey')
-
-        valueUs1 = []
-        if ('United States' in coun):
-            valueUs1 = getArr('United States')
-
         ei = pd.read_csv('data/Economy-inflation.csv')
         df1 = {}
         for i in range(0, 38):
@@ -1344,7 +950,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
             df1[i] = niz
         return {
             'data': [go.Scatter(x=lab,
-                                y=valueEu1,
+                                y=data.collect()[0][2:35] if 'European Union' in coun else [],
                                 mode='lines+markers',
                                 name='EU',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#E6D1D1'),
@@ -1355,7 +961,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'European Union' + '<br>'+
                                 '<b>Economy inflation</b>: ' + df1[0].astype(str) + '<br>'),
                      go.Scatter(x=lab,
-                                y=valueBel1,
+                                y=data.collect()[2][2:35] if 'Belgium' in coun else [],
                                 mode='lines+markers',
                                 name='BE',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#FF00FF'),
@@ -1366,7 +972,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Belgium' + '<br>'+
                                 '<b>Economy inflation</b>: ' + df1[2].astype(str) + '<br>'),
                      go.Scatter(x=lab,
-                                y=valueSer1,
+                                y=data.collect()[35][2:35] if 'Serbia' in coun else [],
                                 mode='lines+markers',
                                 name='RS',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#FF0000'),
@@ -1377,7 +983,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Serbia' + '<br>'+
                                 '<b>Economy inflation</b>: ' + df1[35].astype(str) + '<br>'),
                      go.Scatter(x=lab,
-                                y=valueMal1,
+                                y=data.collect()[19][2:35] if 'Malta' in coun else [],
                                 mode='lines+markers',
                                 name='MT',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#FF00FF'),
@@ -1388,7 +994,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Malta' + '<br>'+
                                 '<b>Economy inflation</b>: ' + df1[19].astype(str) + '<br>'),
                      go.Scatter(x=lab,
-                                y=valueEa1,
+                                y=data.collect()[1][2:35] if 'Euro area' in coun else [],
                                 mode='lines+markers',
                                 name='EA',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#472727'),
@@ -1399,7 +1005,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Euro area' + '<br>' +
                                 '<b>Economy inflation</b>: ' + df1[1].astype(str) + '<br>'),
                      go.Scatter(x=lab,
-                                y=valueBul1,
+                                y=data.collect()[3][2:35] if 'Bulgaria' in coun else [],
                                 mode='lines+markers',
                                 name='BG',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#353131'),
@@ -1410,7 +1016,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Bulgaria' + '<br>'+
                                 '<b>Economy inflation</b>: ' + df1[3].astype(str) + '<br>'),
                      go.Scatter(x=lab,
-                                y=valueChe1,
+                                y=data.collect()[4][2:35] if 'Czechia' in coun else [],
                                 mode='lines+markers',
                                 name='CZ',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#49AF30'),
@@ -1421,7 +1027,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Czechia' + '<br>'+
                                 '<b>Economy inflation</b>: ' + df1[4].astype(str) + '<br>'),
                      go.Scatter(x=lab,
-                                y=valueDen1,
+                                y=data.collect()[5][2:35] if 'Denmark' in coun else [],
                                 mode='lines+markers',
                                 name='DK',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#2A4623'),
@@ -1432,7 +1038,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Denmark' + '<br>'+
                                 '<b>Economy inflation</b>: ' + df1[5].astype(str) + '<br>'),
                      go.Scatter(x=lab,
-                                y=valueGer1,
+                                y=data.collect()[6][2:35] if 'Germany' in coun else [],
                                 mode='lines+markers',
                                 name='DE',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#7B7D7B'),
@@ -1443,7 +1049,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Germany' + '<br>'+
                                 '<b>Economy inflation</b>: ' + df1[6].astype(str) + '<br>'),
                      go.Scatter(x=lab,
-                                y=valueEst1,
+                                y=data.collect()[7][2:35] if 'Estonia' in coun else [],
                                 mode='lines+markers',
                                 name='EE',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#C4C048'),
@@ -1454,7 +1060,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Estonia' + '<br>'+
                                 '<b>Economy inflation</b>: ' + df1[7].astype(str) + '<br>'),
                      go.Scatter(x=lab,
-                                y=valueIre1,
+                                y=data.collect()[8][2:35] if 'Ireland' in coun else [],
                                 mode='lines+markers',
                                 name='IE',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#9E9D7B'),
@@ -1465,7 +1071,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Ireland' + '<br>'+
                                 '<b>Economy inflation</b>: ' + df1[8].astype(str) + '<br>'),
                      go.Scatter(x=lab,
-                                y=valueGree1,
+                                y=data.collect()[9][2:35] if 'Greece' in coun else [],
                                 mode='lines+markers',
                                 name='EL',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#1A46C0'),
@@ -1476,7 +1082,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Greece' + '<br>'+
                                 '<b>Economy inflation</b>: ' + df1[9].astype(str) + '<br>'),
                      go.Scatter(x=lab,
-                                y=valueSpa1,
+                                y=data.collect()[10][2:35] if 'Spain' in coun else [],
                                 mode='lines+markers',
                                 name='ES',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#2E063A'),
@@ -1487,7 +1093,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Spain' + '<br>'+
                                 '<b>Economy inflation</b>: ' + df1[10].astype(str) + '<br>'),
                      go.Scatter(x=lab,
-                                y=valueFra1,
+                                y=data.collect()[11][2:35] if 'France' in coun else [],
                                 mode='lines+markers',
                                 name='FR',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#39313C'),
@@ -1498,7 +1104,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'France' + '<br>'+
                                 '<b>Economy inflation</b>: ' + df1[11].astype(str) + '<br>'),
                      go.Scatter(x=lab,
-                                y=valueCro1,
+                                y=data.collect()[12][2:35] if 'Croatia' in coun else [],
                                 mode='lines+markers',
                                 name='HR',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#189F96'),
@@ -1509,7 +1115,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Croatia' + '<br>'+
                                 '<b>Economy inflation</b>: ' + df1[12].astype(str) + '<br>'),
                      go.Scatter(x=lab,
-                                y=valueIta1,
+                                y=data.collect()[13][2:35] if 'Italy' in coun else [],
                                 mode='lines+markers',
                                 name='IT',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#94A4A3'),
@@ -1520,7 +1126,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Italy' + '<br>'+
                                 '<b>Economy inflation</b>: ' + df1[13].astype(str) + '<br>'),
                      go.Scatter(x=lab,
-                                y=valueCyp1,
+                                y=data.collect()[14][2:35] if 'Cyprus' in coun else [],
                                 mode='lines+markers',
                                 name='CY',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#ff3399'),
@@ -1531,7 +1137,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Cyprus' + '<br>'+
                                 '<b>Economy inflation</b>: ' + df1[14].astype(str) + '<br>'),
                      go.Scatter(x=lab,
-                                y=valueLat1,
+                                y=data.collect()[15][2:35] if 'Latvia' in coun else [],
                                 mode='lines+markers',
                                 name='LV',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#aaaa55'),
@@ -1542,7 +1148,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Latvia' + '<br>'+
                                 '<b>Economy inflation</b>: ' + df1[15].astype(str) + '<br>'),
                      go.Scatter(x=lab,
-                                y=valueLith1,
+                                y=data.collect()[16][2:35] if 'Lithuania' in coun else [],
                                 mode='lines+markers',
                                 name='LT',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#ffff00'),
@@ -1553,7 +1159,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Lithuania' + '<br>'+
                                 '<b>Economy inflation</b>: ' + df1[16].astype(str) + '<br>'),
                      go.Scatter(x=lab,
-                                y=valueLux1,
+                                y=data.collect()[17][2:35] if 'Luxembourg' in coun else [],
                                 mode='lines+markers',
                                 name='LU',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#007399'),
@@ -1564,7 +1170,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Luxembourg' + '<br>'+
                                 '<b>Economy inflation</b>: ' + df1[17].astype(str) + '<br>'),
                      go.Scatter(x=lab,
-                                y=valueHun1,
+                                y=data.collect()[18][2:35] if 'Hungary' in coun else [],
                                 mode='lines+markers',
                                 name='HU',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#ff3300'),
@@ -1575,7 +1181,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Hungary' + '<br>' +
                                 '<b>Economy inflation</b>: ' + df1[18].astype(str) + '<br>'),
                      go.Scatter(x=lab,
-                                y=valueNet1,
+                                y=data.collect()[20][2:35] if 'Netherlands' in coun else [],
                                 mode='lines+markers',
                                 name='NL',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#00e600'),
@@ -1586,7 +1192,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Netherlands' + '<br>'+
                                 '<b>Economy inflation</b>: ' + df1[20].astype(str) + '<br>'),
                      go.Scatter(x=lab,
-                                y=valueAus1,
+                                y=data.collect()[21][2:35] if 'Austria' in coun else [],
                                 mode='lines+markers',
                                 name='AT',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#4dff4d'),
@@ -1597,7 +1203,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Austria' + '<br>' +
                                 '<b>Economy inflation</b>: ' + df1[21].astype(str) + '<br>'),
                      go.Scatter(x=lab,
-                                y=valuePol1,
+                                y=data.collect()[22][2:35] if 'Poland' in coun else [],
                                 mode='lines+markers',
                                 name='PL',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#003300'),
@@ -1608,7 +1214,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Poland' + '<br>'+
                                 '<b>Economy inflation</b>: ' + df1[22].astype(str) + '<br>'),
                      go.Scatter(x=lab,
-                                y=valuePor1,
+                                y=data.collect()[23][2:35] if 'Portugal' in coun else [],
                                 mode='lines+markers',
                                 name='PT',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#662900'),
@@ -1619,7 +1225,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Portugal' + '<br>'+
                                 '<b>Economy inflation</b>: ' + df1[23].astype(str) + '<br>'),
                      go.Scatter(x=lab,
-                                y=valueRom1,
+                                y=data.collect()[24][2:35] if 'Romania' in coun else [],
                                 mode='lines+markers',
                                 name='RO',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#993399'),
@@ -1630,7 +1236,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Romania' + '<br>'+
                                 '<b>Economy inflation</b>: ' + df1[24].astype(str) + '<br>'),
                      go.Scatter(x=lab,
-                                y=valueSlo1,
+                                y=data.collect()[25][2:35] if 'Slovenia' in coun else [],
                                 mode='lines+markers',
                                 name='SI',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#d98cd9'),
@@ -1641,7 +1247,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Slovenia' + '<br>'+
                                 '<b>Economy inflation</b>: ' + df1[25].astype(str) + '<br>'),
                      go.Scatter(x=lab,
-                                y=valueSlovak1,
+                                y=data.collect()[26][2:35] if 'Slovakia' in coun else [],
                                 mode='lines+markers',
                                 name='SK',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#0033cc'),
@@ -1652,7 +1258,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Slovakia' + '<br>'+
                                 '<b>Economy inflation</b>: ' + df1[26].astype(str) + '<br>'),
                      go.Scatter(x=lab,
-                                y=valueFin1,
+                                y=data.collect()[27][2:35] if 'Finland' in coun else [],
                                 mode='lines+markers',
                                 name='FI',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#99b3ff'),
@@ -1663,7 +1269,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Finland' + '<br>'+
                                 '<b>Economy inflation</b>: ' + df1[27].astype(str) + '<br>'),
                      go.Scatter(x=lab,
-                                y=valueSwe1,
+                                y=data.collect()[28][2:35] if 'Sweden' in coun else [],
                                 mode='lines+markers',
                                 name='SE',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#001a66'),
@@ -1674,7 +1280,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Sweden' + '<br>'+
                                 '<b>Economy inflation</b>: ' + df1[28].astype(str) + '<br>'),
                      go.Scatter(x=lab,
-                                y=valueUk1,
+                                y=data.collect()[29][2:35] if 'United Kingdom' in coun else [],
                                 mode='lines+markers',
                                 name='UK',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#00cc99'),
@@ -1685,7 +1291,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'United Kingdom' + '<br>'+
                                 '<b>Economy inflation</b>: ' + df1[29].astype(str) + '<br>'),
                      go.Scatter(x=lab,
-                                y=valueIce1,
+                                y=data.collect()[31][2:35] if 'Iceland' in coun else [],
                                 mode='lines+markers',
                                 name='IS',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#336600'),
@@ -1696,7 +1302,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Iceland' + '<br>'+
                                 '<b>Economy inflation</b>: ' + df1[31].astype(str) + '<br>'),
                      go.Scatter(x=lab,
-                                y=valueNor1,
+                                y=data.collect()[32][2:35] if 'Norway' in coun else [],
                                 mode='lines+markers',
                                 name='NO',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#73e600'),
@@ -1707,7 +1313,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Norway' + '<br>'+
                                 '<b>Economy inflation</b>: ' + df1[32].astype(str) + '<br>'),
                      go.Scatter(x=lab,
-                                y=valueSwi1,
+                                y=data.collect()[33][2:35] if 'Switzerland' in coun else [],
                                 mode='lines+markers',
                                 name='CH',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#bfff80'),
@@ -1718,7 +1324,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Switzerland' + '<br>'+
                                 '<b>Economy inflation</b>: ' + df1[33].astype(str) + '<br>'),
                      go.Scatter(x=lab,
-                                y=valueMake1,
+                                y=data.collect()[34][2:35] if 'North Macedonia' in coun else [],
                                 mode='lines+markers',
                                 name='MK',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#ffa366'),
@@ -1729,7 +1335,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'North Macedonia' + '<br>'+
                                 '<b>Economy inflation</b>: ' + df1[34].astype(str) + '<br>'),
                      go.Scatter(x=lab,
-                                y=valueTur1,
+                                y=data.collect()[36][2:35] if 'Turkey' in coun else [],
                                 mode='lines+markers',
                                 name='TR',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#ff4da6'),
@@ -1740,7 +1346,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Turkey' + '<br>'+
                                 '<b>Economy inflation</b>: ' + df1[36].astype(str) + '<br>'),
                      go.Scatter(x=lab,
-                                y=valueUs1,
+                                y=data.collect()[37][2:35] if 'United States' in coun else [],
                                 mode='lines+markers',
                                 name='US',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#4dc3ff'),
@@ -1807,146 +1413,6 @@ def update_graph(w_countries, w_countries1, country_chosen):
     #############################
     #Pocinje ECONOMY GDP
     elif (w_countries == 'Economy') & (w_countries1 == 'GDP – quarterly growth rate'):
-        valueEu1 = []
-        if ('European Union' in coun):
-            valueEu1 = getGDP('European Union')
-
-        valueMal1 = []
-        if ('Malta' in coun):
-            valueMal1 = getGDP('Malta')
-
-        valueSer1 = []
-        if ('Serbia' in coun):
-            valueSer1 = getGDP('Serbia')
-
-        valueEa1 = []
-        if ('Euro area' in coun):
-            valueEa1 = getGDP('Euro area')
-
-        valueBel1 = []
-        if ('Belgium' in coun):
-            valueBel1 = getGDP('Belgium')
-
-        valueBul1 = []
-        if ('Bulgaria' in coun):
-            valueBul1 = getGDP('Bulgaria')
-
-        valueChe1 = []
-        if ('Czechia' in coun):
-            valueChe1 = getGDP('Czechia')
-
-        valueDen1 = []
-        if ('Denmark' in coun):
-            valueDen1 = getGDP('Denmark')
-
-        valueGer1 = []
-        if ('Germany' in coun):
-            valueGer1 = getGDP('Germany')
-
-        valueEst1 = []
-        if ('Estonia' in coun):
-            valueEst1 = getGDP('Estonia')
-
-        valueIre1 = []
-        if ('Ireland' in coun):
-            valueIre1 = getGDP('Ireland')
-
-        valueGree1 = []
-        if ('Greece' in coun):
-            valueGree1 = getGDP('Greece')
-
-        valueSpa1 = []
-        if ('Spain' in coun):
-            valueSpa1 = getGDP('Spain')
-
-        valueFra1 = []
-        if ('France' in coun):
-            valueFra1 = getGDP('France')
-
-        valueCro1 = []
-        if ('Croatia' in coun):
-            valueCro1 = getGDP('Croatia')
-
-        valueIta1 = []
-        if ('Italy' in coun):
-            valueIta1 = getGDP('Italy')
-
-        valueCyp1 = []
-        if ('Cyprus' in coun):
-            valueCyp1 = getGDP('Cyprus')
-
-        valueLat1 = []
-        if ('Latvia' in coun):
-            valueLat1 = getGDP('Latvia')
-
-        valueLith1 = []
-        if ('Lithuania' in coun):
-            valueLith1 = getGDP('Lithuania')
-
-        valueLux1 = []
-        if ('Luxembourg' in coun):
-            valueLux1 = getGDP('Luxembourg')
-
-        valueHun1 = []
-        if ('Hungary' in coun):
-            valueHun1 = getGDP('Hungary')
-
-        valueNet1 = []
-        if ('Netherlands' in coun):
-            valueNet1 = getGDP('Netherlands')
-
-        valueAus1 = []
-        if ('Austria' in coun):
-            valueAus1 = getGDP('Austria')
-
-        valuePol1 = []
-        if ('Poland' in coun):
-            valuePol1 = getGDP('Poland')
-
-        valuePor1 = []
-        if ('Portugal' in coun):
-            valuePor1 = getGDP('Portugal')
-
-        valueRom1 = []
-        if ('Romania' in coun):
-            valueRom1 = getGDP('Romania')
-
-        valueSlo1 = []
-        if ('Slovenia' in coun):
-            valueSlo1 = getGDP('Slovenia')
-
-        valueSlovak1 = []
-        if ('Slovakia' in coun):
-            valueSlovak1 = getGDP('Slovakia')
-
-        valueFin1 = []
-        if ('Finland' in coun):
-            valueFin1 = getGDP('Finland')
-
-        valueSwe1 = []
-        if ('Sweden' in coun):
-            valueSwe1 = getGDP('Sweden')
-
-        valueUk1 = []
-        if ('United Kingdom' in coun):
-            valueUk1 = getGDP('United Kingdom')
-
-        valueNor1 = []
-        if ('Norway' in coun):
-            valueNor1 = getGDP('Norway')
-
-        valueSwi1 = []
-        if ('Switzerland' in coun):
-            valueSwi1 = getGDP('Switzerland')
-
-        valueMake1 = []
-        if ('North Macedonia' in coun):
-            valueMake1 = getGDP('North Macedonia')
-
-        valueTur1 = []
-        if ('Turkey' in coun):
-            valueTur1 = getGDP('Turkey')
-
         gdp = pd.read_csv('data/Economy-GDP.csv')
         df1 = {}
         for i in range(0, 35):
@@ -1954,7 +1420,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
             df1[i] = niz
         return {
             'data': [go.Scatter(x=labGDP,
-                                y=valueEu1,
+                                y=dataGDP.collect()[0][2:35] if 'European Union' in coun else [],
                                 mode='lines+markers',
                                 name='EU',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#E6D1D1'),
@@ -1965,7 +1431,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'European Union' + '<br>' +
                                 '<b>GDP</b>: ' + df1[0].astype(str) + '<br>'),
                      go.Scatter(x=labGDP,
-                                y=valueBel1,
+                                y=dataGDP.collect()[2][2:35] if 'Belgium' in coun else [],
                                 mode='lines+markers',
                                 name='BE',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#FF0000'),
@@ -1976,7 +1442,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Belgium' + '<br>'+
                                 '<b>GDP</b>: ' + df1[2].astype(str) + '<br>'),
                      go.Scatter(x=labGDP,
-                                y=valueSer1,
+                                y=dataGDP.collect()[33][2:35] if 'Serbia' in coun else [],
                                 mode='lines+markers',
                                 name='RS',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#FF0000'),
@@ -1987,7 +1453,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Serbia' + '<br>' +
                                 '<b>GDP</b>: ' + df1[33].astype(str) + '<br>'),
                      go.Scatter(x=labGDP,
-                                y=valueMal1,
+                                y=dataGDP.collect()[19][2:35] if 'Malta' in coun else [],
                                 mode='lines+markers',
                                 name='MT',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#FF00FF'),
@@ -1998,7 +1464,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Malta' + '<br>' +
                                 '<b>GDP</b>: ' + df1[19].astype(str) + '<br>'),
                      go.Scatter(x=labGDP,
-                                y=valueEa1,
+                                y=dataGDP.collect()[1][2:35] if 'Euro area' in coun else [],
                                 mode='lines+markers',
                                 name='EA',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#472727'),
@@ -2009,7 +1475,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Euro area' + '<br>' +
                                 '<b>GDP</b>: ' + df1[1].astype(str) + '<br>'),
                      go.Scatter(x=labGDP,
-                                y=valueBul1,
+                                y=dataGDP.collect()[3][2:35] if 'Bulgaria' in coun else [],
                                 mode='lines+markers',
                                 name='BG',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#353131'),
@@ -2020,7 +1486,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Bulgaria' + '<br>' +
                                 '<b>GDP</b>: ' + df1[3].astype(str) + '<br>'),
                      go.Scatter(x=labGDP,
-                                y=valueChe1,
+                                y=dataGDP.collect()[4][2:35] if 'Czechia' in coun else [],
                                 mode='lines+markers',
                                 name='CZ',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#49AF30'),
@@ -2031,7 +1497,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Czechia' + '<br>' +
                                 '<b>GDP</b>: ' + df1[4].astype(str) + '<br>'),
                      go.Scatter(x=labGDP,
-                                y=valueDen1,
+                                y=dataGDP.collect()[5][2:35] if 'Denmark' in coun else [],
                                 mode='lines+markers',
                                 name='DK',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#2A4623'),
@@ -2042,7 +1508,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Denmark' + '<br>' +
                                 '<b>GDP</b>: ' + df1[5].astype(str) + '<br>'),
                      go.Scatter(x=labGDP,
-                                y=valueGer1,
+                                y=dataGDP.collect()[6][2:35] if 'Germany' in coun else [],
                                 mode='lines+markers',
                                 name='DE',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#7B7D7B'),
@@ -2053,7 +1519,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Germany' + '<br>' +
                                 '<b>GDP</b>: ' + df1[6].astype(str) + '<br>'),
                      go.Scatter(x=labGDP,
-                                y=valueEst1,
+                                y=dataGDP.collect()[7][2:35] if 'Estonia' in coun else [],
                                 mode='lines+markers',
                                 name='EE',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#C4C048'),
@@ -2064,7 +1530,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Estonia' + '<br>' +
                                 '<b>GDP</b>: ' + df1[7].astype(str) + '<br>'),
                      go.Scatter(x=labGDP,
-                                y=valueIre1,
+                                y=dataGDP.collect()[8][2:35] if 'Ireland' in coun else [],
                                 mode='lines+markers',
                                 name='IE',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#9E9D7B'),
@@ -2075,7 +1541,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Ireland' + '<br>' +
                                 '<b>GDP</b>: ' + df1[8].astype(str) + '<br>'),
                      go.Scatter(x=labGDP,
-                                y=valueGree1,
+                                y=dataGDP.collect()[9][2:35] if 'Greece' in coun else [],
                                 mode='lines+markers',
                                 name='EL',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#1A46C0'),
@@ -2086,7 +1552,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Greece' + '<br>' +
                                 '<b>GDP</b>: ' + df1[9].astype(str) + '<br>'),
                      go.Scatter(x=labGDP,
-                                y=valueSpa1,
+                                y=dataGDP.collect()[10][2:35] if 'Spain' in coun else [],
                                 mode='lines+markers',
                                 name='ES',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#2E063A'),
@@ -2097,7 +1563,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Spain' + '<br>' +
                                 '<b>GDP</b>: ' + df1[10].astype(str) + '<br>'),
                      go.Scatter(x=labGDP,
-                                y=valueFra1,
+                                y=dataGDP.collect()[11][2:35] if 'France' in coun else [],
                                 mode='lines+markers',
                                 name='FR',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#39313C'),
@@ -2108,7 +1574,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'France' + '<br>' +
                                 '<b>GDP</b>: ' + df1[11].astype(str) + '<br>'),
                      go.Scatter(x=labGDP,
-                                y=valueCro1,
+                                y=dataGDP.collect()[12][2:35] if 'Croatia' in coun else [],
                                 mode='lines+markers',
                                 name='HR',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#189F96'),
@@ -2119,7 +1585,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Croatia' + '<br>' +
                                 '<b>GDP</b>: ' + df1[12].astype(str) + '<br>'),
                      go.Scatter(x=labGDP,
-                                y=valueIta1,
+                                y=dataGDP.collect()[13][2:35] if 'Italy' in coun else [],
                                 mode='lines+markers',
                                 name='IT',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#94A4A3'),
@@ -2130,7 +1596,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Italy' + '<br>' +
                                 '<b>GDP</b>: ' + df1[13].astype(str) + '<br>'),
                      go.Scatter(x=labGDP,
-                                y=valueCyp1,
+                                y=dataGDP.collect()[14][2:35] if 'Cyprus' in coun else [],
                                 mode='lines+markers',
                                 name='CY',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#ff3399'),
@@ -2141,7 +1607,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Cyprus' + '<br>' +
                                 '<b>GDP</b>: ' + df1[14].astype(str) + '<br>'),
                      go.Scatter(x=labGDP,
-                                y=valueLat1,
+                                y=dataGDP.collect()[15][2:35] if 'Latvia' in coun else [],
                                 mode='lines+markers',
                                 name='LV',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#aaaa55'),
@@ -2152,7 +1618,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Latvia' + '<br>' +
                                 '<b>GDP</b>: ' + df1[15].astype(str) + '<br>'),
                      go.Scatter(x=labGDP,
-                                y=valueLith1,
+                                y=dataGDP.collect()[16][2:35] if 'Lithuania' in coun else [],
                                 mode='lines+markers',
                                 name='LT',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#ffff00'),
@@ -2163,7 +1629,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Lithuania' + '<br>' +
                                 '<b>GDP</b>: ' + df1[16].astype(str) + '<br>'),
                      go.Scatter(x=labGDP,
-                                y=valueLux1,
+                                y=dataGDP.collect()[17][2:35] if 'Luxembourg' in coun else [],
                                 mode='lines+markers',
                                 name='LU',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#007399'),
@@ -2174,7 +1640,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Luxembourg' + '<br>' +
                                 '<b>GDP</b>: ' + df1[17].astype(str) + '<br>'),
                      go.Scatter(x=labGDP,
-                                y=valueHun1,
+                                y=dataGDP.collect()[18][2:35] if 'Hungary' in coun else [],
                                 mode='lines+markers',
                                 name='HU',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#ff3300'),
@@ -2185,7 +1651,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Hungary' + '<br>' +
                                 '<b>GDP</b>: ' + df1[18].astype(str) + '<br>'),
                      go.Scatter(x=labGDP,
-                                y=valueNet1,
+                                y=dataGDP.collect()[20][2:35] if 'Netherlands' in coun else [],
                                 mode='lines+markers',
                                 name='NL',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#00e600'),
@@ -2196,7 +1662,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Netherlands' + '<br>' +
                                 '<b>GDP</b>: ' + df1[20].astype(str) + '<br>'),
                      go.Scatter(x=labGDP,
-                                y=valueAus1,
+                                y=dataGDP.collect()[21][2:35] if 'Austria' in coun else [],
                                 mode='lines+markers',
                                 name='AT',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#4dff4d'),
@@ -2207,7 +1673,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Austria' + '<br>' +
                                 '<b>GDP</b>: ' + df1[21].astype(str) + '<br>'),
                      go.Scatter(x=labGDP,
-                                y=valuePol1,
+                                y=dataGDP.collect()[22][2:35] if 'Poland' in coun else [],
                                 mode='lines+markers',
                                 name='PL',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#003300'),
@@ -2218,7 +1684,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Poland' + '<br>' +
                                 '<b>GDP</b>: ' + df1[22].astype(str) + '<br>'),
                      go.Scatter(x=labGDP,
-                                y=valuePor1,
+                                y=dataGDP.collect()[23][2:35] if 'Portugal' in coun else [],
                                 mode='lines+markers',
                                 name='PT',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#662900'),
@@ -2229,7 +1695,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Portugal' + '<br>' +
                                 '<b>GDP</b>: ' + df1[23].astype(str) + '<br>'),
                      go.Scatter(x=labGDP,
-                                y=valueRom1,
+                                y=dataGDP.collect()[24][2:35] if 'Romania' in coun else [],
                                 mode='lines+markers',
                                 name='RO',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#993399'),
@@ -2240,7 +1706,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Romania' + '<br>' +
                                 '<b>GDP</b>: ' + df1[24].astype(str) + '<br>'),
                      go.Scatter(x=labGDP,
-                                y=valueSlo1,
+                                y=dataGDP.collect()[25][2:35] if 'Slovenia' in coun else [],
                                 mode='lines+markers',
                                 name='SI',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#d98cd9'),
@@ -2251,7 +1717,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Slovenia' + '<br>' +
                                 '<b>GDP</b>: ' + df1[25].astype(str) + '<br>'),
                      go.Scatter(x=labGDP,
-                                y=valueSlovak1,
+                                y=dataGDP.collect()[26][2:35] if 'Slovakia' in coun else [],
                                 mode='lines+markers',
                                 name='SK',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#0033cc'),
@@ -2262,7 +1728,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Slovakia' + '<br>' +
                                 '<b>GDP</b>: ' + df1[26].astype(str) + '<br>'),
                      go.Scatter(x=labGDP,
-                                y=valueFin1,
+                                y=dataGDP.collect()[27][2:35] if 'Finland' in coun else [],
                                 mode='lines+markers',
                                 name='FI',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#99b3ff'),
@@ -2273,7 +1739,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Finland' + '<br>' +
                                 '<b>GDP</b>: ' + df1[27].astype(str) + '<br>'),
                      go.Scatter(x=labGDP,
-                                y=valueSwe1,
+                                y=dataGDP.collect()[28][2:35] if 'Sweden' in coun else [],
                                 mode='lines+markers',
                                 name='SE',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#001a66'),
@@ -2284,7 +1750,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Sweden' + '<br>' +
                                 '<b>GDP</b>: ' + df1[28].astype(str) + '<br>'),
                      go.Scatter(x=labGDP,
-                                y=valueUk1,
+                                y=dataGDP.collect()[29][2:35] if 'United Kingdom' in coun else [],
                                 mode='lines+markers',
                                 name='UK',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#00cc99'),
@@ -2295,7 +1761,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'United Kingdom' + '<br>' +
                                 '<b>GDP</b>: ' + df1[29].astype(str) + '<br>'),
                      go.Scatter(x=labGDP,
-                                y=valueNor1,
+                                y=dataGDP.collect()[30][2:35] if 'Norway' in coun else [],
                                 mode='lines+markers',
                                 name='NO',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#73e600'),
@@ -2306,7 +1772,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Norway' + '<br>' +
                                 '<b>GDP</b>: ' + df1[30].astype(str) + '<br>'),
                      go.Scatter(x=labGDP,
-                                y=valueSwi1,
+                                y=dataGDP.collect()[31][2:35] if 'Switzerland' in coun else [],
                                 mode='lines+markers',
                                 name='CH',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#bfff80'),
@@ -2317,7 +1783,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Switzerland' + '<br>' +
                                 '<b>GDP</b>: ' + df1[31].astype(str) + '<br>'),
                      go.Scatter(x=labGDP,
-                                y=valueMake1,
+                                y=dataGDP.collect()[32][2:35] if 'North Macedonia' in coun else [],
                                 mode='lines+markers',
                                 name='MK',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#ffa366'),
@@ -2328,7 +1794,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'North Macedonia' + '<br>' +
                                 '<b>GDP</b>: ' + df1[32].astype(str) + '<br>'),
                      go.Scatter(x=labGDP,
-                                y=valueTur1,
+                                y=data.collect()[34][2:35] if 'Turkey' in coun else [],
                                 mode='lines+markers',
                                 name='TR',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#ff4da6'),
@@ -2395,146 +1861,6 @@ def update_graph(w_countries, w_countries1, country_chosen):
     #
     # ECONOMY MIN
     elif (w_countries == 'Economy') & (w_countries1 == 'Monthly industrial production'):
-        valueEu1 = []
-        if ('European Union' in coun):
-            valueEu1 = getMIN('European Union')
-
-        valueMal1 = []
-        if ('Malta' in coun):
-            valueMal1 = getMIN('Malta')
-
-        valueSer1 = []
-        if ('Serbia' in coun):
-            valueSer1 = getMIN('Serbia')
-
-        valueEa1 = []
-        if ('Euro area' in coun):
-            valueEa1 = getMIN('Euro area')
-
-        valueBel1 = []
-        if ('Belgium' in coun):
-            valueBel1 = getMIN('Belgium')
-
-        valueBul1 = []
-        if ('Bulgaria' in coun):
-            valueBul1 = getMIN('Bulgaria')
-
-        valueChe1 = []
-        if ('Czechia' in coun):
-            valueChe1 = getMIN('Czechia')
-
-        valueDen1 = []
-        if ('Denmark' in coun):
-            valueDen1 = getMIN('Denmark')
-
-        valueGer1 = []
-        if ('Germany' in coun):
-            valueGer1 = getMIN('Germany')
-
-        valueEst1 = []
-        if ('Estonia' in coun):
-            valueEst1 = getMIN('Estonia')
-
-        valueIre1 = []
-        if ('Ireland' in coun):
-            valueIre1 = getMIN('Ireland')
-
-        valueGree1 = []
-        if ('Greece' in coun):
-            valueGree1 = getMIN('Greece')
-
-        valueSpa1 = []
-        if ('Spain' in coun):
-            valueSpa1 = getMIN('Spain')
-
-        valueFra1 = []
-        if ('France' in coun):
-            valueFra1 = getMIN('France')
-
-        valueCro1 = []
-        if ('Croatia' in coun):
-            valueCro1 = getMIN('Croatia')
-
-        valueIta1 = []
-        if ('Italy' in coun):
-            valueIta1 = getMIN('Italy')
-
-        valueCyp1 = []
-        if ('Cyprus' in coun):
-            valueCyp1 = getMIN('Cyprus')
-
-        valueLat1 = []
-        if ('Latvia' in coun):
-            valueLat1 = getMIN('Latvia')
-
-        valueLith1 = []
-        if ('Lithuania' in coun):
-            valueLith1 = getMIN('Lithuania')
-
-        valueLux1 = []
-        if ('Luxembourg' in coun):
-            valueLux1 = getMIN('Luxembourg')
-
-        valueHun1 = []
-        if ('Hungary' in coun):
-            valueHun1 = getMIN('Hungary')
-
-        valueNet1 = []
-        if ('Netherlands' in coun):
-            valueNet1 = getMIN('Netherlands')
-
-        valueAus1 = []
-        if ('Austria' in coun):
-            valueAus1 = getMIN('Austria')
-
-        valuePol1 = []
-        if ('Poland' in coun):
-            valuePol1 = getMIN('Poland')
-
-        valuePor1 = []
-        if ('Portugal' in coun):
-            valuePor1 = getMIN('Portugal')
-
-        valueRom1 = []
-        if ('Romania' in coun):
-            valueRom1 = getMIN('Romania')
-
-        valueSlo1 = []
-        if ('Slovenia' in coun):
-            valueSlo1 = getMIN('Slovenia')
-
-        valueSlovak1 = []
-        if ('Slovakia' in coun):
-            valueSlovak1 = getMIN('Slovakia')
-
-        valueFin1 = []
-        if ('Finland' in coun):
-            valueFin1 = getMIN('Finland')
-
-        valueSwe1 = []
-        if ('Sweden' in coun):
-            valueSwe1 = getMIN('Sweden')
-
-        valueUk1 = []
-        if ('United Kingdom' in coun):
-            valueUk1 = getMIN('United Kingdom')
-
-        valueNor1 = []
-        if ('Norway' in coun):
-            valueNor1 = getMIN('Norway')
-
-        valueSwi1 = []
-        if ('Switzerland' in coun):
-            valueSwi1 = getMIN('Switzerland')
-
-        valueMake1 = []
-        if ('North Macedonia' in coun):
-            valueMake1 = getMIN('North Macedonia')
-
-        valueTur1 = []
-        if ('Turkey' in coun):
-            valueTur1 = getMIN('Turkey')
-
         eMip = pd.read_csv('data/Economy-Monthly industrial production.csv')
         df1 = {}
         for i in range(0, 36):
@@ -2542,7 +1868,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
             df1[i] = niz
         return {
             'data': [go.Scatter(x=lab,
-                                y=valueEu1,
+                                y=dataMIN.collect()[0][2:38] if 'European Union' in coun else [],
                                 mode='lines+markers',
                                 name='EU',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#E6D1D1'),
@@ -2553,7 +1879,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'European Union' + '<br>'+
                                 '<b>Monthly industrial production</b>: ' + df1[0].astype(str) + '<br>'),
                      go.Scatter(x=lab,
-                                y=valueBel1,
+                                y=dataMIN.collect()[2][2:38] if 'Belgium' in coun else [],
                                 mode='lines+markers',
                                 name='BE',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#FF0000'),
@@ -2564,7 +1890,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Belgium' + '<br>'+
                                 '<b>Monthly industrial production</b>: ' + df1[2].astype(str) + '<br>'),
                      go.Scatter(x=lab,
-                                y=valueSer1,
+                                y=dataMIN.collect()[34][2:38] if 'Serbia' in coun else [],
                                 mode='lines+markers',
                                 name='RS',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#FF0000'),
@@ -2575,7 +1901,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Serbia' + '<br>'+
                                 '<b>Monthly industrial production</b>: ' + df1[34].astype(str) + '<br>'),
                      go.Scatter(x=lab,
-                                y=valueMal1,
+                                y=dataMIN.collect()[19][2:38] if 'Malta' in coun else [],
                                 mode='lines+markers',
                                 name='MT',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#FF00FF'),
@@ -2586,7 +1912,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Malta' + '<br>'+
                                 '<b>Monthly industrial production</b>: ' + df1[19].astype(str) + '<br>'),
                      go.Scatter(x=lab,
-                                y=valueEa1,
+                                y=dataMIN.collect()[1][2:38] if 'Euro area' in coun else [],
                                 mode='lines+markers',
                                 name='EA',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#472727'),
@@ -2597,7 +1923,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Euro area' + '<br>' +
                                 '<b>Monthly industrial production</b>: ' + df1[1].astype(str) + '<br>'),
                      go.Scatter(x=lab,
-                                y=valueBul1,
+                                y=dataMIN.collect()[3][2:38] if 'Bulgaria' in coun else [],
                                 mode='lines+markers',
                                 name='BG',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#353131'),
@@ -2608,7 +1934,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Bulgaria' + '<br>'+
                                 '<b>Monthly industrial production</b>: ' + df1[3].astype(str) + '<br>'),
                      go.Scatter(x=lab,
-                                y=valueChe1,
+                                y=dataMIN.collect()[4][2:38] if 'Czechia' in coun else [],
                                 mode='lines+markers',
                                 name='CZ',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#49AF30'),
@@ -2619,7 +1945,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Czechia' + '<br>'+
                                 '<b>Monthly industrial production</b>: ' + df1[4].astype(str) + '<br>'),
                      go.Scatter(x=lab,
-                                y=valueDen1,
+                                y=dataMIN.collect()[5][2:38] if 'Denmark' in coun else [],
                                 mode='lines+markers',
                                 name='DK',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#2A4623'),
@@ -2630,7 +1956,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Denmark' + '<br>'+
                                 '<b>Monthly industrial production</b>: ' + df1[5].astype(str) + '<br>'),
                      go.Scatter(x=lab,
-                                y=valueGer1,
+                                y=dataMIN.collect()[6][2:38] if 'Germany' in coun else [],
                                 mode='lines+markers',
                                 name='DE',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#7B7D7B'),
@@ -2641,7 +1967,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Germany' + '<br>'+
                                 '<b>Monthly industrial production</b>: ' + df1[6].astype(str) + '<br>'),
                      go.Scatter(x=lab,
-                                y=valueEst1,
+                                y=dataMIN.collect()[7][2:38] if 'Estonia' in coun else [],
                                 mode='lines+markers',
                                 name='EE',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#C4C048'),
@@ -2652,7 +1978,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Estonia' + '<br>'+
                                 '<b>Monthly industrial production</b>: ' + df1[7].astype(str) + '<br>'),
                      go.Scatter(x=lab,
-                                y=valueIre1,
+                                y=dataMIN.collect()[8][2:38] if 'Ireland' in coun else [],
                                 mode='lines+markers',
                                 name='IE',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#9E9D7B'),
@@ -2663,7 +1989,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Ireland' + '<br>'+
                                 '<b>Monthly industrial production</b>: ' + df1[8].astype(str) + '<br>'),
                      go.Scatter(x=lab,
-                                y=valueGree1,
+                                y=dataMIN.collect()[9][2:38] if 'Greece' in coun else [],
                                 mode='lines+markers',
                                 name='EL',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#1A46C0'),
@@ -2674,7 +2000,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Greece' + '<br>'+
                                 '<b>Monthly industrial production</b>: ' + df1[9].astype(str) + '<br>'),
                      go.Scatter(x=lab,
-                                y=valueSpa1,
+                                y=dataMIN.collect()[10][2:38] if 'Spain' in coun else [],
                                 mode='lines+markers',
                                 name='ES',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#2E063A'),
@@ -2685,7 +2011,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Spain' + '<br>'+
                                 '<b>Monthly industrial production</b>: ' + df1[10].astype(str) + '<br>'),
                      go.Scatter(x=lab,
-                                y=valueFra1,
+                                y=dataMIN.collect()[11][2:38] if 'France' in coun else [],
                                 mode='lines+markers',
                                 name='FR',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#39313C'),
@@ -2696,7 +2022,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'France' + '<br>'+
                                 '<b>Monthly industrial production</b>: ' + df1[11].astype(str) + '<br>'),
                      go.Scatter(x=lab,
-                                y=valueCro1,
+                                y=dataMIN.collect()[12][2:38] if 'Croatia' in coun else [],
                                 mode='lines+markers',
                                 name='HR',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#189F96'),
@@ -2707,7 +2033,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Croatia' + '<br>'+
                                 '<b>Monthly industrial production</b>: ' + df1[12].astype(str) + '<br>'),
                      go.Scatter(x=lab,
-                                y=valueIta1,
+                                y=dataMIN.collect()[13][2:38] if 'Italy' in coun else [],
                                 mode='lines+markers',
                                 name='IT',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#94A4A3'),
@@ -2718,7 +2044,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Italy' + '<br>'+
                                 '<b>Monthly industrial production</b>: ' + df1[13].astype(str) + '<br>'),
                      go.Scatter(x=lab,
-                                y=valueCyp1,
+                                y=dataMIN.collect()[14][2:38] if 'Cyprus' in coun else [],
                                 mode='lines+markers',
                                 name='CY',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#ff3399'),
@@ -2729,7 +2055,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Cyprus' + '<br>'+
                                 '<b>Monthly industrial production</b>: ' + df1[14].astype(str) + '<br>'),
                      go.Scatter(x=lab,
-                                y=valueLat1,
+                                y=dataMIN.collect()[15][2:38] if 'Latvia' in coun else [],
                                 mode='lines+markers',
                                 name='LV',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#aaaa55'),
@@ -2740,7 +2066,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Latvia' + '<br>'+
                                 '<b>Monthly industrial production</b>: ' + df1[15].astype(str) + '<br>'),
                      go.Scatter(x=lab,
-                                y=valueLith1,
+                                y=dataMIN.collect()[16][2:38] if 'Lithuania' in coun else [],
                                 mode='lines+markers',
                                 name='LT',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#ffff00'),
@@ -2751,7 +2077,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Lithuania' + '<br>'+
                                 '<b>Monthly industrial production</b>: ' + df1[16].astype(str) + '<br>'),
                      go.Scatter(x=lab,
-                                y=valueLux1,
+                                y=dataMIN.collect()[17][2:38] if 'Luxembourg' in coun else [],
                                 mode='lines+markers',
                                 name='LU',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#007399'),
@@ -2762,7 +2088,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Luxembourg' + '<br>'+
                                 '<b>Monthly industrial production</b>: ' + df1[17].astype(str) + '<br>'),
                      go.Scatter(x=lab,
-                                y=valueHun1,
+                                y=dataMIN.collect()[18][2:38] if 'Hungary' in coun else [],
                                 mode='lines+markers',
                                 name='HU',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#ff3300'),
@@ -2773,7 +2099,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Hungary' + '<br>' +
                                 '<b>Monthly industrial production</b>: ' + df1[18].astype(str) + '<br>'),
                      go.Scatter(x=lab,
-                                y=valueNet1,
+                                y=dataMIN.collect()[20][2:38] if 'Netherlands' in coun else [],
                                 mode='lines+markers',
                                 name='NL',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#00e600'),
@@ -2784,7 +2110,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Netherlands' + '<br>'+
                                 '<b>Monthly industrial production</b>: ' + df1[20].astype(str) + '<br>'),
                      go.Scatter(x=lab,
-                                y=valueAus1,
+                                y=dataMIN.collect()[21][2:38] if 'Austria' in coun else [],
                                 mode='lines+markers',
                                 name='AT',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#4dff4d'),
@@ -2795,7 +2121,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Austria' + '<br>' +
                                 '<b>Monthly industrial production</b>: ' + df1[21].astype(str) + '<br>'),
                      go.Scatter(x=lab,
-                                y=valuePol1,
+                                y=dataMIN.collect()[22][2:38] if 'Poland' in coun else [],
                                 mode='lines+markers',
                                 name='PL',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#003300'),
@@ -2806,7 +2132,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Poland' + '<br>'+
                                 '<b>Monthly industrial production</b>: ' + df1[22].astype(str) + '<br>'),
                      go.Scatter(x=lab,
-                                y=valuePor1,
+                                y=dataMIN.collect()[23][2:38] if 'Portugal' in coun else [],
                                 mode='lines+markers',
                                 name='PT',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#662900'),
@@ -2817,7 +2143,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Portugal' + '<br>'+
                                 '<b>Monthly industrial production</b>: ' + df1[23].astype(str) + '<br>'),
                      go.Scatter(x=lab,
-                                y=valueRom1,
+                                y=dataMIN.collect()[24][2:38] if 'Romania' in coun else [],
                                 mode='lines+markers',
                                 name='RO',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#993399'),
@@ -2828,7 +2154,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Romania' + '<br>'+
                                 '<b>Monthly industrial production</b>: ' + df1[24].astype(str) + '<br>'),
                      go.Scatter(x=lab,
-                                y=valueSlo1,
+                                y=dataMIN.collect()[25][2:38] if 'Slovenia' in coun else [],
                                 mode='lines+markers',
                                 name='SI',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#d98cd9'),
@@ -2839,7 +2165,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Slovenia' + '<br>'+
                                 '<b>Monthly industrial production</b>: ' + df1[25].astype(str) + '<br>'),
                      go.Scatter(x=lab,
-                                y=valueSlovak1,
+                                y=dataMIN.collect()[226][2:38] if 'Slovakia' in coun else [],
                                 mode='lines+markers',
                                 name='SK',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#0033cc'),
@@ -2850,7 +2176,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Slovakia' + '<br>'+
                                 '<b>Monthly industrial production</b>: ' + df1[26].astype(str) + '<br>'),
                      go.Scatter(x=lab,
-                                y=valueFin1,
+                                y=dataMIN.collect()[27][2:38] if 'Finland' in coun else [],
                                 mode='lines+markers',
                                 name='FI',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#99b3ff'),
@@ -2861,7 +2187,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Finland' + '<br>'+
                                 '<b>Monthly industrial production</b>: ' + df1[27].astype(str) + '<br>'),
                      go.Scatter(x=lab,
-                                y=valueSwe1,
+                                y=dataMIN.collect()[28][2:38] if 'Sweden' in coun else [],
                                 mode='lines+markers',
                                 name='SE',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#001a66'),
@@ -2872,7 +2198,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Sweden' + '<br>'+
                                 '<b>Monthly industrial production</b>: ' + df1[28].astype(str) + '<br>'),
                      go.Scatter(x=lab,
-                                y=valueUk1,
+                                y=dataMIN.collect()[29][2:38] if 'United Kingdom' in coun else [],
                                 mode='lines+markers',
                                 name='UK',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#00cc99'),
@@ -2883,7 +2209,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'United Kingdom' + '<br>'+
                                 '<b>Monthly industrial production</b>: ' + df1[29].astype(str) + '<br>'),
                      go.Scatter(x=lab,
-                                y=valueNor1,
+                                y=dataMIN.collect()[30][2:38] if 'Norway' in coun else [],
                                 mode='lines+markers',
                                 name='NO',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#73e600'),
@@ -2894,7 +2220,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Norway' + '<br>'+
                                 '<b>Monthly industrial production</b>: ' + df1[30].astype(str) + '<br>'),
                      go.Scatter(x=lab,
-                                y=valueSwi1,
+                                y=dataMIN.collect()[31][2:38] if 'Switzerland' in coun else [],
                                 mode='lines+markers',
                                 name='CH',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#bfff80'),
@@ -2905,7 +2231,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Switzerland' + '<br>'+
                                 '<b>Monthly industrial production</b>: ' + df1[31].astype(str) + '<br>'),
                      go.Scatter(x=lab,
-                                y=valueMake1,
+                                y=dataMIN.collect()[33][2:38] if 'North Macedonia' in coun else [],
                                 mode='lines+markers',
                                 name='MK',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#ffa366'),
@@ -2916,7 +2242,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'North Macedonia' + '<br>'+
                                 '<b>Monthly industrial production</b>: ' + df1[33].astype(str) + '<br>'),
                      go.Scatter(x=lab,
-                                y=valueTur1,
+                                y=dataMIN.collect()[35][2:38] if 'Turkey' in coun else [],
                                 mode='lines+markers',
                                 name='TR',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#ff4da6'),
@@ -2983,154 +2309,6 @@ def update_graph(w_countries, w_countries1, country_chosen):
     #
     # ECONOMY MV
     elif (w_countries == 'Economy') & (w_countries1 == 'Monthly volume of retail trade'):
-        valueEu1 = []
-        if ('European Union' in coun):
-            valueEu1 = getMV('European Union')
-
-        valueMal1 = []
-        if ('Malta' in coun):
-            valueMal1 = getMV('Malta')
-
-        valueSer1 = []
-        if ('Serbia' in coun):
-            valueSer1 = getMV('Serbia')
-
-        valueEa1 = []
-        if ('Euro area' in coun):
-            valueEa1 = getMV('Euro area')
-
-        valueBel1 = []
-        if ('Belgium' in coun):
-            valueBel1 = getMV('Belgium')
-
-        valueBul1 = []
-        if ('Bulgaria' in coun):
-            valueBul1 = getMV('Bulgaria')
-
-        valueChe1 = []
-        if ('Czechia' in coun):
-            valueChe1 = getMV('Czechia')
-
-        valueDen1 = []
-        if ('Denmark' in coun):
-            valueDen1 = getMV('Denmark')
-
-        valueGer1 = []
-        if ('Germany' in coun):
-            valueGer1 = getMV('Germany')
-
-        valueEst1 = []
-        if ('Estonia' in coun):
-            valueEst1 = getMV('Estonia')
-
-        valueIre1 = []
-        if ('Ireland' in coun):
-            valueIre1 = getMV('Ireland')
-
-        valueGree1 = []
-        if ('Greece' in coun):
-            valueGree1 = getMV('Greece')
-
-        valueSpa1 = []
-        if ('Spain' in coun):
-            valueSpa1 = getMV('Spain')
-
-        valueFra1 = []
-        if ('France' in coun):
-            valueFra1 = getMV('France')
-
-        valueCro1 = []
-        if ('Croatia' in coun):
-            valueCro1 = getMV('Croatia')
-
-        valueIta1 = []
-        if ('Italy' in coun):
-            valueIta1 = getMV('Italy')
-
-        valueCyp1 = []
-        if ('Cyprus' in coun):
-            valueCyp1 = getMV('Cyprus')
-
-        valueLat1 = []
-        if ('Latvia' in coun):
-            valueLat1 = getMV('Latvia')
-
-        valueLith1 = []
-        if ('Lithuania' in coun):
-            valueLith1 = getMV('Lithuania')
-
-        valueLux1 = []
-        if ('Luxembourg' in coun):
-            valueLux1 = getMV('Luxembourg')
-
-        valueHun1 = []
-        if ('Hungary' in coun):
-            valueHun1 = getMV('Hungary')
-
-        valueNet1 = []
-        if ('Netherlands' in coun):
-            valueNet1 = getMV('Netherlands')
-
-        valueAus1 = []
-        if ('Austria' in coun):
-            valueAus1 = getMV('Austria')
-
-        valuePol1 = []
-        if ('Poland' in coun):
-            valuePol1 = getMV('Poland')
-
-        valuePor1 = []
-        if ('Portugal' in coun):
-            valuePor1 = getMV('Portugal')
-
-        valueRom1 = []
-        if ('Romania' in coun):
-            valueRom1 = getMV('Romania')
-
-        valueSlo1 = []
-        if ('Slovenia' in coun):
-            valueSlo1 = getMV('Slovenia')
-
-        valueSlovak1 = []
-        if ('Slovakia' in coun):
-            valueSlovak1 = getMV('Slovakia')
-
-        valueFin1 = []
-        if ('Finland' in coun):
-            valueFin1 = getMV('Finland')
-
-        valueSwe1 = []
-        if ('Sweden' in coun):
-            valueSwe1 = getMV('Sweden')
-
-        valueUk1 = []
-        if ('United Kingdom' in coun):
-            valueUk1 = getMV('United Kingdom')
-
-        valueIce1 = []
-        if ('Iceland' in coun):
-            valueIce1 = getMV('Iceland')
-
-        valueNor1 = []
-        if ('Norway' in coun):
-            valueNor1 = getMV('Norway')
-
-        valueSwi1 = []
-        if ('Switzerland' in coun):
-            valueSwi1 = getMV('Switzerland')
-
-        valueMake1 = []
-        if ('North Macedonia' in coun):
-            valueMake1 = getMV('North Macedonia')
-
-        valueTur1 = []
-        if ('Turkey' in coun):
-            valueTur1 = getMV('Turkey')
-
-        valueUs1 = []
-        if ('United States' in coun):
-            valueUs1 = getMV('United States')
-
         mv = pd.read_csv('data/Economy-Monthly volume.csv')
         df1 = {}
         for i in range(0, 38):
@@ -3138,7 +2316,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
             df1[i] = niz
         return {
             'data': [go.Scatter(x=labMV,
-                                y=valueEu1,
+                                y=dataMV.collect()[0][2:85] if 'European Union' in coun else [],
                                 mode='lines+markers',
                                 name='EU',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#E6D1D1'),
@@ -3149,7 +2327,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'European Union' + '<br>'+
                                 '<b>Monthly volume of retail trade</b>: ' + df1[0].astype(str) + '<br>'),
                      go.Scatter(x=labMV,
-                                y=valueBel1,
+                                y=dataMV.collect()[2][2:85] if 'Belgium' in coun else [],
                                 mode='lines+markers',
                                 name='BE',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#FF0000'),
@@ -3160,7 +2338,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Belgium' + '<br>'+
                                 '<b>Monthly volume of retail trade</b>: ' + df1[2].astype(str) + '<br>'),
                      go.Scatter(x=labMV,
-                                y=valueSer1,
+                                y=dataMV.collect()[35][2:85] if 'Serbia' in coun else [],
                                 mode='lines+markers',
                                 name='RS',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#FF0000'),
@@ -3171,7 +2349,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Serbia' + '<br>'+
                                 '<b>Monthly volume of retail trade</b>: ' + df1[35].astype(str) + '<br>'),
                      go.Scatter(x=labMV,
-                                y=valueMal1,
+                                y=dataMV.collect()[19][2:85] if 'Malta' in coun else [],
                                 mode='lines+markers',
                                 name='MT',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#FF00FF'),
@@ -3182,7 +2360,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Malta' + '<br>'+
                                 '<b>Monthly volume of retail trade</b>: ' + df1[19].astype(str) + '<br>'),
                      go.Scatter(x=labMV,
-                                y=valueEa1,
+                                y=dataMV.collect()[1][2:85] if 'Euro area' in coun else [],
                                 mode='lines+markers',
                                 name='EA',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#472727'),
@@ -3193,7 +2371,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Euro area' + '<br>' +
                                 '<b>Monthly volume of retail trade</b>: ' + df1[1].astype(str) + '<br>'),
                      go.Scatter(x=labMV,
-                                y=valueBul1,
+                                y=dataMV.collect()[3][2:85] if 'Bulgaria' in coun else [],
                                 mode='lines+markers',
                                 name='BG',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#353131'),
@@ -3204,7 +2382,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Bulgaria' + '<br>'+
                                 '<b>Monthly volume of retail trade</b>: ' + df1[3].astype(str) + '<br>'),
                      go.Scatter(x=labMV,
-                                y=valueChe1,
+                                y=dataMV.collect()[4][2:85] if 'Czechia' in coun else [],
                                 mode='lines+markers',
                                 name='CZ',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#49AF30'),
@@ -3215,7 +2393,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Czechia' + '<br>'+
                                 '<b>Monthly volume of retail trade</b>: ' + df1[4].astype(str) + '<br>'),
                      go.Scatter(x=labMV,
-                                y=valueDen1,
+                                y=dataMV.collect()[5][2:85] if 'Denmark' in coun else [],
                                 mode='lines+markers',
                                 name='DK',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#2A4623'),
@@ -3226,7 +2404,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Denmark' + '<br>'+
                                 '<b>Monthly volume of retail trade</b>: ' + df1[5].astype(str) + '<br>'),
                      go.Scatter(x=labMV,
-                                y=valueGer1,
+                                y=dataMV.collect()[6][2:85] if 'Germany' in coun else [],
                                 mode='lines+markers',
                                 name='DE',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#7B7D7B'),
@@ -3237,7 +2415,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Germany' + '<br>'+
                                 '<b>Monthly volume of retail trade</b>: ' + df1[6].astype(str) + '<br>'),
                      go.Scatter(x=labMV,
-                                y=valueEst1,
+                                y=dataMV.collect()[7][2:85] if 'Estonia' in coun else [],
                                 mode='lines+markers',
                                 name='EE',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#C4C048'),
@@ -3248,7 +2426,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Estonia' + '<br>'+
                                 '<b>Monthly volume of retail trade</b>: ' + df1[7].astype(str) + '<br>'),
                      go.Scatter(x=labMV,
-                                y=valueIre1,
+                                y=dataMV.collect()[8][2:85] if 'Ireland' in coun else [],
                                 mode='lines+markers',
                                 name='IE',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#9E9D7B'),
@@ -3259,7 +2437,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Ireland' + '<br>'+
                                 '<b>Monthly volume of retail trade</b>: ' + df1[8].astype(str) + '<br>'),
                      go.Scatter(x=labMV,
-                                y=valueGree1,
+                                y=dataMV.collect()[9][2:85] if 'Greece' in coun else [],
                                 mode='lines+markers',
                                 name='EL',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#1A46C0'),
@@ -3270,7 +2448,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Greece' + '<br>'+
                                 '<b>Monthly volume of retail trade</b>: ' + df1[9].astype(str) + '<br>'),
                      go.Scatter(x=labMV,
-                                y=valueSpa1,
+                                y=dataMV.collect()[10][2:85] if 'Spain' in coun else [],
                                 mode='lines+markers',
                                 name='ES',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#2E063A'),
@@ -3281,7 +2459,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Spain' + '<br>'+
                                 '<b>Monthly volume of retail trade</b>: ' + df1[10].astype(str) + '<br>'),
                      go.Scatter(x=labMV,
-                                y=valueFra1,
+                                y=dataMV.collect()[11][2:85] if 'France' in coun else [],
                                 mode='lines+markers',
                                 name='FR',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#39313C'),
@@ -3292,7 +2470,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'France' + '<br>'+
                                 '<b>Monthly volume of retail trade</b>: ' + df1[11].astype(str) + '<br>'),
                      go.Scatter(x=labMV,
-                                y=valueCro1,
+                                y=dataMV.collect()[12][2:85] if 'Croatia' in coun else [],
                                 mode='lines+markers',
                                 name='HR',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#189F96'),
@@ -3303,7 +2481,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Croatia' + '<br>'+
                                 '<b>Monthly volume of retail trade</b>: ' + df1[12].astype(str) + '<br>'),
                      go.Scatter(x=labMV,
-                                y=valueIta1,
+                                y=dataMV.collect()[13][2:85] if 'Italy' in coun else [],
                                 mode='lines+markers',
                                 name='IT',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#94A4A3'),
@@ -3314,7 +2492,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Italy' + '<br>'+
                                 '<b>Monthly volume of retail trade</b>: ' + df1[13].astype(str) + '<br>'),
                      go.Scatter(x=labMV,
-                                y=valueCyp1,
+                                y=dataMV.collect()[14][2:85] if 'Cyprus' in coun else [],
                                 mode='lines+markers',
                                 name='CY',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#ff3399'),
@@ -3325,7 +2503,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Cyprus' + '<br>'+
                                 '<b>Monthly volume of retail trade</b>: ' + df1[14].astype(str) + '<br>'),
                      go.Scatter(x=labMV,
-                                y=valueLat1,
+                                y=dataMV.collect()[15][2:85] if 'Latvia' in coun else [],
                                 mode='lines+markers',
                                 name='LV',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#aaaa55'),
@@ -3336,7 +2514,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Latvia' + '<br>'+
                                 '<b>Monthly volume of retail trade</b>: ' + df1[15].astype(str) + '<br>'),
                      go.Scatter(x=labMV,
-                                y=valueLith1,
+                                y=dataMV.collect()[16][2:85] if 'Lithuania' in coun else [],
                                 mode='lines+markers',
                                 name='LT',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#ffff00'),
@@ -3347,7 +2525,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Lithuania' + '<br>'+
                                 '<b>Monthly volume of retail trade</b>: ' + df1[16].astype(str) + '<br>'),
                      go.Scatter(x=labMV,
-                                y=valueLux1,
+                                y=dataMV.collect()[17][2:85] if 'Luxembourg' in coun else [],
                                 mode='lines+markers',
                                 name='LU',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#007399'),
@@ -3358,7 +2536,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Luxembourg' + '<br>'+
                                 '<b>Monthly volume of retail trade</b>: ' + df1[17].astype(str) + '<br>'),
                      go.Scatter(x=labMV,
-                                y=valueHun1,
+                                y=dataMV.collect()[18][2:85] if 'Hungary' in coun else [],
                                 mode='lines+markers',
                                 name='HU',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#ff3300'),
@@ -3369,7 +2547,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Hungary' + '<br>' +
                                 '<b>Monthly volume of retail trade</b>: ' + df1[18].astype(str) + '<br>'),
                      go.Scatter(x=labMV,
-                                y=valueNet1,
+                                y=dataMV.collect()[20][2:85] if 'Netherlands' in coun else [],
                                 mode='lines+markers',
                                 name='NL',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#00e600'),
@@ -3380,7 +2558,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Netherlands' + '<br>'+
                                 '<b>Monthly volume of retail trade</b>: ' + df1[20].astype(str) + '<br>'),
                      go.Scatter(x=labMV,
-                                y=valueAus1,
+                                y=dataMV.collect()[21][2:85] if 'Austria' in coun else [],
                                 mode='lines+markers',
                                 name='AT',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#4dff4d'),
@@ -3391,7 +2569,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Austria' + '<br>' +
                                 '<b>Monthly volume of retail trade</b>: ' + df1[21].astype(str) + '<br>'),
                      go.Scatter(x=labMV,
-                                y=valuePol1,
+                                y=dataMV.collect()[22][2:85] if 'Poland' in coun else [],
                                 mode='lines+markers',
                                 name='PL',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#003300'),
@@ -3402,7 +2580,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Poland' + '<br>'+
                                 '<b>Monthly volume of retail trade</b>: ' + df1[22].astype(str) + '<br>'),
                      go.Scatter(x=labMV,
-                                y=valuePor1,
+                                y=dataMV.collect()[23][2:85] if 'Portugal' in coun else [],
                                 mode='lines+markers',
                                 name='PT',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#662900'),
@@ -3413,7 +2591,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Portugal' + '<br>'+
                                 '<b>Monthly volume of retail trade</b>: ' + df1[23].astype(str) + '<br>'),
                      go.Scatter(x=labMV,
-                                y=valueRom1,
+                                y=data.collect()[24][2:85] if 'Romania' in coun else [],
                                 mode='lines+markers',
                                 name='RO',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#993399'),
@@ -3424,7 +2602,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Romania' + '<br>'+
                                 '<b>Monthly volume of retail trade</b>: ' + df1[24].astype(str) + '<br>'),
                      go.Scatter(x=labMV,
-                                y=valueSlo1,
+                                y=dataMV.collect()[25][2:85] if 'Slovenia' in coun else [],
                                 mode='lines+markers',
                                 name='SI',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#d98cd9'),
@@ -3435,7 +2613,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Slovenia' + '<br>'+
                                 '<b>Monthly volume of retail trade</b>: ' + df1[25].astype(str) + '<br>'),
                      go.Scatter(x=labMV,
-                                y=valueSlovak1,
+                                y=dataMV.collect()[26][2:85] if 'Slovakia' in coun else [],
                                 mode='lines+markers',
                                 name='SK',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#0033cc'),
@@ -3446,7 +2624,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Slovakia' + '<br>'+
                                 '<b>Monthly volume of retail trade</b>: ' + df1[26].astype(str) + '<br>'),
                      go.Scatter(x=labMV,
-                                y=valueFin1,
+                                y=dataMV.collect()[27][2:85] if 'Finland' in coun else [],
                                 mode='lines+markers',
                                 name='FI',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#99b3ff'),
@@ -3457,7 +2635,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Finland' + '<br>'+
                                 '<b>Monthly volume of retail trade</b>: ' + df1[27].astype(str) + '<br>'),
                      go.Scatter(x=labMV,
-                                y=valueSwe1,
+                                y=dataMV.collect()[28][2:85] if 'Sweden' in coun else [],
                                 mode='lines+markers',
                                 name='SE',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#001a66'),
@@ -3468,7 +2646,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Sweden' + '<br>'+
                                 '<b>Monthly volume of retail trade</b>: ' + df1[28].astype(str) + '<br>'),
                      go.Scatter(x=labMV,
-                                y=valueUk1,
+                                y=dataMV.collect()[29][2:85] if 'United Kingdom' in coun else [],
                                 mode='lines+markers',
                                 name='UK',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#00cc99'),
@@ -3479,18 +2657,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'United Kingdom' + '<br>'+
                                 '<b>Monthly volume of retail trade</b>: ' + df1[29].astype(str) + '<br>'),
                      go.Scatter(x=labMV,
-                                y=valueIce1,
-                                mode='lines+markers',
-                                name='IS',
-                                line=dict(shape="spline", smoothing=1.3, width=3, color='#336600'),
-                                marker=dict(size=5, symbol='circle', color='lightblue',
-                                            line=dict(color='#336600', width=2)),
-                                hoverinfo='text',
-                                hovertext=
-                                '<b>Country</b>: ' + 'Iceland' + '<br>'+
-                                '<b>Monthly volume of retail trade</b>: ' + df1[31].astype(str) + '<br>'),
-                     go.Scatter(x=labMV,
-                                y=valueNor1,
+                                y=dataMV.collect()[30][2:85] if 'Norway' in coun else [],
                                 mode='lines+markers',
                                 name='NO',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#73e600'),
@@ -3501,7 +2668,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Norway' + '<br>'+
                                 '<b>Monthly volume of retail trade</b>: ' + df1[32].astype(str) + '<br>'),
                      go.Scatter(x=labMV,
-                                y=valueSwi1,
+                                y=dataMV.collect()[31][2:85] if 'Switzerland' in coun else [],
                                 mode='lines+markers',
                                 name='CH',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#bfff80'),
@@ -3512,7 +2679,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Switzerland' + '<br>'+
                                 '<b>Monthly volume of retail trade</b>: ' + df1[33].astype(str) + '<br>'),
                      go.Scatter(x=labMV,
-                                y=valueMake1,
+                                y=dataMV.collect()[33][2:85] if 'North Macedonia' in coun else [],
                                 mode='lines+markers',
                                 name='MK',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#ffa366'),
@@ -3523,7 +2690,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'North Macedonia' + '<br>'+
                                 '<b>Monthly volume of retail trade</b>: ' + df1[34].astype(str) + '<br>'),
                      go.Scatter(x=labMV,
-                                y=valueTur1,
+                                y=dataMV.collect()[36][2:85] if 'Turkey' in coun else [],
                                 mode='lines+markers',
                                 name='TR',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#ff4da6'),
@@ -3532,18 +2699,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 hoverinfo='text',
                                 hovertext=
                                 '<b>Country</b>: ' + 'Turkey' + '<br>'+
-                                '<b>Monthly volume of retail trade</b>: ' + df1[36].astype(str) + '<br>'),
-                     go.Scatter(x=labMV,
-                                y=valueUs1,
-                                mode='lines+markers',
-                                name='US',
-                                line=dict(shape="spline", smoothing=1.3, width=3, color='#4dc3ff'),
-                                marker=dict(size=5, symbol='circle', color='lightblue',
-                                            line=dict(color='#4dc3ff', width=2) ),
-                                hoverinfo='text',
-                                hovertext=
-                                '<b>Country</b>: ' + 'United States' + '<br>'+
-                                '<b>Monthly volume of retail trade</b>: ' + df1[37].astype(str) + '<br>' ),],
+                                '<b>Monthly volume of retail trade</b>: ' + df1[36].astype(str) + '<br>')],
             'layout': go.Layout(
                 barmode='stack',
                 plot_bgcolor='#808080',
@@ -3602,102 +2758,6 @@ def update_graph(w_countries, w_countries1, country_chosen):
     # Strart Economy-Monthly production in construction
     #
     elif (w_countries == 'Economy') and (w_countries1 == 'Monthly production in construction'):
-        valueEu1 = []
-        if ('European Union' in coun):
-            valueEu1 = getMPIC('European Union')
-
-        valueEa1 = []
-        if ('Euro area' in coun):
-            valueEa1 = getMPIC('Euro area')
-
-        valueBel1 = []
-        if ('Belgium' in coun):
-            valueBel1 = getMPIC('Belgium')
-
-        valueBul1 = []
-        if ('Bulgaria' in coun):
-            valueBul1 = getMPIC('Bulgaria')
-
-        valueChe1 = []
-        if ('Czechia' in coun):
-            valueChe1 = getMPIC('Czechia')
-
-        valueDen1 = []
-        if ('Denmark' in coun):
-            valueDen1 = getMPIC('Denmark')
-
-        valueGer1 = []
-        if ('Germany' in coun):
-            valueGer1 = getMPIC('Germany')
-
-        valueSpa1 = []
-        if ('Spain' in coun):
-            valueSpa1 = getMPIC('Spain')
-
-        valueFra1 = []
-        if ('France' in coun):
-            valueFra1 = getMPIC('France')
-
-        valueCro1 = []
-        if ('Croatia' in coun):
-            valueCro1 = getMPIC('Croatia')
-
-        valueIta1 = []
-        if ('Italy' in coun):
-            valueIta1 = getMPIC('Italy')
-
-        valueLux1 = []
-        if ('Luxembourg' in coun):
-            valueLux1 = getMPIC('Luxembourg')
-
-        valueHun1 = []
-        if ('Hungary' in coun):
-            valueHun1 = getMPIC('Hungary')
-
-        valueNet1 = []
-        if ('Netherlands' in coun):
-            valueNet1 = getMPIC('Netherlands')
-
-        valueAus1 = []
-        if ('Austria' in coun):
-            valueAus1 = getMPIC('Austria')
-
-        valuePol1 = []
-        if ('Poland' in coun):
-            valuePol1 = getMPIC('Poland')
-
-        valuePor1 = []
-        if ('Portugal' in coun):
-            valuePor1 = getArr('Portugal')
-
-        valueRom1 = []
-        if ('Romania' in coun):
-            valueRom1 = getMPIC('Romania')
-
-        valueSlo1 = []
-        if ('Slovenia' in coun):
-            valueSlo1 = getMPIC('Slovenia')
-
-        valueSlovak1 = []
-        if ('Slovakia' in coun):
-            valueSlovak1 = getMPIC('Slovakia')
-
-        valueFin1 = []
-        if ('Finland' in coun):
-            valueFin1 = getMPIC('Finland')
-
-        valueSwe1 = []
-        if ('Sweden' in coun):
-            valueSwe1 = getMPIC('Sweden')
-
-        valueUk1 = []
-        if ('United Kingdom' in coun):
-            valueUk1 = getMPIC('United Kingdom')
-
-        valueMake1 = []
-        if ('North Macedonia' in coun):
-            valueMake1 = getMPIC('North Macedonia')
-
         mpic = pd.read_csv('data/Economy-Monthly production in construction.csv')
         df1 = {}
         for i in range(0, 24):
@@ -3705,7 +2765,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
             df1[i] = niz
         return {
             'data': [go.Scatter(x=lab,
-                                y=valueEu1,
+                                y=dataMPIC.collect()[0][2:35] if 'European Union' in coun else [],
                                 mode='lines+markers',
                                 name='EU',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#E6D1D1'),
@@ -3716,7 +2776,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'European Union' + '<br>'+
                                 '<b>Monthly production in construction</b>: ' + df1[0].astype(str) + '<br>'),
                      go.Scatter(x=lab,
-                                y=valueBel1,
+                                y=dataMPIC.collect()[2][2:35] if 'Belgium' in coun else [],
                                 mode='lines+markers',
                                 name='BE',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#FF0000'),
@@ -3727,7 +2787,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Belgium' + '<br>'+
                                 '<b>Monthly production in construction</b>: ' + df1[2].astype(str) + '<br>'),
                      go.Scatter(x=lab,
-                                y=valueEa1,
+                                y=dataMPIC.collect()[1][2:35] if 'Euro area' in coun else [],
                                 mode='lines+markers',
                                 name='EA',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#472727'),
@@ -3738,7 +2798,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Euro area' + '<br>' +
                                 '<b>Monthly production in construction</b>: ' + df1[1].astype(str) + '<br>'),
                      go.Scatter(x=lab,
-                                y=valueBul1,
+                                y=dataMPIC.collect()[3][2:35] if 'Bulgaria' in coun else [],
                                 mode='lines+markers',
                                 name='BG',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#353131'),
@@ -3749,7 +2809,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Bulgaria' + '<br>'+
                                 '<b>Monthly production in construction</b>: ' + df1[3].astype(str) + '<br>'),
                      go.Scatter(x=lab,
-                                y=valueChe1,
+                                y=dataMPIC.collect()[4][2:35] if 'Czechia' in coun else [],
                                 mode='lines+markers',
                                 name='CZ',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#49AF30'),
@@ -3760,7 +2820,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Czechia' + '<br>'+
                                 '<b>Monthly production in construction</b>: ' + df1[4].astype(str) + '<br>'),
                      go.Scatter(x=lab,
-                                y=valueDen1,
+                                y=dataMPIC.collect()[5][2:35] if 'Denmark' in coun else [],
                                 mode='lines+markers',
                                 name='DK',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#2A4623'),
@@ -3771,7 +2831,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Denmark' + '<br>'+
                                 '<b>Monthly production in construction</b>: ' + df1[5].astype(str) + '<br>'),
                      go.Scatter(x=lab,
-                                y=valueGer1,
+                                y=dataMPIC.collect()[6][2:35] if 'Germany' in coun else [],
                                 mode='lines+markers',
                                 name='DE',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#7B7D7B'),
@@ -3782,7 +2842,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Germany' + '<br>'+
                                 '<b>Monthly production in construction</b>: ' + df1[6].astype(str) + '<br>'),
                      go.Scatter(x=lab,
-                                y=valueSpa1,
+                                y=dataMPIC.collect()[14][2:35] if 'Spain' in coun else [],
                                 mode='lines+markers',
                                 name='ES',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#2E063A'),
@@ -3793,7 +2853,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Spain' + '<br>'+
                                 '<b>Monthly production in construction</b>: ' + df1[7].astype(str) + '<br>'),
                      go.Scatter(x=lab,
-                                y=valueFra1,
+                                y=dataMPIC.collect()[8][2:35] if 'France' in coun else [],
                                 mode='lines+markers',
                                 name='FR',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#39313C'),
@@ -3804,7 +2864,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'France' + '<br>'+
                                 '<b>Monthly production in construction</b>: ' + df1[8].astype(str) + '<br>'),
                      go.Scatter(x=lab,
-                                y=valueCro1,
+                                y=dataMPIC.collect()[9][2:35] if 'Croatia' in coun else [],
                                 mode='lines+markers',
                                 name='HR',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#189F96'),
@@ -3815,7 +2875,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Croatia' + '<br>'+
                                 '<b>Monthly production in construction</b>: ' + df1[9].astype(str) + '<br>'),
                      go.Scatter(x=lab,
-                                y=valueIta1,
+                                y=dataMPIC.collect()[10][2:35] if 'Italy' in coun else [],
                                 mode='lines+markers',
                                 name='IT',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#94A4A3'),
@@ -3826,7 +2886,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Italy' + '<br>'+
                                 '<b>Monthly production in construction</b>: ' + df1[10].astype(str) + '<br>'),
                      go.Scatter(x=lab,
-                                y=valueLux1,
+                                y=dataMPIC.collect()[11][2:35] if 'Luxembourg' in coun else [],
                                 mode='lines+markers',
                                 name='LU',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#007399'),
@@ -3837,7 +2897,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Luxembourg' + '<br>'+
                                 '<b>Monthly production in construction</b>: ' + df1[11].astype(str) + '<br>'),
                      go.Scatter(x=lab,
-                                y=valueHun1,
+                                y=dataMPIC.collect()[12][2:35] if 'Hungary' in coun else [],
                                 mode='lines+markers',
                                 name='HU',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#ff3300'),
@@ -3848,7 +2908,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Hungary' + '<br>' +
                                 '<b>Monthly production in construction</b>: ' + df1[12].astype(str) + '<br>'),
                      go.Scatter(x=lab,
-                                y=valueNet1,
+                                y=dataMPIC.collect()[13][2:35] if 'Netherlands' in coun else [],
                                 mode='lines+markers',
                                 name='NL',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#00e600'),
@@ -3859,7 +2919,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Netherlands' + '<br>'+
                                 '<b>Monthly production in construction</b>: ' + df1[13].astype(str) + '<br>'),
                      go.Scatter(x=lab,
-                                y=valueAus1,
+                                y=dataMPIC.collect()[14][2:35] if 'Austria' in coun else [],
                                 mode='lines+markers',
                                 name='AT',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#4dff4d'),
@@ -3870,7 +2930,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Austria' + '<br>' +
                                 '<b>Monthly production in construction</b>: ' + df1[14].astype(str) + '<br>'),
                      go.Scatter(x=lab,
-                                y=valuePol1,
+                                y=dataMPIC.collect()[15][2:35] if 'Poland' in coun else [],
                                 mode='lines+markers',
                                 name='PL',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#003300'),
@@ -3881,7 +2941,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Poland' + '<br>'+
                                 '<b>Monthly production in construction</b>: ' + df1[15].astype(str) + '<br>'),
                      go.Scatter(x=lab,
-                                y=valuePor1,
+                                y=dataMPIC.collect()[16][2:35] if 'Portugal' in coun else [],
                                 mode='lines+markers',
                                 name='PT',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#662900'),
@@ -3892,7 +2952,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Portugal' + '<br>'+
                                 '<b>Monthly production in construction</b>: ' + df1[16].astype(str) + '<br>'),
                      go.Scatter(x=lab,
-                                y=valueRom1,
+                                y=dataMPIC.collect()[17][2:35] if 'Romania' in coun else [],
                                 mode='lines+markers',
                                 name='RO',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#993399'),
@@ -3903,7 +2963,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Romania' + '<br>'+
                                 '<b>Monthly production in construction</b>: ' + df1[17].astype(str) + '<br>'),
                      go.Scatter(x=lab,
-                                y=valueSlo1,
+                                y=dataMPIC.collect()[18][2:35] if 'Slovenia' in coun else [],
                                 mode='lines+markers',
                                 name='SI',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#d98cd9'),
@@ -3914,7 +2974,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Slovenia' + '<br>'+
                                 '<b>Monthly production in construction</b>: ' + df1[18].astype(str) + '<br>'),
                      go.Scatter(x=lab,
-                                y=valueSlovak1,
+                                y=dataMPIC.collect()[19][2:35] if 'Slovakia' in coun else [],
                                 mode='lines+markers',
                                 name='SK',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#0033cc'),
@@ -3925,7 +2985,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Slovakia' + '<br>'+
                                 '<b>Monthly production in construction</b>: ' + df1[19].astype(str) + '<br>'),
                      go.Scatter(x=lab,
-                                y=valueFin1,
+                                y=dataMPIC.collect()[20][2:35] if 'Finland' in coun else [],
                                 mode='lines+markers',
                                 name='FI',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#99b3ff'),
@@ -3936,7 +2996,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Finland' + '<br>'+
                                 '<b>Monthly production in construction</b>: ' + df1[20].astype(str) + '<br>'),
                      go.Scatter(x=lab,
-                                y=valueSwe1,
+                                y=dataMPIC.collect()[21][2:35] if 'Sweden' in coun else [],
                                 mode='lines+markers',
                                 name='SE',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#001a66'),
@@ -3947,7 +3007,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Sweden' + '<br>'+
                                 '<b>Monthly production in construction</b>: ' + df1[21].astype(str) + '<br>'),
                      go.Scatter(x=lab,
-                                y=valueUk1,
+                                y=dataMPIC.collect()[22][2:35] if 'United Kingdom' in coun else [],
                                 mode='lines+markers',
                                 name='UK',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#00cc99'),
@@ -3958,7 +3018,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'United Kingdom' + '<br>'+
                                 '<b>Monthly production in construction</b>: ' + df1[22].astype(str) + '<br>'),
                      go.Scatter(x=lab,
-                                y=valueMake1,
+                                y=dataMPIC.collect()[23][2:35] if 'North Macedonia' in coun else [],
                                 mode='lines+markers',
                                 name='MK',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#ffa366'),
@@ -4023,131 +3083,9 @@ def update_graph(w_countries, w_countries1, country_chosen):
         }
     # END of ECONOMY
     #
-    # Start POPULATION AND HEALTH
-    #
     # POPULATION AND HEALTH-Monthly excess mortality
     #
     elif (w_countries == 'Population and health') & (w_countries1 == 'Monthly excess mortality'):
-        valueEu1 = []
-        if ('European Union' in coun):
-            valueEu1 = getPAHMEM('European Union')
-
-        valueMal1 = []
-        if ('Malta' in coun):
-            valueMal1 = getPAHMEM('Malta')
-
-        valueBel1 = []
-        if ('Belgium' in coun):
-            valueBel1 = getPAHMEM('Belgium')
-
-        valueBul1 = []
-        if ('Bulgaria' in coun):
-            valueBul1 = getPAHMEM('Bulgaria')
-
-        valueChe1 = []
-        if ('Czechia' in coun):
-            valueChe1 = getPAHMEM('Czechia')
-
-        valueDen1 = []
-        if ('Denmark' in coun):
-            valueDen1 = getPAHMEM('Denmark')
-
-        valueGer1 = []
-        if ('Germany' in coun):
-            valueGer1 = getPAHMEM('Germany')
-
-        valueEst1 = []
-        if ('Estonia' in coun):
-            valueEst1 = getPAHMEM('Estonia')
-
-        valueGree1 = []
-        if ('Greece' in coun):
-            valueGree1 = getPAHMEM('Greece')
-
-        valueSpa1 = []
-        if ('Spain' in coun):
-            valueSpa1 = getPAHMEM('Spain')
-
-        valueFra1 = []
-        if ('France' in coun):
-            valueFra1 = getPAHMEM('France')
-
-        valueCro1 = []
-        if ('Croatia' in coun):
-            valueCro1 = getPAHMEM('Croatia')
-
-        valueIta1 = []
-        if ('Italy' in coun):
-            valueIta1 = getPAHMEM('Italy')
-
-        valueCyp1 = []
-        if ('Cyprus' in coun):
-            valueCyp1 = getPAHMEM('Cyprus')
-
-        valueLat1 = []
-        if ('Latvia' in coun):
-            valueLat1 = getPAHMEM('Latvia')
-
-        valueLith1 = []
-        if ('Lithuania' in coun):
-            valueLith1 = getPAHMEM('Lithuania')
-
-        valueLux1 = []
-        if ('Luxembourg' in coun):
-            valueLux1 = getPAHMEM('Luxembourg')
-
-        valueHun1 = []
-        if ('Hungary' in coun):
-            valueHun1 = getPAHMEM('Hungary')
-
-        valueNet1 = []
-        if ('Netherlands' in coun):
-            valueNet1 = getPAHMEM('Netherlands')
-
-        valueAus1 = []
-        if ('Austria' in coun):
-            valueAus1 = getPAHMEM('Austria')
-
-        valuePol1 = []
-        if ('Poland' in coun):
-            valuePol1 = getPAHMEM('Poland')
-
-        valuePor1 = []
-        if ('Portugal' in coun):
-            valuePor1 = getPAHMEM('Portugal')
-
-        valueRom1 = []
-        if ('Romania' in coun):
-            valueRom1 = getPAHMEM('Romania')
-
-        valueSlo1 = []
-        if ('Slovenia' in coun):
-            valueSlo1 = getPAHMEM('Slovenia')
-
-        valueSlovak1 = []
-        if ('Slovakia' in coun):
-            valueSlovak1 = getPAHMEM('Slovakia')
-
-        valueFin1 = []
-        if ('Finland' in coun):
-            valueFin1 = getPAHMEM('Finland')
-
-        valueSwe1 = []
-        if ('Sweden' in coun):
-            valueSwe1 = getPAHMEM('Sweden')
-
-        valueIce1 = []
-        if ('Iceland' in coun):
-            valueIce1 = getPAHMEM('Iceland')
-
-        valueNor1 = []
-        if ('Norway' in coun):
-            valueNor1 = getPAHMEM('Norway')
-
-        valueSwi1 = []
-        if ('Switzerland' in coun):
-            valueSwi1 = getPAHMEM('Switzerland')
-
         pop = pd.read_csv('data/Population and health-Monthly excess mortality.csv')
         df1 = {}
         for i in range(0, 31):
@@ -4155,7 +3093,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
             df1[i] = niz
         return {
             'data': [go.Scatter(x=labPAHMEM,
-                                y=valueEu1,
+                                y=dataPAHMEM.collect()[0][2:35] if 'European Union' in coun else [],
                                 mode='lines+markers',
                                 name='EU',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#E6D1D1'),
@@ -4166,7 +3104,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'European Union' + '<br>'+
                                 '<b>Monthly excess mortality</b>: ' + df1[0].astype(str) + '<br>'),
                      go.Scatter(x=labPAHMEM,
-                                y=valueBel1,
+                                y=dataPAHMEM.collect()[1][2:35] if 'Belgium' in coun else [],
                                 mode='lines+markers',
                                 name='BE',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#FF0000'),
@@ -4178,7 +3116,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Belgium' + '<br>'+
                                 '<b>Monthly excess mortality</b>: ' + df1[1].astype(str) + '<br>'),
                      go.Scatter(x=labPAHMEM,
-                                y=valueMal1,
+                                y=dataPAHMEM.collect()[17][2:35] if 'Malta' in coun else [],
                                 mode='lines+markers',
                                 name='MT',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#FF00FF'),
@@ -4189,7 +3127,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Malta' + '<br>' +
                                 '<b>Monthly excess mortality</b>: ' + df1[17].astype(str) + '<br>'),
                      go.Scatter(x=labPAHMEM,
-                                y=valueBul1,
+                                y=dataPAHMEM.collect()[2][2:35] if 'Bulgaria' in coun else [],
                                 mode='lines+markers',
                                 name='BG',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#353131'),
@@ -4200,7 +3138,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Bulgaria' + '<br>' +
                                 '<b>Monthly excess mortality</b>: ' + df1[2].astype(str) + '<br>'),
                      go.Scatter(x=labPAHMEM,
-                                y=valueChe1,
+                                y=dataPAHMEM.collect()[3][2:35] if 'Czechia' in coun else [],
                                 mode='lines+markers',
                                 name='CZ',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#49AF30'),
@@ -4211,7 +3149,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Czechia' + '<br>' +
                                 '<b>Monthly excess mortality</b>: ' + df1[3].astype(str) + '<br>'),
                      go.Scatter(x=labPAHMEM,
-                                y=valueDen1,
+                                y=dataPAHMEM.collect()[4][2:35] if 'Denmark' in coun else [],
                                 mode='lines+markers',
                                 name='DK',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#2A4623'),
@@ -4222,7 +3160,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Denmark' + '<br>' +
                                 '<b>Monthly excess mortality</b>: ' + df1[4].astype(str) + '<br>'),
                      go.Scatter(x=labPAHMEM,
-                                y=valueGer1,
+                                y=dataPAHMEM.collect()[5][2:35] if 'Germany' in coun else [],
                                 mode='lines+markers',
                                 name='DE',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#7B7D7B'),
@@ -4233,7 +3171,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Germany' + '<br>' +
                                 '<b>Monthly excess mortality</b>: ' + df1[5].astype(str) + '<br>'),
                      go.Scatter(x=labPAHMEM,
-                                y=valueEst1,
+                                y=dataPAHMEM.collect()[6][2:35] if 'Estonia' in coun else [],
                                 mode='lines+markers',
                                 name='EE',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#C4C048'),
@@ -4244,7 +3182,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Estonia' + '<br>' +
                                 '<b>Monthly excess mortality</b>: ' + df1[6].astype(str) + '<br>'),
                      go.Scatter(x=labPAHMEM,
-                                y=valueGree1,
+                                y=dataPAHMEM.collect()[7][2:35] if 'Greece' in coun else [],
                                 mode='lines+markers',
                                 name='EL',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#1A46C0'),
@@ -4255,7 +3193,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Greece' + '<br>' +
                                 '<b>Monthly excess mortality</b>: ' + df1[7].astype(str) + '<br>'),
                      go.Scatter(x=labPAHMEM,
-                                y=valueSpa1,
+                                y=dataPAHMEM.collect()[8][2:35] if 'Spain' in coun else [],
                                 mode='lines+markers',
                                 name='ES',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#2E063A'),
@@ -4266,7 +3204,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Spain' + '<br>' +
                                 '<b>Monthly excess mortality</b>: ' + df1[8].astype(str) + '<br>'),
                      go.Scatter(x=labPAHMEM,
-                                y=valueFra1,
+                                y=dataPAHMEM.collect()[9][2:35] if 'France' in coun else [],
                                 mode='lines+markers',
                                 name='FR',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#39313C'),
@@ -4277,7 +3215,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'France' + '<br>' +
                                 '<b>Monthly excess mortality</b>: ' + df1[9].astype(str) + '<br>'),
                      go.Scatter(x=labPAHMEM,
-                                y=valueCro1,
+                                y=dataPAHMEM.collect()[10][2:35] if 'Croatia' in coun else [],
                                 mode='lines+markers',
                                 name='HR',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#189F96'),
@@ -4288,7 +3226,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Croatia' + '<br>' +
                                 '<b>Monthly excess mortality</b>: ' + df1[10].astype(str) + '<br>'),
                      go.Scatter(x=labPAHMEM,
-                                y=valueIta1,
+                                y=dataPAHMEM.collect()[11][2:35] if 'Italy' in coun else [],
                                 mode='lines+markers',
                                 name='IT',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#94A4A3'),
@@ -4299,7 +3237,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Italy' + '<br>' +
                                 '<b>Monthly excess mortality</b>: ' + df1[11].astype(str) + '<br>'),
                      go.Scatter(x=labPAHMEM,
-                                y=valueCyp1,
+                                y=dataPAHMEM.collect()[12][2:35] if 'Cyprus' in coun else [],
                                 mode='lines+markers',
                                 name='CY',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#ff3399'),
@@ -4310,7 +3248,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Cyprus' + '<br>' +
                                 '<b>Monthly excess mortality</b>: ' + df1[12].astype(str) + '<br>'),
                      go.Scatter(x=labPAHMEM,
-                                y=valueLat1,
+                                y=dataPAHMEM.collect()[13][2:35] if 'Latvia' in coun else [],
                                 mode='lines+markers',
                                 name='LV',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#aaaa55'),
@@ -4321,7 +3259,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Latvia' + '<br>' +
                                 '<b>Monthly excess mortality</b>: ' + df1[13].astype(str) + '<br>'),
                      go.Scatter(x=labPAHMEM,
-                                y=valueLith1,
+                                y=dataPAHMEM.collect()[14][2:35] if 'Lithuania' in coun else [],
                                 mode='lines+markers',
                                 name='LT',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#ffff00'),
@@ -4332,7 +3270,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Lithuania' + '<br>' +
                                 '<b>Monthly excess mortality</b>: ' + df1[14].astype(str) + '<br>'),
                      go.Scatter(x=labPAHMEM,
-                                y=valueLux1,
+                                y=dataPAHMEM.collect()[15][2:35] if 'Luxembourg' in coun else [],
                                 mode='lines+markers',
                                 name='LU',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#007399'),
@@ -4343,7 +3281,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Luxembourg' + '<br>' +
                                 '<b>Monthly excess mortality</b>: ' + df1[15].astype(str) + '<br>'),
                      go.Scatter(x=labPAHMEM,
-                                y=valueHun1,
+                                y=dataPAHMEM.collect()[16][2:35] if 'Hungary' in coun else [],
                                 mode='lines+markers',
                                 name='HU',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#ff3300'),
@@ -4354,7 +3292,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Hungary' + '<br>' +
                                 '<b>Monthly excess mortality</b>: ' + df1[16].astype(str) + '<br>'),
                      go.Scatter(x=labPAHMEM,
-                                y=valueNet1,
+                                y=dataPAHMEM.collect()[18][2:35] if 'Netherlands' in coun else [],
                                 mode='lines+markers',
                                 name='NL',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#00e600'),
@@ -4365,7 +3303,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Netherlands' + '<br>' +
                                 '<b>Monthly excess mortality</b>: ' + df1[17].astype(str) + '<br>'),
                      go.Scatter(x=labPAHMEM,
-                                y=valueAus1,
+                                y=dataPAHMEM.collect()[19][2:35] if 'Austria' in coun else [],
                                 mode='lines+markers',
                                 name='AT',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#4dff4d'),
@@ -4376,7 +3314,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Austria' + '<br>' +
                                 '<b>Monthly excess mortality</b>: ' + df1[19].astype(str) + '<br>'),
                      go.Scatter(x=labPAHMEM,
-                                y=valuePol1,
+                                y=dataPAHMEM.collect()[20][2:35] if 'Poland' in coun else [],
                                 mode='lines+markers',
                                 name='PL',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#003300'),
@@ -4387,7 +3325,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Poland' + '<br>' +
                                 '<b>Monthly excess mortality</b>: ' + df1[20].astype(str) + '<br>'),
                      go.Scatter(x=labPAHMEM,
-                                y=valuePor1,
+                                y=dataPAHMEM.collect()[21][2:35] if 'Portugal' in coun else [],
                                 mode='lines+markers',
                                 name='PT',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#662900'),
@@ -4398,7 +3336,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Portugal' + '<br>' +
                                 '<b>Monthly excess mortality</b>: ' + df1[21].astype(str) + '<br>'),
                      go.Scatter(x=labPAHMEM,
-                                y=valueRom1,
+                                y=dataPAHMEM.collect()[22][2:35] if 'Romania' in coun else [],
                                 mode='lines+markers',
                                 name='RO',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#993399'),
@@ -4409,7 +3347,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Romania' + '<br>' +
                                 '<b>Monthly excess mortality</b>: ' + df1[22].astype(str) + '<br>'),
                      go.Scatter(x=labPAHMEM,
-                                y=valueSlo1,
+                                y=dataPAHMEM.collect()[23][2:35] if 'Slovenia' in coun else [],
                                 mode='lines+markers',
                                 name='SI',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#d98cd9'),
@@ -4420,7 +3358,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Slovenia' + '<br>' +
                                 '<b>Monthly excess mortality</b>: ' + df1[23].astype(str) + '<br>'),
                      go.Scatter(x=labPAHMEM,
-                                y=valueSlovak1,
+                                y=dataPAHMEM.collect()[24][2:35] if 'Slovakia' in coun else [],
                                 mode='lines+markers',
                                 name='SK',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#0033cc'),
@@ -4431,7 +3369,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Slovakia' + '<br>' +
                                 '<b>Monthly excess mortality</b>: ' + df1[24].astype(str) + '<br>'),
                      go.Scatter(x=labPAHMEM,
-                                y=valueFin1,
+                                y=dataPAHMEM.collect()[25][2:35] if 'Finland' in coun else [],
                                 mode='lines+markers',
                                 name='FI',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#99b3ff'),
@@ -4442,7 +3380,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Finland' + '<br>' +
                                 '<b>Monthly excess mortality</b>: ' + df1[25].astype(str) + '<br>'),
                      go.Scatter(x=labPAHMEM,
-                                y=valueSwe1,
+                                y=dataPAHMEM.collect()[26][2:35] if 'Sweden' in coun else [],
                                 mode='lines+markers',
                                 name='SE',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#001a66'),
@@ -4453,7 +3391,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Sweden' + '<br>' +
                                 '<b>Monthly excess mortality</b>: ' + df1[26].astype(str) + '<br>'),
                      go.Scatter(x=labPAHMEM,
-                                y=valueIce1,
+                                y=dataPAHMEM.collect()[27][2:35] if 'Iceland' in coun else [],
                                 mode='lines+markers',
                                 name='IS',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#336600'),
@@ -4464,7 +3402,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Iceland' + '<br>' +
                                 '<b>Monthly excess mortality</b>: ' + df1[27].astype(str) + '<br>'),
                      go.Scatter(x=labPAHMEM,
-                                y=valueNor1,
+                                y=dataPAHMEM.collect()[29][2:35] if 'Norway' in coun else [],
                                 mode='lines+markers',
                                 name='NO',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#73e600'),
@@ -4475,7 +3413,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Norway' + '<br>' +
                                 '<b>Monthly excess mortality</b>: ' + df1[29].astype(str) + '<br>'),
                      go.Scatter(x=labPAHMEM,
-                                y=valueSwi1,
+                                y=dataPAHMEM.collect()[30][2:35] if 'Switzerland' in coun else [],
                                 mode='lines+markers',
                                 name='CH',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#bfff80'),
@@ -4539,133 +3477,10 @@ def update_graph(w_countries, w_countries1, country_chosen):
                     color='white'),)
         }
     # Zavrsava se POPULATION AND HEALTH-Monthly excess mortality
+
     ##Pocinje Number of deaths by week
     elif (w_countries == 'Population and health') & (w_countries1 == 'Number of deaths by week'):
-            valueBul1 = []
-            if ('Bulgaria' in coun):
-                valueBul1 = getPAHDBW('Bulgaria')
-
-            valueBel1 = []
-            if ('Belgium' in coun):
-                valueBel1 = getPAHDBW('Belgium')
-
-            valueMal1 = []
-            if ('Malta' in coun):
-                valueMal1 = getPAHDBW('Malta')
-
             labelDbw = getLabelPAHDBW2()
-
-            valueSer1 = []
-            if ('Serbia' in coun):
-                valueSer1 = getPAHDBW('Serbia')
-
-            valueChe1 = []
-            if ('Czechia' in coun):
-                valueChe1 = getPAHDBW('Czechia')
-
-            valueDen1 = []
-            if ('Denmark' in coun):
-                valueDen1 = getPAHDBW('Denmark')
-
-            valueGer1 = []
-            if ('Germany' in coun):
-                valueGer1 = getPAHDBW('Germany')
-
-            valueEst1 = []
-            if ('Estonia' in coun):
-                valueEst1 = getPAHDBW('Estonia')
-
-            valueGree1 = []
-            if ('Greece' in coun):
-                valueGree1 = getPAHDBW('Greece')
-
-            valueSpa1 = []
-            if ('Spain' in coun):
-                valueSpa1 = getPAHDBW('Spain')
-
-            valueFra1 = []
-            if ('France' in coun):
-                valueFra1 = getPAHDBW('France')
-
-            valueCro1 = []
-            if ('Croatia' in coun):
-                valueCro1 = getPAHDBW('Croatia')
-
-            valueIta1 = []
-            if ('Italy' in coun):
-                valueIta1 = getPAHDBW('Italy')
-
-            valueCyp1 = []
-            if ('Cyprus' in coun):
-                valueCyp1 = getPAHDBW('Cyprus')
-
-            valueLat1 = []
-            if ('Latvia' in coun):
-                valueLat1 = getPAHDBW('Latvia')
-
-            valueLith1 = []
-            if ('Lithuania' in coun):
-                valueLith1 = getPAHDBW('Lithuania')
-
-            valueLux1 = []
-            if ('Luxembourg' in coun):
-                valueLux1 = getPAHDBW('Luxembourg')
-
-            valueHun1 = []
-            if ('Hungary' in coun):
-                valueHun1 = getPAHDBW('Hungary')
-
-            valueNet1 = []
-            if ('Netherlands' in coun):
-                valueNet1 = getPAHDBW('Netherlands')
-
-            valueAus1 = []
-            if ('Austria' in coun):
-                valueAus1 = getPAHDBW('Austria')
-
-            valuePol1 = []
-            if ('Poland' in coun):
-                valuePol1 = getPAHDBW('Poland')
-
-            valuePor1 = []
-            if ('Portugal' in coun):
-                valuePor1 = getPAHDBW('Portugal')
-
-            valueRom1 = []
-            if ('Romania' in coun):
-                valueRom1 = getPAHDBW('Romania')
-
-            valueSlo1 = []
-            if ('Slovenia' in coun):
-                valueSlo1 = getPAHDBW('Slovenia')
-
-            valueSlovak1 = []
-            if ('Slovakia' in coun):
-                valueSlovak1 = getPAHDBW('Slovakia')
-
-            valueFin1 = []
-            if ('Finland' in coun):
-                valueFin1 = getPAHDBW('Finland')
-
-            valueSwe1 = []
-            if ('Sweden' in coun):
-                valueSwe1 = getPAHDBW('Sweden')
-
-            valueUk1 = []
-            if ('United Kingdom' in coun):
-                valueUk1 = getPAHDBW('United Kingdom')
-
-            valueIce1 = []
-            if ('Iceland' in coun):
-                valueIce1 = getPAHDBW('Iceland')
-
-            valueNor1 = []
-            if ('Norway' in coun):
-                valueNor1 = getPAHDBW('Norway')
-
-            valueSwi1 = []
-            if ('Switzerland' in coun):
-                valueSwi1 = getPAHDBW('Switzerland')
 
             dbw = pd.read_csv('data/Population and health-Number of deaths by week.csv')
             df1 = {}
@@ -4674,9 +3489,9 @@ def update_graph(w_countries, w_countries1, country_chosen):
                 df1[i] = niz
             return {
                 'data': [go.Scatter(x=labelDbw,
-                                    y=valueBul1,
+                                    y=[float(s.replace(',','')) for s in dataPAHDBW.collect()[1][1:95]] if 'Bulgaria' in coun else [],
                                     mode='lines+markers',
-                                    name='Bulgarua',
+                                    name='Bulgaria',
                                     line=dict(shape="spline", smoothing=1.3, width=3, color='#E6D1D1'),
                                     marker=dict(size=5, symbol='circle', color='lightblue',
                                                 line=dict(color='#E6D1D1', width=2)),
@@ -4685,7 +3500,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                     '<b>Country</b>: ' + 'Bulgaria' + '<br>'+
                                     '<b>Number of deaths by week</b>: ' + df1[1].astype(str) + '<br>'),
                          go.Scatter(x=labelDbw,
-                                    y=valueBel1,
+                                    y=[float(s.replace(',','')) for s in dataPAHDBW.collect()[0][1:95]] if 'Belgium' in coun else [],
                                     mode='lines+markers',
                                     name='Belgium',
                                     line=dict(shape="spline", smoothing=1.3, width=3, color='#FF0000'),
@@ -4696,7 +3511,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                     '<b>Country</b>: ' + 'Belgium' + '<br>'+
                                     '<b>Number of deaths by week</b>: ' + df1[1].astype(str) + '<br>'),
                          go.Scatter(x=labelDbw,
-                                    y=valueSer1,
+                                    y=[float(s.replace(',','')) for s in dataPAHDBW.collect()[33][1:95]] if 'Serbia' in coun else [],
                                     mode='lines+markers',
                                     name='RS',
                                     line=dict(shape="spline", smoothing=1.3, width=3, color='#FF0000'),
@@ -4707,7 +3522,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                     '<b>Country</b>: ' + 'Serbia' + '<br>' +
                                     '<b>Number of deaths by week</b>: ' + df1[33].astype(str) + '<br>'),
                          go.Scatter(x=labelDbw,
-                                    y=valueMal1,
+                                    y=[float(s.replace(',','')) for s in dataPAHDBW.collect()[16][1:95]] if 'Malta' in coun else [],
                                     mode='lines+markers',
                                     name='MT',
                                     line=dict(shape="spline", smoothing=1.3, width=3, color='#FF00FF'),
@@ -4718,7 +3533,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                     '<b>Country</b>: ' + 'Malta' + '<br>' +
                                     '<b>Number of deaths by week</b>: ' + df1[16].astype(str) + '<br>'),
                          go.Scatter(x=labelDbw,
-                                    y=valueChe1,
+                                    y=[float(s.replace(',','')) for s in dataPAHDBW.collect()[2][1:95]] if 'Czechia' in coun else [],
                                     mode='lines+markers',
                                     name='CZ',
                                     line=dict(shape="spline", smoothing=1.3, width=3, color='#49AF30'),
@@ -4729,7 +3544,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                     '<b>Country</b>: ' + 'Czechia' + '<br>' +
                                     '<b>Number of deaths by week</b>: ' + df1[2].astype(str) + '<br>'),
                          go.Scatter(x=labelDbw,
-                                    y=valueDen1,
+                                    y=[float(s.replace(',','')) for s in dataPAHDBW.collect()[3][1:95]] if 'Denmark' in coun else [],
                                     mode='lines+markers',
                                     name='DK',
                                     line=dict(shape="spline", smoothing=1.3, width=3, color='#2A4623'),
@@ -4740,7 +3555,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                     '<b>Country</b>: ' + 'Denmark' + '<br>' +
                                     '<b>Number of deaths by week</b>: ' + df1[3].astype(str) + '<br>'),
                          go.Scatter(x=labelDbw,
-                                    y=valueGer1,
+                                    y=[float(s.replace(',','')) for s in dataPAHDBW.collect()[4][1:95]] if 'Germany' in coun else [],
                                     mode='lines+markers',
                                     name='DE',
                                     line=dict(shape="spline", smoothing=1.3, width=3, color='#7B7D7B'),
@@ -4751,7 +3566,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                     '<b>Country</b>: ' + 'Germany' + '<br>' +
                                     '<b>Number of deaths by week</b>: ' + df1[4].astype(str) + '<br>'),
                          go.Scatter(x=labelDbw,
-                                    y=valueEst1,
+                                    y=[float(s.replace(',','')) for s in dataPAHDBW.collect()[5][1:95]] if 'Estonia' in coun else [],
                                     mode='lines+markers',
                                     name='EE',
                                     line=dict(shape="spline", smoothing=1.3, width=3, color='#C4C048'),
@@ -4762,7 +3577,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                     '<b>Country</b>: ' + 'Estonia' + '<br>' +
                                     '<b>Number of deaths by week</b>: ' + df1[5].astype(str) + '<br>'),
                          go.Scatter(x=labelDbw,
-                                    y=valueGree1,
+                                    y=[float(s.replace(',','')) for s in dataPAHDBW.collect()[6][1:95]] if 'Greece' in coun else [],
                                     mode='lines+markers',
                                     name='EL',
                                     line=dict(shape="spline", smoothing=1.3, width=3, color='#1A46C0'),
@@ -4773,7 +3588,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                     '<b>Country</b>: ' + 'Greece' + '<br>' +
                                     '<b>Number of deaths by week</b>: ' + df1[6].astype(str) + '<br>'),
                          go.Scatter(x=labelDbw,
-                                    y=valueSpa1,
+                                    y=[float(s.replace(',','')) for s in dataPAHDBW.collect()[7][1:95]] if 'Spain' in coun else [],
                                     mode='lines+markers',
                                     name='ES',
                                     line=dict(shape="spline", smoothing=1.3, width=3, color='#2E063A'),
@@ -4784,7 +3599,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                     '<b>Country</b>: ' + 'Spain' + '<br>' +
                                     '<b>Number of deaths by week</b>: ' + df1[7].astype(str) + '<br>'),
                          go.Scatter(x=labelDbw,
-                                    y=valueFra1,
+                                    y=[float(s.replace(',','')) for s in dataPAHDBW.collect()[8][1:95]] if 'France' in coun else [],
                                     mode='lines+markers',
                                     name='FR',
                                     line=dict(shape="spline", smoothing=1.3, width=3, color='#39313C'),
@@ -4795,7 +3610,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                     '<b>Country</b>: ' + 'France' + '<br>' +
                                     '<b>Number of deaths by week</b>: ' + df1[8].astype(str) + '<br>'),
                          go.Scatter(x=labelDbw,
-                                    y=valueCro1,
+                                    y=[float(s.replace(',','')) for s in dataPAHDBW.collect()[9][1:95]] if 'Croatia' in coun else [],
                                     mode='lines+markers',
                                     name='HR',
                                     line=dict(shape="spline", smoothing=1.3, width=3, color='#189F96'),
@@ -4806,7 +3621,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                     '<b>Country</b>: ' + 'Croatia' + '<br>' +
                                     '<b>Number of deaths by week</b>: ' + df1[9].astype(str) + '<br>'),
                          go.Scatter(x=labelDbw,
-                                    y=valueIta1,
+                                    y=[float(s.replace(',','')) for s in dataPAHDBW.collect()[10][1:95]] if 'Italy' in coun else [],
                                     mode='lines+markers',
                                     name='IT',
                                     line=dict(shape="spline", smoothing=1.3, width=3, color='#94A4A3'),
@@ -4817,7 +3632,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                     '<b>Country</b>: ' + 'Italy' + '<br>' +
                                     '<b>Number of deaths by week</b>: ' + df1[10].astype(str) + '<br>'),
                          go.Scatter(x=labelDbw,
-                                    y=valueCyp1,
+                                    y=[float(s.replace(',','')) for s in dataPAHDBW.collect()[11][1:95]] if 'Cyprus' in coun else [],
                                     mode='lines+markers',
                                     name='CY',
                                     line=dict(shape="spline", smoothing=1.3, width=3, color='#ff3399'),
@@ -4828,7 +3643,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                     '<b>Country</b>: ' + 'Cyprus' + '<br>' +
                                     '<b>Number of deaths by week</b>: ' + df1[11].astype(str) + '<br>'),
                          go.Scatter(x=labelDbw,
-                                    y=valueLat1,
+                                    y=[float(s.replace(',','')) for s in dataPAHDBW.collect()[12][1:95]] if 'Latvia' in coun else [],
                                     mode='lines+markers',
                                     name='LV',
                                     line=dict(shape="spline", smoothing=1.3, width=3, color='#aaaa55'),
@@ -4839,7 +3654,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                     '<b>Country</b>: ' + 'Latvia' + '<br>' +
                                     '<b>Number of deaths by week</b>: ' + df1[12].astype(str) + '<br>'),
                          go.Scatter(x=labelDbw,
-                                    y=valueLith1,
+                                    y=[float(s.replace(',','')) for s in dataPAHDBW.collect()[13][1:95]] if 'Lithuania' in coun else [],
                                     mode='lines+markers',
                                     name='LT',
                                     line=dict(shape="spline", smoothing=1.3, width=3, color='#ffff00'),
@@ -4850,7 +3665,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                     '<b>Country</b>: ' + 'Lithuania' + '<br>' +
                                     '<b>Number of deaths by week</b>: ' + df1[13].astype(str) + '<br>'),
                          go.Scatter(x=labelDbw,
-                                    y=valueLux1,
+                                    y=[float(s.replace(',','')) for s in dataPAHDBW.collect()[14][1:95]] if 'Luxembourg' in coun else [],
                                     mode='lines+markers',
                                     name='LU',
                                     line=dict(shape="spline", smoothing=1.3, width=3, color='#007399'),
@@ -4861,7 +3676,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                     '<b>Country</b>: ' + 'Luxembourg' + '<br>' +
                                     '<b>Number of deaths by week</b>: ' + df1[14].astype(str) + '<br>'),
                          go.Scatter(x=labelDbw,
-                                    y=valueHun1,
+                                    y=[float(s.replace(',','')) for s in dataPAHDBW.collect()[15][1:95]] if 'Hungary' in coun else [],
                                     mode='lines+markers',
                                     name='HU',
                                     line=dict(shape="spline", smoothing=1.3, width=3, color='#ff3300'),
@@ -4872,7 +3687,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                     '<b>Country</b>: ' + 'Hungary' + '<br>' +
                                     '<b>Number of deaths by week</b>: ' + df1[15].astype(str) + '<br>'),
                          go.Scatter(x=labelDbw,
-                                    y=valueNet1,
+                                    y=[float(s.replace(',','')) for s in dataPAHDBW.collect()[17][1:95]] if 'Netherlands' in coun else [],
                                     mode='lines+markers',
                                     name='NL',
                                     line=dict(shape="spline", smoothing=1.3, width=3, color='#00e600'),
@@ -4883,7 +3698,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                     '<b>Country</b>: ' + 'Netherlands' + '<br>' +
                                     '<b>Number of deaths by week</b>: ' + df1[17].astype(str) + '<br>'),
                          go.Scatter(x=labelDbw,
-                                    y=valueAus1,
+                                    y=[float(s.replace(',','')) for s in dataPAHDBW.collect()[18][1:95]] if 'Austria' in coun else [],
                                     mode='lines+markers',
                                     name='AT',
                                     line=dict(shape="spline", smoothing=1.3, width=3, color='#4dff4d'),
@@ -4894,7 +3709,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                     '<b>Country</b>: ' + 'Austria' + '<br>' +
                                     '<b>Number of deaths by week</b>: ' + df1[18].astype(str) + '<br>'),
                          go.Scatter(x=labelDbw,
-                                    y=valuePol1,
+                                    y=[float(s.replace(',','')) for s in dataPAHDBW.collect()[19][1:95]] if 'Poland' in coun else [],
                                     mode='lines+markers',
                                     name='PL',
                                     line=dict(shape="spline", smoothing=1.3, width=3, color='#003300'),
@@ -4905,7 +3720,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                     '<b>Country</b>: ' + 'Poland' + '<br>' +
                                     '<b>Number of deaths by week</b>: ' + df1[19].astype(str) + '<br>'),
                          go.Scatter(x=labelDbw,
-                                    y=valuePor1,
+                                    y=[float(s.replace(',','')) for s in dataPAHDBW.collect()[20][1:95]] if 'Portugal' in coun else [],
                                     mode='lines+markers',
                                     name='PT',
                                     line=dict(shape="spline", smoothing=1.3, width=3, color='#662900'),
@@ -4916,7 +3731,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                     '<b>Country</b>: ' + 'Portugal' + '<br>' +
                                     '<b>Number of deaths by week</b>: ' + df1[20].astype(str) + '<br>'),
                          go.Scatter(x=labelDbw,
-                                    y=valueRom1,
+                                    y=[float(s.replace(',','')) for s in dataPAHDBW.collect()[21][1:95]] if 'Romania' in coun else [],
                                     mode='lines+markers',
                                     name='RO',
                                     line=dict(shape="spline", smoothing=1.3, width=3, color='#993399'),
@@ -4927,7 +3742,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                     '<b>Country</b>: ' + 'Romania' + '<br>' +
                                     '<b>Number of deaths by week</b>: ' + df1[21].astype(str) + '<br>'),
                          go.Scatter(x=labelDbw,
-                                    y=valueSlo1,
+                                    y=[float(s.replace(',','')) for s in dataPAHDBW.collect()[22][1:95]] if 'Slovenia' in coun else [],
                                     mode='lines+markers',
                                     name='SI',
                                     line=dict(shape="spline", smoothing=1.3, width=3, color='#d98cd9'),
@@ -4938,7 +3753,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                     '<b>Country</b>: ' + 'Slovenia' + '<br>' +
                                     '<b>Number of deaths by week</b>: ' + df1[22].astype(str) + '<br>'),
                          go.Scatter(x=labelDbw,
-                                    y=valueSlovak1,
+                                    y=[float(s.replace(',','')) for s in dataPAHDBW.collect()[23][1:95]] if 'Slovakia' in coun else [],
                                     mode='lines+markers',
                                     name='SK',
                                     line=dict(shape="spline", smoothing=1.3, width=3, color='#0033cc'),
@@ -4949,7 +3764,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                     '<b>Country</b>: ' + 'Slovakia' + '<br>' +
                                     '<b>Number of deaths by week</b>: ' + df1[23].astype(str) + '<br>'),
                          go.Scatter(x=labelDbw,
-                                    y=valueFin1,
+                                    y=[float(s.replace(',','')) for s in dataPAHDBW.collect()[24][1:95]] if 'Finland' in coun else [],
                                     mode='lines+markers',
                                     name='FI',
                                     line=dict(shape="spline", smoothing=1.3, width=3, color='#99b3ff'),
@@ -4960,7 +3775,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                     '<b>Country</b>: ' + 'Finland' + '<br>' +
                                     '<b>Number of deaths by week</b>: ' + df1[24].astype(str) + '<br>'),
                          go.Scatter(x=labelDbw,
-                                    y=valueSwe1,
+                                    y=[float(s.replace(',','')) for s in dataPAHDBW.collect()[25][1:95]] if 'Sweden' in coun else [],
                                     mode='lines+markers',
                                     name='SE',
                                     line=dict(shape="spline", smoothing=1.3, width=3, color='#001a66'),
@@ -4971,7 +3786,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                     '<b>Country</b>: ' + 'Sweden' + '<br>' +
                                     '<b>Number of deaths by week</b>: ' + df1[25].astype(str) + '<br>'),
                          go.Scatter(x=labelDbw,
-                                    y=valueUk1,
+                                    y=[float(s.replace(',','')) for s in dataPAHDBW.collect()[30][1:95]] if 'United Kingdom' in coun else [],
                                     mode='lines+markers',
                                     name='UK',
                                     line=dict(shape="spline", smoothing=1.3, width=3, color='#00cc99'),
@@ -4982,7 +3797,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                     '<b>Country</b>: ' + 'United Kingdom' + '<br>' +
                                     '<b>Number of deaths by week</b>: ' + df1[30].astype(str) + '<br>'),
                          go.Scatter(x=labelDbw,
-                                    y=valueIce1,
+                                    y=[float(s.replace(',','')) for s in dataPAHDBW.collect()[26][1:95]] if 'Iceland' in coun else [],
                                     mode='lines+markers',
                                     name='IS',
                                     line=dict(shape="spline", smoothing=1.3, width=3, color='#336600'),
@@ -4993,7 +3808,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                     '<b>Country</b>: ' + 'Iceland' + '<br>' +
                                     '<b>Number of deaths by week</b>: ' + df1[26].astype(str) + '<br>'),
                          go.Scatter(x=labelDbw,
-                                    y=valueNor1,
+                                    y=[float(s.replace(',','')) for s in dataPAHDBW.collect()[28][1:95]] if 'Norway' in coun else [],
                                     mode='lines+markers',
                                     name='NO',
                                     line=dict(shape="spline", smoothing=1.3, width=3, color='#73e600'),
@@ -5004,7 +3819,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                     '<b>Country</b>: ' + 'Norway' + '<br>' +
                                     '<b>Number of deaths by week</b>: ' + df1[28].astype(str) + '<br>'),
                          go.Scatter(x=labelDbw,
-                                    y=valueSwi1,
+                                    y=[float(s.replace(',','')) for s in dataPAHDBW.collect()[29][1:95]] if 'Switzerland' in coun else [],
                                     mode='lines+markers',
                                     name='CH',
                                     line=dict(shape="spline", smoothing=1.3, width=3, color='#bfff80'),
@@ -5069,122 +3884,6 @@ def update_graph(w_countries, w_countries1, country_chosen):
             }
     ##################################Pocinje Polulation and healht-Monthly first-time asylum applicants
     elif (w_countries == 'Population and health') & (w_countries1 == 'Monthly first-time asylum applicants'):
-        valueEu1 = []
-        if ('European Union' in coun):
-            valueEu1 = getPAHMFTA('European Union')
-
-        valueBel1 = []
-        if ('Belgium' in coun):
-            valueBel1 = getPAHMFTA('Belgium')
-
-        valueMal1 = []
-        if ('Malta' in coun):
-            valueMal1 = getPAHMFTA('Malta')
-
-        valueChe1 = []
-        if ('Czechia' in coun):
-            valueChe1 = getPAHMFTA('Czechia')
-
-        valueDen1 = []
-        if ('Denmark' in coun):
-            valueDen1 = getPAHMFTA('Denmark')
-
-        valueGer1 = []
-        if ('Germany' in coun):
-            valueGer1 = getPAHMFTA('Germany')
-
-        valueEst1 = []
-        if ('Estonia' in coun):
-            valueEst1 = getPAHMFTA('Estonia')
-
-        valueGree1 = []
-        if ('Greece' in coun):
-            valueGree1 = getPAHMFTA('Greece')
-
-        valueSpa1 = []
-        if ('Spain' in coun):
-            valueSpa1 = getPAHMFTA('Spain')
-
-        valueFra1 = []
-        if ('France' in coun):
-            valueFra1 = getPAHMFTA('France')
-
-        valueCro1 = []
-        if ('Croatia' in coun):
-            valueCro1 = getPAHMFTA('Croatia')
-
-        valueIta1 = []
-        if ('Italy' in coun):
-            valueIta1 = getPAHMFTA('Italy')
-
-        valueCyp1 = []
-        if ('Cyprus' in coun):
-            valueCyp1 = getPAHMFTA('Cyprus')
-
-        valueLat1 = []
-        if ('Latvia' in coun):
-            valueLat1 = getPAHMFTA('Latvia')
-
-        valueLith1 = []
-        if ('Lithuania' in coun):
-            valueLith1 = getPAHMFTA('Lithuania')
-
-        valueLux1 = []
-        if ('Luxembourg' in coun):
-            valueLux1 = getPAHMFTA('Luxembourg')
-
-        valueHun1 = []
-        if ('Hungary' in coun):
-            valueHun1 = getPAHMFTA('Hungary')
-
-        valueNet1 = []
-        if ('Netherlands' in coun):
-            valueNet1 = getPAHMFTA('Netherlands')
-
-        valueAus1 = []
-        if ('Austria' in coun):
-            valueAus1 = getPAHMFTA('Austria')
-
-        valuePol1 = []
-        if ('Poland' in coun):
-            valuePol1 = getPAHMFTA('Poland')
-
-        valuePor1 = []
-        if ('Portugal' in coun):
-            valuePor1 = getPAHMFTA('Portugal')
-
-        valueRom1 = []
-        if ('Romania' in coun):
-            valueRom1 = getPAHMFTA('Romania')
-
-        valueSlo1 = []
-        if ('Slovenia' in coun):
-            valueSlo1 = getPAHMFTA('Slovenia')
-
-        valueSlovak1 = []
-        if ('Slovakia' in coun):
-            valueSlovak1 = getPAHMFTA('Slovakia')
-
-        valueFin1 = []
-        if ('Finland' in coun):
-            valueFin1 = getPAHMFTA('Finland')
-
-        valueSwe1 = []
-        if ('Sweden' in coun):
-            valueSwe1 = getPAHMFTA('Sweden')
-
-        valueUk1 = []
-        if ('United Kingdom' in coun):
-            valueUk1 = getPAHMFTA('United Kingdom')
-
-        valueNor1 = []
-        if ('Norway' in coun):
-            valueNor1 = getPAHMFTA('Norway')
-
-        valueSwi1 = []
-        if ('Switzerland' in coun):
-            valueSwi1 = getPAHMFTA('Switzerland')
-
         mfta = pd.read_csv('data/Population and health-Monthly first-time asylum applicants.csv')
         df1 = {}
         for i in range(0, 31):
@@ -5192,7 +3891,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
             df1[i] = niz
         return {
             'data': [go.Scatter(x=labelPAHMFTA2,
-                                y=valueEu1,
+                                y=[float(s.replace(',','')) for s in dataPAHMFTA.collect()[0][1:150]] if 'European Union' in coun else [],
                                 mode='lines+markers',
                                 name='EU',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#E6D1D1'),
@@ -5203,7 +3902,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'European Union' + '<br>'+
                                 '<b>Monthly first-time asylum applicants</b>: ' + df1[0].astype(str) + '<br>'),
                      go.Scatter(x=labelPAHMFTA2,
-                                y=valueBel1,
+                                y=[float(s.replace(',','')) for s in dataPAHMFTA.collect()[1][1:150]] if 'Belgium' in coun else [],
                                 mode='lines+markers',
                                 name='BE',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#FF0000'),
@@ -5214,7 +3913,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Belgium' + '<br>'+
                                 '<b>Monthly first-time asylum applicants</b>: ' + df1[1].astype(str) + '<br>'),
                      go.Scatter(x=labelPAHMFTA2,
-                                y=valueMal1,
+                                y=[float(s.replace(',','')) for s in dataPAHMFTA.collect()[18][1:150]] if 'Malta' in coun else [],
                                 mode='lines+markers',
                                 name='MT',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#FF00FF'),
@@ -5225,7 +3924,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Malta' + '<br>' +
                                 '<b>Monthly first-time asylum applicants</b>: ' + df1[18].astype(str) + '<br>'),
                      go.Scatter(x=labelPAHMFTA2,
-                                y=valueChe1,
+                                y=[float(s.replace(',','')) for s in dataPAHMFTA.collect()[3][1:150]] if 'Czechia' in coun else [],
                                 mode='lines+markers',
                                 name='CZ',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#49AF30'),
@@ -5236,7 +3935,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Czechia' + '<br>' +
                                 '<b>Monthly first-time asylum applicants</b>: ' + df1[3].astype(str) + '<br>'),
                      go.Scatter(x=labelPAHMFTA2,
-                                y=valueDen1,
+                                y=[float(s.replace(',','')) for s in dataPAHMFTA.collect()[4][1:150]] if 'Denmark' in coun else [],
                                 mode='lines+markers',
                                 name='DK',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#2A4623'),
@@ -5247,7 +3946,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Denmark' + '<br>' +
                                 '<b>Monthly first-time asylum applicants</b>: ' + df1[4].astype(str) + '<br>'),
                      go.Scatter(x=labelPAHMFTA2,
-                                y=valueGer1,
+                                y=[float(s.replace(',','')) for s in dataPAHMFTA.collect()[5][1:150]] if 'Germany' in coun else [],
                                 mode='lines+markers',
                                 name='DE',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#7B7D7B'),
@@ -5258,7 +3957,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Germany' + '<br>' +
                                 '<b>Monthly first-time asylum applicants</b>: ' + df1[5].astype(str) + '<br>'),
                      go.Scatter(x=labelPAHMFTA2,
-                                y=valueEst1,
+                                y=[float(s.replace(',','')) for s in dataPAHMFTA.collect()[6][1:150]] if 'Estonia' in coun else [],
                                 mode='lines+markers',
                                 name='EE',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#C4C048'),
@@ -5269,7 +3968,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Estonia' + '<br>' +
                                 '<b>Monthly first-time asylum applicants</b>: ' + df1[6].astype(str) + '<br>'),
                      go.Scatter(x=labelPAHMFTA2,
-                                y=valueGree1,
+                                y=[float(s.replace(',','')) for s in dataPAHMFTA.collect()[8][1:150]] if 'Greece' in coun else [],
                                 mode='lines+markers',
                                 name='EL',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#1A46C0'),
@@ -5280,7 +3979,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Greece' + '<br>' +
                                 '<b>Monthly first-time asylum applicants</b>: ' + df1[8].astype(str) + '<br>'),
                      go.Scatter(x=labelPAHMFTA2,
-                                y=valueSpa1,
+                                y=[float(s.replace(',','')) for s in dataPAHMFTA.collect()[9][1:150]] if 'Spain' in coun else [],
                                 mode='lines+markers',
                                 name='ES',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#2E063A'),
@@ -5291,7 +3990,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Spain' + '<br>' +
                                 '<b>Monthly first-time asylum applicants</b>: ' + df1[9].astype(str) + '<br>'),
                      go.Scatter(x=labelPAHMFTA2,
-                                y=valueFra1,
+                                y=[float(s.replace(',','')) for s in dataPAHMFTA.collect()[12][1:150]] if 'France' in coun else [],
                                 mode='lines+markers',
                                 name='FR',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#39313C'),
@@ -5302,7 +4001,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'France' + '<br>' +
                                 '<b>Monthly first-time asylum applicants</b>: ' + df1[10].astype(str) + '<br>'),
                      go.Scatter(x=labelPAHMFTA2,
-                                y=valueCro1,
+                                y=[float(s.replace(',','')) for s in dataPAHMFTA.collect()[11][1:150]] if 'Croatia' in coun else [],
                                 mode='lines+markers',
                                 name='HR',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#189F96'),
@@ -5313,7 +4012,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Croatia' + '<br>' +
                                 '<b>Monthly first-time asylum applicants</b>: ' + df1[11].astype(str) + '<br>'),
                      go.Scatter(x=labelPAHMFTA2,
-                                y=valueIta1,
+                                y=[float(s.replace(',','')) for s in dataPAHMFTA.collect()[12][1:150]] if 'Italy' in coun else [],
                                 mode='lines+markers',
                                 name='IT',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#94A4A3'),
@@ -5324,7 +4023,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Italy' + '<br>' +
                                 '<b>Monthly first-time asylum applicants</b>: ' + df1[12].astype(str) + '<br>'),
                      go.Scatter(x=labelPAHMFTA2,
-                                y=valueCyp1,
+                                y=[float(s.replace(',','')) for s in dataPAHMFTA.collect()[13][1:150]] if 'Cyprus' in coun else [],
                                 mode='lines+markers',
                                 name='CY',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#ff3399'),
@@ -5335,7 +4034,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Cyprus' + '<br>' +
                                 '<b>Monthly first-time asylum applicants</b>: ' + df1[13].astype(str) + '<br>'),
                      go.Scatter(x=labelPAHMFTA2,
-                                y=valueLat1,
+                                y=[float(s.replace(',','')) for s in dataPAHMFTA.collect()[14][1:150]] if 'Latvia' in coun else [],
                                 mode='lines+markers',
                                 name='LV',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#aaaa55'),
@@ -5346,7 +4045,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Latvia' + '<br>' +
                                 '<b>Monthly first-time asylum applicants</b>: ' + df1[14].astype(str) + '<br>'),
                      go.Scatter(x=labelPAHMFTA2,
-                                y=valueLith1,
+                                y=[float(s.replace(',','')) for s in dataPAHMFTA.collect()[15][1:150]] if 'Lithuania' in coun else [],
                                 mode='lines+markers',
                                 name='LT',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#ffff00'),
@@ -5357,7 +4056,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Lithuania' + '<br>' +
                                 '<b>Monthly first-time asylum applicants</b>: ' + df1[15].astype(str) + '<br>'),
                      go.Scatter(x=labelPAHMFTA2,
-                                y=valueLux1,
+                                y=[float(s.replace(',','')) for s in dataPAHMFTA.collect()[16][1:150]] if 'Luxembourg' in coun else [],
                                 mode='lines+markers',
                                 name='LU',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#007399'),
@@ -5368,7 +4067,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Luxembourg' + '<br>' +
                                 '<b>Monthly first-time asylum applicants</b>: ' + df1[16].astype(str) + '<br>'),
                      go.Scatter(x=labelPAHMFTA2,
-                                y=valueHun1,
+                                y=[float(s.replace(',','')) for s in dataPAHMFTA.collect()[17][1:150]] if 'Hungary' in coun else [],
                                 mode='lines+markers',
                                 name='HU',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#ff3300'),
@@ -5379,7 +4078,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Hungary' + '<br>' +
                                 '<b>Monthly first-time asylum applicants</b>: ' + df1[17].astype(str) + '<br>'),
                      go.Scatter(x=labelPAHMFTA2,
-                                y=valueNet1,
+                                y=[float(s.replace(',','')) for s in dataPAHMFTA.collect()[19][1:150]] if 'Netherlands' in coun else [],
                                 mode='lines+markers',
                                 name='NL',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#00e600'),
@@ -5390,7 +4089,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Netherlands' + '<br>' +
                                 '<b>Monthly first-time asylum applicants</b>: ' + df1[19].astype(str) + '<br>'),
                      go.Scatter(x=labelPAHMFTA2,
-                                y=valueAus1,
+                                y=[float(s.replace(',','')) for s in dataPAHMFTA.collect()[20][1:150]] if 'Austria' in coun else [],
                                 mode='lines+markers',
                                 name='AT',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#4dff4d'),
@@ -5401,7 +4100,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Austria' + '<br>' +
                                 '<b>Monthly first-time asylum applicants</b>: ' + df1[20].astype(str) + '<br>'),
                      go.Scatter(x=labelPAHMFTA2,
-                                y=valuePol1,
+                                y=[float(s.replace(',','')) for s in dataPAHMFTA.collect()[21][1:150]] if 'Poland' in coun else [],
                                 mode='lines+markers',
                                 name='PL',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#003300'),
@@ -5412,7 +4111,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Poland' + '<br>' +
                                 '<b>Monthly first-time asylum applicants</b>: ' + df1[21].astype(str) + '<br>'),
                      go.Scatter(x=labelPAHMFTA2,
-                                y=valuePor1,
+                                y=[float(s.replace(',','')) for s in dataPAHMFTA.collect()[22][1:150]] if 'Portugal' in coun else [],
                                 mode='lines+markers',
                                 name='PT',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#662900'),
@@ -5423,7 +4122,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Portugal' + '<br>' +
                                 '<b>Monthly first-time asylum applicants</b>: ' + df1[22].astype(str) + '<br>'),
                      go.Scatter(x=labelPAHMFTA2,
-                                y=valueRom1,
+                                y=[float(s.replace(',','')) for s in dataPAHMFTA.collect()[23][1:150]] if 'Romania' in coun else [],
                                 mode='lines+markers',
                                 name='RO',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#993399'),
@@ -5434,7 +4133,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Romania' + '<br>' +
                                 '<b>Monthly first-time asylum applicants</b>: ' + df1[23].astype(str) + '<br>'),
                      go.Scatter(x=labelPAHMFTA2,
-                                y=valueSlo1,
+                                y=[float(s.replace(',','')) for s in dataPAHMFTA.collect()[24][1:150]] if 'Slovenia' in coun else [],
                                 mode='lines+markers',
                                 name='SI',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#d98cd9'),
@@ -5445,7 +4144,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Slovenia' + '<br>' +
                                 '<b>Monthly first-time asylum applicants</b>: ' + df1[24].astype(str) + '<br>'),
                      go.Scatter(x=labelPAHMFTA2,
-                                y=valueSlovak1,
+                                y=[float(s.replace(',','')) for s in dataPAHMFTA.collect()[25][1:150]] if 'Slovakia' in coun else [],
                                 mode='lines+markers',
                                 name='SK',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#0033cc'),
@@ -5456,7 +4155,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Slovakia' + '<br>' +
                                 '<b>Monthly first-time asylum applicants</b>: ' + df1[25].astype(str) + '<br>'),
                      go.Scatter(x=labelPAHMFTA2,
-                                y=valueFin1,
+                                y=[float(s.replace(',','')) for s in dataPAHMFTA.collect()[26][1:150]] if 'Finland' in coun else [],
                                 mode='lines+markers',
                                 name='FI',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#99b3ff'),
@@ -5467,7 +4166,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Finland' + '<br>' +
                                 '<b>Monthly first-time asylum applicants</b>: ' + df1[26].astype(str) + '<br>'),
                      go.Scatter(x=labelPAHMFTA2,
-                                y=valueSwe1,
+                                y=[float(s.replace(',','')) for s in dataPAHMFTA.collect()[27][1:150]] if 'Sweden' in coun else [],
                                 mode='lines+markers',
                                 name='SE',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#001a66'),
@@ -5478,7 +4177,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Sweden' + '<br>' +
                                 '<b>Monthly first-time asylum applicants</b>: ' + df1[27].astype(str) + '<br>'),
                      go.Scatter(x=labelPAHMFTA2,
-                                y=valueUk1,
+                                y=[float(s.replace(',','')) for s in dataPAHMFTA.collect()[30][1:150]] if 'United Kingdom' in coun else [],
                                 mode='lines+markers',
                                 name='UK',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#00cc99'),
@@ -5489,7 +4188,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'United Kingdom' + '<br>' +
                                 '<b>Monthly first-time asylum applicants</b>: ' + df1[30].astype(str) + '<br>'),
                      go.Scatter(x=labelPAHMFTA2,
-                                y=valueNor1,
+                                y=[float(s.replace(',','')) for s in dataPAHMFTA.collect()[30][1:150]] if 'Norway' in coun else [],
                                 mode='lines+markers',
                                 name='NO',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#73e600'),
@@ -5500,7 +4199,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Norway' + '<br>' +
                                 '<b>Monthly first-time asylum applicants</b>: ' + df1[28].astype(str) + '<br>'),
                      go.Scatter(x=labelPAHMFTA2,
-                                y=valueSwi1,
+                                y=[float(s.replace(',','')) for s in dataPAHMFTA.collect()[29][1:150]] if 'Switzerland' in coun else [],
                                 mode='lines+markers',
                                 name='CH',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#bfff80'),
@@ -5567,142 +4266,6 @@ def update_graph(w_countries, w_countries1, country_chosen):
     #KRECE SOCIETY AND WORK
     #Iscrtavanje oblasti: Society and work-Monthly unemployment rate
     elif (w_countries == 'Society and work') & (w_countries1 == 'Monthly unemployment rate'):
-        valueEu1 = []
-        if ('European Union' in coun):
-            valueEu1 = getSAWMUR('European Union')
-
-        valueBel1 = []
-        if ('Belgium' in coun):
-            valueBel1 = getSAWMUR('Belgium')
-
-        valueBul1 = []
-        if ('Bulgaria' in coun):
-            valueBul1 = getSAWMUR('Bulgaria')
-
-        valueChe1 = []
-        if ('Czechia' in coun):
-            valueChe1 = getSAWMUR('Czechia')
-
-        valueDen1 = []
-        if ('Denmark' in coun):
-            valueDen1 = getSAWMUR('Denmark')
-
-        valueGer1 = []
-        if ('Germany' in coun):
-            valueGer1 = getSAWMUR('Germany')
-
-        valueEst1 = []
-        if ('Estonia' in coun):
-            valueEst1 = getSAWMUR('Estonia')
-
-        valueGree1 = []
-        if ('Greece' in coun):
-            valueGree1 = getSAWMUR('Greece')
-
-        valueSpa1 = []
-        if ('Spain' in coun):
-            valueSpa1 = getSAWMUR('Spain')
-
-        valueFra1 = []
-        if ('France' in coun):
-            valueFra1 = getSAWMUR('France')
-
-        valueCro1 = []
-        if ('Croatia' in coun):
-            valueCro1 = getSAWMUR('Croatia')
-
-        valueIta1 = []
-        if ('Italy' in coun):
-            valueIta1 = getSAWMUR('Italy')
-
-        valueCyp1 = []
-        if ('Cyprus' in coun):
-            valueCyp1 = getSAWMUR('Cyprus')
-
-        valueLat1 = []
-        if ('Latvia' in coun):
-            valueLat1 = getSAWMUR('Latvia')
-
-        valueLith1 = []
-        if ('Lithuania' in coun):
-            valueLith1 = getSAWMUR('Lithuania')
-
-        valueLux1 = []
-        if ('Luxembourg' in coun):
-            valueLux1 = getSAWMUR('Luxembourg')
-
-        valueHun1 = []
-        if ('Hungary' in coun):
-            valueHun1 = getSAWMUR('Hungary')
-
-        valueNet1 = []
-        if ('Netherlands' in coun):
-            valueNet1 = getSAWMUR('Netherlands')
-
-        valueAus1 = []
-        if ('Austria' in coun):
-            valueAus1 = getSAWMUR('Austria')
-
-        valuePol1 = []
-        if ('Poland' in coun):
-            valuePol1 = getSAWMUR('Poland')
-
-        valuePor1 = []
-        if ('Portugal' in coun):
-            valuePor1 = getSAWMUR('Portugal')
-
-        valueRom1 = []
-        if ('Romania' in coun):
-            valueRom1 = getSAWMUR('Romania')
-
-        valueSlo1 = []
-        if ('Slovenia' in coun):
-            valueSlo1 = getSAWMUR('Slovenia')
-
-        valueSlovak1 = []
-        if ('Slovakia' in coun):
-            valueSlovak1 = getSAWMUR('Slovakia')
-
-        valueFin1 = []
-        if ('Finland' in coun):
-            valueFin1 = getSAWMUR('Finland')
-
-        valueSwe1 = []
-        if ('Sweden' in coun):
-            valueSwe1 = getSAWMUR('Sweden')
-
-        valueUk1 = []
-        if ('United Kingdom' in coun):
-            valueUk1 = getSAWMUR('United Kingdom')
-
-        valueIce1 = []
-        if ('Iceland' in coun):
-            valueIce1 = getSAWMUR('Iceland')
-
-        valueNor1 = []
-        if ('Norway' in coun):
-            valueNor1 = getSAWMUR('Norway')
-
-        valueSwi1 = []
-        if ('Switzerland' in coun):
-            valueSwi1 = getSAWMUR('Switzerland')
-
-        valueUs1 = []
-        if ('United States' in coun):
-            valueUs1 = getSAWMUR('United States')
-
-        valueEa1 = []
-        if ('Euro area' in coun):
-            valueEa1 = getSAWMUR('Euro area')
-
-        valueTur1 = []
-        if ('Turkey' in coun):
-            valueTur1 = getSAWMUR('Turkey')
-
-        valueIre1 = []
-        if ('Ireland' in coun):
-            valueIre1 = getSAWMUR('Ireland')
-
         mur = pd.read_csv('data/Society and work-Monthly unemployment rate.csv')
         df1 = {}
         for i in range(0, 36):
@@ -5710,7 +4273,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
             df1[i] = niz
         return {
             'data': [go.Scatter(x=labelSAWMUR,
-                                y=valueEu1,
+                                y=dataSAWMUR.collect()[1][2:38] if 'European Union' in coun else [],
                                 mode='lines+markers',
                                 name='EU',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#E6D1D1'),
@@ -5721,7 +4284,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'European Union' + '<br>' +
                                 '<b>Monthly unemployment rate</b>: ' + df1[1].astype(str) + '<br>'),
                      go.Scatter(x=labelSAWMUR,
-                                y=valueBel1,
+                                y=dataSAWMUR.collect()[2][2:38] if 'Belgium' in coun else [],
                                 mode='lines+markers',
                                 name='BE',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#FF0000'),
@@ -5733,7 +4296,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Monthly unemployment rate</b>: ' + df1[2].astype(str) + '<br>'
                                 ),
                      go.Scatter(x=labelSAWMUR,
-                                y=valueEa1,
+                                y=dataSAWMUR.collect()[0][2:38] if 'Euro area' in coun else [],
                                 mode='lines+markers',
                                 name='EA',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#472727'),
@@ -5744,7 +4307,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Euro area' + '<br>' +
                                 '<b>Monthly unemployment rate</b>: ' + df1[0].astype(str) + '<br>'),
                      go.Scatter(x=labelSAWMUR,
-                                y=valueBul1,
+                                y=dataSAWMUR.collect()[3][2:38] if 'Bulgaria' in coun else [],
                                 mode='lines+markers',
                                 name='BG',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#353131'),
@@ -5755,7 +4318,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Bulgaria' + '<br>' +
                                 '<b>Monthly unemployment rate</b>: ' + df1[3].astype(str) + '<br>'),
                      go.Scatter(x=labelSAWMUR,
-                                y=valueChe1,
+                                y=dataSAWMUR.collect()[4][2:38] if 'Czechia' in coun else [],
                                 mode='lines+markers',
                                 name='CZ',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#49AF30'),
@@ -5766,7 +4329,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Czechia' + '<br>' +
                                 '<b>Monthly unemployment rate</b>: ' + df1[4].astype(str) + '<br>'),
                      go.Scatter(x=labelSAWMUR,
-                                y=valueDen1,
+                                y=dataSAWMUR.collect()[5][2:38] if 'Denmark' in coun else [],
                                 mode='lines+markers',
                                 name='DK',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#2A4623'),
@@ -5777,7 +4340,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Denmark' + '<br>' +
                                 '<b>Monthly unemployment rate</b>: ' + df1[5].astype(str) + '<br>'),
                      go.Scatter(x=labelSAWMUR,
-                                y=valueGer1,
+                                y=dataSAWMUR.collect()[6][2:38] if 'Germany' in coun else [],
                                 mode='lines+markers',
                                 name='DE',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#7B7D7B'),
@@ -5788,7 +4351,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Germany' + '<br>' +
                                 '<b>Monthly unemployment rate</b>: ' + df1[6].astype(str) + '<br>'),
                      go.Scatter(x=labelSAWMUR,
-                                y=valueEst1,
+                                y=dataSAWMUR.collect()[7][2:38] if 'Estonia' in coun else [],
                                 mode='lines+markers',
                                 name='EE',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#C4C048'),
@@ -5799,7 +4362,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Estonia' + '<br>' +
                                 '<b>Monthly unemployment rate</b>: ' + df1[7].astype(str) + '<br>'),
                      go.Scatter(x=labelSAWMUR,
-                                y=valueIre1,
+                                y=dataSAWMUR.collect()[8][2:38] if 'Ireland' in coun else [],
                                 mode='lines+markers',
                                 name='IE',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#9E9D7B'),
@@ -5810,7 +4373,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Ireland' + '<br>' +
                                 '<b>Monthly unemployment rate</b>: ' + df1[8].astype(str) + '<br>'),
                      go.Scatter(x=labelSAWMUR,
-                                y=valueGree1,
+                                y=dataSAWMUR.collect()[9][2:38] if 'Greece' in coun else [],
                                 mode='lines+markers',
                                 name='EL',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#1A46C0'),
@@ -5821,7 +4384,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Greece' + '<br>' +
                                 '<b>Monthly unemployment rate</b>: ' + df1[9].astype(str) + '<br>'),
                      go.Scatter(x=labelSAWMUR,
-                                y=valueSpa1,
+                                y=dataSAWMUR.collect()[10][2:38] if 'Spain' in coun else [],
                                 mode='lines+markers',
                                 name='ES',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#2E063A'),
@@ -5832,7 +4395,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Spain' + '<br>' +
                                 '<b>Monthly unemployment rate</b>: ' + df1[10].astype(str) + '<br>'),
                      go.Scatter(x=labelSAWMUR,
-                                y=valueFra1,
+                                y=dataSAWMUR.collect()[11][2:38] if 'France' in coun else [],
                                 mode='lines+markers',
                                 name='FR',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#39313C'),
@@ -5843,7 +4406,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'France' + '<br>' +
                                 '<b>Monthly unemployment rate</b>: ' + df1[11].astype(str) + '<br>'),
                      go.Scatter(x=labelSAWMUR,
-                                y=valueCro1,
+                                y=dataSAWMUR.collect()[12][2:38] if 'Croatia' in coun else [],
                                 mode='lines+markers',
                                 name='HR',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#189F96'),
@@ -5854,7 +4417,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Croatia' + '<br>' +
                                 '<b>Monthly unemployment rate</b>: ' + df1[12].astype(str) + '<br>'),
                      go.Scatter(x=labelSAWMUR,
-                                y=valueIta1,
+                                y=dataSAWMUR.collect()[13][2:38] if 'Italy' in coun else [],
                                 mode='lines+markers',
                                 name='IT',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#94A4A3'),
@@ -5865,7 +4428,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Italy' + '<br>' +
                                 '<b>Monthly unemployment rate</b>: ' + df1[13].astype(str) + '<br>'),
                      go.Scatter(x=labelSAWMUR,
-                                y=valueCyp1,
+                                y=dataSAWMUR.collect()[14][2:38] if 'Cyprus' in coun else [],
                                 mode='lines+markers',
                                 name='CY',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#ff3399'),
@@ -5876,7 +4439,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Cyprus' + '<br>' +
                                 '<b>Monthly unemployment rate</b>: ' + df1[14].astype(str) + '<br>'),
                      go.Scatter(x=labelSAWMUR,
-                                y=valueLat1,
+                                y=dataSAWMUR.collect()[15][2:38] if 'Latvia' in coun else [],
                                 mode='lines+markers',
                                 name='LV',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#aaaa55'),
@@ -5887,7 +4450,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Latvia' + '<br>' +
                                 '<b>Monthly unemployment rate</b>: ' + df1[15].astype(str) + '<br>'),
                      go.Scatter(x=labelSAWMUR,
-                                y=valueLith1,
+                                y=dataSAWMUR.collect()[16][2:38] if 'Lithuania' in coun else [],
                                 mode='lines+markers',
                                 name='LT',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#ffff00'),
@@ -5898,7 +4461,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Lithuania' + '<br>' +
                                 '<b>Monthly unemployment rate</b>: ' + df1[16].astype(str) + '<br>'),
                      go.Scatter(x=labelSAWMUR,
-                                y=valueLux1,
+                                y=dataSAWMUR.collect()[17][2:38] if 'Luxembourg' in coun else [],
                                 mode='lines+markers',
                                 name='LU',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#007399'),
@@ -5909,7 +4472,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Luxembourg' + '<br>' +
                                 '<b>Monthly unemployment rate</b>: ' + df1[17].astype(str) + '<br>'),
                      go.Scatter(x=labelSAWMUR,
-                                y=valueHun1,
+                                y=dataSAWMUR.collect()[18][2:38] if 'Hungary' in coun else [],
                                 mode='lines+markers',
                                 name='HU',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#ff3300'),
@@ -5920,7 +4483,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Hungary' + '<br>' +
                                 '<b>Monthly unemployment rate</b>: ' + df1[18].astype(str) + '<br>'),
                      go.Scatter(x=labelSAWMUR,
-                                y=valueNet1,
+                                y=dataSAWMUR.collect()[20][2:38] if 'Netherlands' in coun else [],
                                 mode='lines+markers',
                                 name='NL',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#00e600'),
@@ -5931,7 +4494,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Netherlands' + '<br>' +
                                 '<b>Monthly unemployment rate</b>: ' + df1[20].astype(str) + '<br>'),
                      go.Scatter(x=labelSAWMUR,
-                                y=valueAus1,
+                                y=dataSAWMUR.collect()[21][2:38] if 'Austria' in coun else [],
                                 mode='lines+markers',
                                 name='AT',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#4dff4d'),
@@ -5942,7 +4505,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Austria' + '<br>' +
                                 '<b>Monthly unemployment rate</b>: ' + df1[21].astype(str) + '<br>'),
                      go.Scatter(x=labelSAWMUR,
-                                y=valuePol1,
+                                y=dataSAWMUR.collect()[22][2:38] if 'Poland' in coun else [],
                                 mode='lines+markers',
                                 name='PL',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#003300'),
@@ -5953,7 +4516,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Poland' + '<br>' +
                                 '<b>Monthly unemployment rate</b>: ' + df1[22].astype(str) + '<br>'),
                      go.Scatter(x=labelSAWMUR,
-                                y=valuePor1,
+                                y=dataSAWMUR.collect()[23][2:38] if 'Portugal' in coun else [],
                                 mode='lines+markers',
                                 name='PT',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#662900'),
@@ -5964,7 +4527,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Portugal' + '<br>' +
                                 '<b>Monthly unemployment rate</b>: ' + df1[23].astype(str) + '<br>'),
                      go.Scatter(x=labelSAWMUR,
-                                y=valueRom1,
+                                y=dataSAWMUR.collect()[24][2:38] if 'Romania' in coun else [],
                                 mode='lines+markers',
                                 name='RO',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#993399'),
@@ -5975,7 +4538,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Romania' + '<br>' +
                                 '<b>Monthly unemployment rate</b>: ' + df1[24].astype(str) + '<br>'),
                      go.Scatter(x=labelSAWMUR,
-                                y=valueSlo1,
+                                y=dataSAWMUR.collect()[25][2:38] if 'Slovenia' in coun else [],
                                 mode='lines+markers',
                                 name='SI',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#d98cd9'),
@@ -5986,7 +4549,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Slovenia' + '<br>' +
                                 '<b>Monthly unemployment rate</b>: ' + df1[25].astype(str) + '<br>'),
                      go.Scatter(x=labelSAWMUR,
-                                y=valueSlovak1,
+                                y=dataSAWMUR.collect()[26][2:38] if 'Slovakia' in coun else [],
                                 mode='lines+markers',
                                 name='SK',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#0033cc'),
@@ -5997,7 +4560,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Slovakia' + '<br>' +
                                 '<b>Monthly unemployment rate</b>: ' + df1[26].astype(str) + '<br>'),
                      go.Scatter(x=labelSAWMUR,
-                                y=valueFin1,
+                                y=dataSAWMUR.collect()[27][2:38] if 'Finland' in coun else [],
                                 mode='lines+markers',
                                 name='FI',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#99b3ff'),
@@ -6008,7 +4571,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Finland' + '<br>' +
                                 '<b>Monthly unemployment rate</b>: ' + df1[27].astype(str) + '<br>'),
                      go.Scatter(x=labelSAWMUR,
-                                y=valueSwe1,
+                                y=dataSAWMUR.collect()[28][2:38] if 'Sweden' in coun else [],
                                 mode='lines+markers',
                                 name='SE',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#001a66'),
@@ -6019,7 +4582,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Sweden' + '<br>' +
                                 '<b>Monthly unemployment rate</b>: ' + df1[28].astype(str) + '<br>'),
                      go.Scatter(x=labelSAWMUR,
-                                y=valueUk1,
+                                y=dataSAWMUR.collect()[29][2:38] if 'United Kingdom' in coun else [],
                                 mode='lines+markers',
                                 name='UK',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#00cc99'),
@@ -6030,7 +4593,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'United Kingdom' + '<br>' +
                                 '<b>Monthly unemployment rate</b>: ' + df1[29].astype(str) + '<br>'),
                      go.Scatter(x=labelSAWMUR,
-                                y=valueIce1,
+                                y=dataSAWMUR.collect()[30][2:38] if 'Iceland' in coun else [],
                                 mode='lines+markers',
                                 name='IS',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#336600'),
@@ -6041,7 +4604,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Iceland' + '<br>' +
                                 '<b>Monthly unemployment rate</b>: ' + df1[30].astype(str) + '<br>'),
                      go.Scatter(x=labelSAWMUR,
-                                y=valueNor1,
+                                y=dataSAWMUR.collect()[31][2:38] if 'Norway' in coun else [],
                                 mode='lines+markers',
                                 name='NO',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#73e600'),
@@ -6052,7 +4615,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Norway' + '<br>' +
                                 '<b>Monthly unemployment rate</b>: ' + df1[31].astype(str) + '<br>'),
                      go.Scatter(x=labelSAWMUR,
-                                y=valueSwi1,
+                                y=dataSAWMUR.collect()[32][2:38] if 'Switzerland' in coun else [],
                                 mode='lines+markers',
                                 name='CH',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#bfff80'),
@@ -6063,7 +4626,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Switzerland' + '<br>' +
                                 '<b>Monthly unemployment rate</b>: ' + df1[32].astype(str) + '<br>'),
                      go.Scatter(x=labelSAWMUR,
-                                y=valueTur1,
+                                y=dataSAWMUR.collect()[33][2:38] if 'Turkey' in coun else [],
                                 mode='lines+markers',
                                 name='TR',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#ff4da6'),
@@ -6074,7 +4637,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Turkey' + '<br>' +
                                 '<b>Monthly unemployment rate</b>: ' + df1[33].astype(str) + '<br>'),
                      go.Scatter(x=labelSAWMUR,
-                                y=valueUs1,
+                                y=dataSAWMUR.collect()[34][2:38] if 'United States' in coun else [],
                                 mode='lines+markers',
                                 name='US',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#4dc3ff'),
@@ -6138,142 +4701,6 @@ def update_graph(w_countries, w_countries1, country_chosen):
                     color='white'), )
         }
     elif (w_countries == 'Society and work') & (w_countries1 == 'Monthly youth unemployment rate'):
-        valueEu1 = []
-        if ('European Union' in coun):
-            valueEu1 = getSAWMYUR('European Union')
-
-        valueBel1 = []
-        if ('Belgium' in coun):
-            valueBel1 = getSAWMYUR('Belgium')
-
-        valueBul1 = []
-        if ('Bulgaria' in coun):
-            valueBul1 = getSAWMYUR('Bulgaria')
-
-        valueChe1 = []
-        if ('Czechia' in coun):
-            valueChe1 = getSAWMYUR('Czechia')
-
-        valueDen1 = []
-        if ('Denmark' in coun):
-            valueDen1 = getSAWMYUR('Denmark')
-
-        valueGer1 = []
-        if ('Germany' in coun):
-            valueGer1 = getSAWMYUR('Germany')
-
-        valueEst1 = []
-        if ('Estonia' in coun):
-            valueEst1 = getSAWMYUR('Estonia')
-
-        valueGree1 = []
-        if ('Greece' in coun):
-            valueGree1 = getSAWMYUR('Greece')
-
-        valueSpa1 = []
-        if ('Spain' in coun):
-            valueSpa1 = getSAWMYUR('Spain')
-
-        valueFra1 = []
-        if ('France' in coun):
-            valueFra1 = getSAWMYUR('France')
-
-        valueCro1 = []
-        if ('Croatia' in coun):
-            valueCro1 = getSAWMYUR('Croatia')
-
-        valueIta1 = []
-        if ('Italy' in coun):
-            valueIta1 = getSAWMYUR('Italy')
-
-        valueCyp1 = []
-        if ('Cyprus' in coun):
-            valueCyp1 = getSAWMYUR('Cyprus')
-
-        valueLat1 = []
-        if ('Latvia' in coun):
-            valueLat1 = getSAWMYUR('Latvia')
-
-        valueLith1 = []
-        if ('Lithuania' in coun):
-            valueLith1 = getSAWMYUR('Lithuania')
-
-        valueLux1 = []
-        if ('Luxembourg' in coun):
-            valueLux1 = getSAWMYUR('Luxembourg')
-
-        valueHun1 = []
-        if ('Hungary' in coun):
-            valueHun1 = getSAWMYUR('Hungary')
-
-        valueNet1 = []
-        if ('Netherlands' in coun):
-            valueNet1 = getSAWMYUR('Netherlands')
-
-        valueAus1 = []
-        if ('Austria' in coun):
-            valueAus1 = getSAWMYUR('Austria')
-
-        valuePol1 = []
-        if ('Poland' in coun):
-            valuePol1 = getSAWMYUR('Poland')
-
-        valuePor1 = []
-        if ('Portugal' in coun):
-            valuePor1 = getSAWMYUR('Portugal')
-
-        valueRom1 = []
-        if ('Romania' in coun):
-            valueRom1 = getSAWMYUR('Romania')
-
-        valueSlo1 = []
-        if ('Slovenia' in coun):
-            valueSlo1 = getSAWMYUR('Slovenia')
-
-        valueSlovak1 = []
-        if ('Slovakia' in coun):
-            valueSlovak1 = getSAWMYUR('Slovakia')
-
-        valueFin1 = []
-        if ('Finland' in coun):
-            valueFin1 = getSAWMYUR('Finland')
-
-        valueSwe1 = []
-        if ('Sweden' in coun):
-            valueSwe1 = getSAWMYUR('Sweden')
-
-        valueUk1 = []
-        if ('United Kingdom' in coun):
-            valueUk1 = getSAWMYUR('United Kingdom')
-
-        valueIce1 = []
-        if ('Iceland' in coun):
-            valueIce1 = getSAWMYUR('Iceland')
-
-        valueNor1 = []
-        if ('Norway' in coun):
-            valueNor1 = getSAWMYUR('Norway')
-
-        valueSwi1 = []
-        if ('Switzerland' in coun):
-            valueSwi1 = getSAWMYUR('Switzerland')
-
-        valueUs1 = []
-        if ('United States' in coun):
-            valueUs1 = getSAWMYUR('United States')
-
-        valueEa1 = []
-        if ('Euro area' in coun):
-            valueEa1 = getSAWMYUR('Euro area')
-
-        valueTur1 = []
-        if ('Turkey' in coun):
-            valueTur1 = getSAWMYUR('Turkey')
-
-        valueIre1 = []
-        if ('Ireland' in coun):
-            valueIre1 = getSAWMYUR('Ireland')
-
         myur = pd.read_csv('data/Society and work-Monthly youth unemployment rate.csv')
         df1 = {}
         for i in range(0, 36):
@@ -6281,7 +4708,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
             df1[i] = niz
         return {
             'data': [go.Scatter(x=labelSAWMYUR,
-                                y=valueEu1,
+                                y=dataSAWMYUR.collect()[1][2:35] if 'European Union' in coun else [],
                                 mode='lines+markers',
                                 name='EU',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#E6D1D1'),
@@ -6292,7 +4719,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'European Union' + '<br>' +
                                 '<b>Monthly youth unemployment rate</b>: ' + df1[1].astype(str) + '<br>'),
                      go.Scatter(x=labelSAWMYUR,
-                                y=valueBel1,
+                                y=dataSAWMYUR.collect()[2][2:35] if 'Belgium' in coun else [],
                                 mode='lines+markers',
                                 name='BE',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#FF0000'),
@@ -6305,7 +4732,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Monthly youth unemployment rate</b>: ' + df1[2].astype(str) + '<br>'
                                 ),
                      go.Scatter(x=labelSAWMYUR,
-                                y=valueEa1,
+                                y=dataSAWMYUR.collect()[0][2:35] if 'Euro area' in coun else [],
                                 mode='lines+markers',
                                 name='EA',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#472727'),
@@ -6316,7 +4743,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Euro area' + '<br>' +
                                 '<b>Monthly youth unemployment rate</b>: ' + df1[0].astype(str) + '<br>'),
                      go.Scatter(x=labelSAWMYUR,
-                                y=valueBul1,
+                                y=dataSAWMYUR.collect()[3][2:35] if 'Bulgaria' in coun else [],
                                 mode='lines+markers',
                                 name='BG',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#353131'),
@@ -6327,7 +4754,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Bulgaria' + '<br>' +
                                 '<b>Monthly youth unemployment rate</b>: ' + df1[3].astype(str) + '<br>'),
                      go.Scatter(x=labelSAWMYUR,
-                                y=valueChe1,
+                                y=dataSAWMYUR.collect()[4][2:35] if 'Czechia' in coun else [],
                                 mode='lines+markers',
                                 name='CZ',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#49AF30'),
@@ -6338,7 +4765,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Czechia' + '<br>' +
                                 '<b>Monthly youth unemployment rate</b>: ' + df1[4].astype(str) + '<br>'),
                      go.Scatter(x=labelSAWMYUR,
-                                y=valueDen1,
+                                y=dataSAWMYUR.collect()[5][2:35] if 'Denmark' in coun else [],
                                 mode='lines+markers',
                                 name='DK',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#2A4623'),
@@ -6349,7 +4776,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Denmark' + '<br>' +
                                 '<b>Monthly youth unemployment rate</b>: ' + df1[5].astype(str) + '<br>'),
                      go.Scatter(x=labelSAWMYUR,
-                                y=valueGer1,
+                                y=dataSAWMYUR.collect()[6][2:35] if 'Germany' in coun else [],
                                 mode='lines+markers',
                                 name='DE',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#7B7D7B'),
@@ -6360,7 +4787,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Germany' + '<br>' +
                                 '<b>Monthly youth unemployment rate</b>: ' + df1[6].astype(str) + '<br>'),
                      go.Scatter(x=labelSAWMYUR,
-                                y=valueEst1,
+                                y=dataSAWMYUR.collect()[7][2:35] if 'Estonia' in coun else [],
                                 mode='lines+markers',
                                 name='EE',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#C4C048'),
@@ -6371,7 +4798,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Estonia' + '<br>' +
                                 '<b>Monthly youth unemployment rate</b>: ' + df1[7].astype(str) + '<br>'),
                      go.Scatter(x=labelSAWMYUR,
-                                y=valueIre1,
+                                y=dataSAWMYUR.collect()[8][2:35] if 'Ireland' in coun else [],
                                 mode='lines+markers',
                                 name='IE',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#9E9D7B'),
@@ -6382,7 +4809,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Ireland' + '<br>' +
                                 '<b>Monthly youth unemployment rate</b>: ' + df1[8].astype(str) + '<br>'),
                      go.Scatter(x=labelSAWMYUR,
-                                y=valueGree1,
+                                y=dataSAWMYUR.collect()[9][2:35] if 'Greece' in coun else [],
                                 mode='lines+markers',
                                 name='EL',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#1A46C0'),
@@ -6393,7 +4820,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Greece' + '<br>' +
                                 '<b>Monthly youth unemployment rate</b>: ' + df1[9].astype(str) + '<br>'),
                      go.Scatter(x=labelSAWMYUR,
-                                y=valueSpa1,
+                                y=dataSAWMYUR.collect()[10][2:35] if 'Spain' in coun else [],
                                 mode='lines+markers',
                                 name='ES',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#2E063A'),
@@ -6404,7 +4831,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Spain' + '<br>' +
                                 '<b>Monthly youth unemployment rate</b>: ' + df1[10].astype(str) + '<br>'),
                      go.Scatter(x=labelSAWMYUR,
-                                y=valueFra1,
+                                y=dataSAWMYUR.collect()[11][2:35] if 'France' in coun else [],
                                 mode='lines+markers',
                                 name='FR',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#39313C'),
@@ -6415,7 +4842,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'France' + '<br>' +
                                 '<b>Monthly youth unemployment rate</b>: ' + df1[11].astype(str) + '<br>'),
                      go.Scatter(x=labelSAWMYUR,
-                                y=valueCro1,
+                                y=dataSAWMYUR.collect()[12][2:35] if 'Croatia' in coun else [],
                                 mode='lines+markers',
                                 name='HR',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#189F96'),
@@ -6426,7 +4853,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Croatia' + '<br>' +
                                 '<b>Monthly youth unemployment rate</b>: ' + df1[12].astype(str) + '<br>'),
                      go.Scatter(x=labelSAWMYUR,
-                                y=valueIta1,
+                                y=dataSAWMYUR.collect()[13][2:35] if 'Italy' in coun else [],
                                 mode='lines+markers',
                                 name='IT',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#94A4A3'),
@@ -6437,7 +4864,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Italy' + '<br>' +
                                 '<b>Monthly youth unemployment rate</b>: ' + df1[13].astype(str) + '<br>'),
                      go.Scatter(x=labelSAWMYUR,
-                                y=valueCyp1,
+                                y=dataSAWMYUR.collect()[14][2:35] if 'Cyprus' in coun else [],
                                 mode='lines+markers',
                                 name='CY',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#ff3399'),
@@ -6448,7 +4875,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Cyprus' + '<br>' +
                                 '<b>Monthly youth unemployment rate</b>: ' + df1[14].astype(str) + '<br>'),
                      go.Scatter(x=labelSAWMYUR,
-                                y=valueLat1,
+                                y=dataSAWMYUR.collect()[15][2:35] if 'Latvia' in coun else [],
                                 mode='lines+markers',
                                 name='LV',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#aaaa55'),
@@ -6459,7 +4886,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Latvia' + '<br>' +
                                 '<b>Monthly youth unemployment rate</b>: ' + df1[15].astype(str) + '<br>'),
                      go.Scatter(x=labelSAWMYUR,
-                                y=valueLith1,
+                                y=dataSAWMYUR.collect()[16][2:35] if 'Lithuania' in coun else [],
                                 mode='lines+markers',
                                 name='LT',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#ffff00'),
@@ -6470,7 +4897,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Lithuania' + '<br>' +
                                 '<b>Monthly youth unemployment rate</b>: ' + df1[16].astype(str) + '<br>'),
                      go.Scatter(x=labelSAWMYUR,
-                                y=valueLux1,
+                                y=dataSAWMYUR.collect()[17][2:35] if 'Luxembourg' in coun else [],
                                 mode='lines+markers',
                                 name='LU',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#007399'),
@@ -6481,7 +4908,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Luxembourg' + '<br>' +
                                 '<b>Monthly youth unemployment rate</b>: ' + df1[17].astype(str) + '<br>'),
                      go.Scatter(x=labelSAWMYUR,
-                                y=valueHun1,
+                                y=dataSAWMYUR.collect()[18][2:35] if 'Hungary' in coun else [],
                                 mode='lines+markers',
                                 name='HU',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#ff3300'),
@@ -6492,7 +4919,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Hungary' + '<br>' +
                                 '<b>Monthly youth unemployment rate</b>: ' + df1[18].astype(str) + '<br>'),
                      go.Scatter(x=labelSAWMYUR,
-                                y=valueNet1,
+                                y=dataSAWMYUR.collect()[20][2:35] if 'Netherlands' in coun else [],
                                 mode='lines+markers',
                                 name='NL',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#00e600'),
@@ -6503,7 +4930,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Netherlands' + '<br>' +
                                 '<b>Monthly youth unemployment rate</b>: ' + df1[20].astype(str) + '<br>'),
                      go.Scatter(x=labelSAWMYUR,
-                                y=valueAus1,
+                                y=dataSAWMYUR.collect()[21][2:35] if 'Austria' in coun else [],
                                 mode='lines+markers',
                                 name='AT',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#4dff4d'),
@@ -6514,7 +4941,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Austria' + '<br>' +
                                 '<b>Monthly youth unemployment rate</b>: ' + df1[21].astype(str) + '<br>'),
                      go.Scatter(x=labelSAWMYUR,
-                                y=valuePol1,
+                                y=dataSAWMYUR.collect()[22][2:35] if 'Poland' in coun else [],
                                 mode='lines+markers',
                                 name='PL',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#003300'),
@@ -6525,7 +4952,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Poland' + '<br>' +
                                 '<b>Monthly youth unemployment rate</b>: ' + df1[22].astype(str) + '<br>'),
                      go.Scatter(x=labelSAWMYUR,
-                                y=valuePor1,
+                                y=dataSAWMYUR.collect()[23][2:35] if 'Portugal' in coun else [],
                                 mode='lines+markers',
                                 name='PT',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#662900'),
@@ -6536,7 +4963,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Portugal' + '<br>' +
                                 '<b>Monthly youth unemployment rate</b>: ' + df1[23].astype(str) + '<br>'),
                      go.Scatter(x=labelSAWMYUR,
-                                y=valueRom1,
+                                y=dataSAWMYUR.collect()[24][2:35] if 'Romania' in coun else [],
                                 mode='lines+markers',
                                 name='RO',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#993399'),
@@ -6547,7 +4974,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Romania' + '<br>' +
                                 '<b>Monthly youth unemployment rate</b>: ' + df1[24].astype(str) + '<br>'),
                      go.Scatter(x=labelSAWMYUR,
-                                y=valueSlo1,
+                                y=dataSAWMYUR.collect()[25][2:35] if 'Slovenia' in coun else [],
                                 mode='lines+markers',
                                 name='SI',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#d98cd9'),
@@ -6558,7 +4985,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Slovenia' + '<br>' +
                                 '<b>Monthly youth unemployment rate</b>: ' + df1[25].astype(str) + '<br>'),
                      go.Scatter(x=labelSAWMYUR,
-                                y=valueSlovak1,
+                                y=dataSAWMYUR.collect()[26][2:35] if 'Slovakia' in coun else [],
                                 mode='lines+markers',
                                 name='SK',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#0033cc'),
@@ -6569,7 +4996,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Slovakia' + '<br>' +
                                 '<b>Monthly youth unemployment rate</b>: ' + df1[26].astype(str) + '<br>'),
                      go.Scatter(x=labelSAWMYUR,
-                                y=valueFin1,
+                                y=dataSAWMYUR.collect()[27][2:35] if 'Finland' in coun else [],
                                 mode='lines+markers',
                                 name='FI',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#99b3ff'),
@@ -6580,7 +5007,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Finland' + '<br>' +
                                 '<b>Monthly youth unemployment rate</b>: ' + df1[27].astype(str) + '<br>'),
                      go.Scatter(x=labelSAWMYUR,
-                                y=valueSwe1,
+                                y=dataSAWMYUR.collect()[28][2:35] if 'Sweden' in coun else [],
                                 mode='lines+markers',
                                 name='SE',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#001a66'),
@@ -6591,7 +5018,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Sweden' + '<br>' +
                                 '<b>Monthly youth unemployment rate</b>: ' + df1[28].astype(str) + '<br>'),
                      go.Scatter(x=labelSAWMYUR,
-                                y=valueUk1,
+                                y=dataSAWMYUR.collect()[29][2:35] if 'United Kingdom' in coun else [],
                                 mode='lines+markers',
                                 name='UK',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#00cc99'),
@@ -6602,7 +5029,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'United Kingdom' + '<br>' +
                                 '<b>Monthly youth unemployment rate</b>: ' + df1[29].astype(str) + '<br>'),
                      go.Scatter(x=labelSAWMYUR,
-                                y=valueIce1,
+                                y=dataSAWMYUR.collect()[30][2:35] if 'Iceland' in coun else [],
                                 mode='lines+markers',
                                 name='IS',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#336600'),
@@ -6613,7 +5040,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Iceland' + '<br>' +
                                 '<b>Monthly youth unemployment rate</b>: ' + df1[30].astype(str) + '<br>'),
                      go.Scatter(x=labelSAWMYUR,
-                                y=valueNor1,
+                                y=dataSAWMYUR.collect()[31][2:35] if 'Norway' in coun else [],
                                 mode='lines+markers',
                                 name='NO',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#73e600'),
@@ -6624,7 +5051,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Norway' + '<br>' +
                                 '<b>Monthly youth unemployment rate</b>: ' + df1[31].astype(str) + '<br>'),
                      go.Scatter(x=labelSAWMYUR,
-                                y=valueSwi1,
+                                y=dataSAWMYUR.collect()[32][2:35] if 'Switzerland' in coun else [],
                                 mode='lines+markers',
                                 name='CH',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#bfff80'),
@@ -6635,7 +5062,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Switzerland' + '<br>' +
                                 '<b>Monthly youth unemployment rate</b>: ' + df1[32].astype(str) + '<br>'),
                      go.Scatter(x=labelSAWMYUR,
-                                y=valueTur1,
+                                y=dataSAWMYUR.collect()[35][2:35] if 'Turkey' in coun else [],
                                 mode='lines+markers',
                                 name='TR',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#ff4da6'),
@@ -6646,7 +5073,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Turkey' + '<br>' +
                                 '<b>Monthly youth unemployment rate</b>: ' + df1[33].astype(str) + '<br>'),
                      go.Scatter(x=labelSAWMYUR,
-                                y=valueUs1,
+                                y=dataSAWMYUR.collect()[34][2:35] if 'United States' in coun else [],
                                 mode='lines+markers',
                                 name='US',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#4dc3ff'),
@@ -6711,110 +5138,6 @@ def update_graph(w_countries, w_countries1, country_chosen):
         }
     #KRece podgrupa: Society and work-Quarterly employment
     elif (w_countries == 'Society and work') & (w_countries1 == 'Quarterly employment'):
-        valueEu1 = []
-        if ('European Union' in coun):
-            valueEu1 = getSAWQE('European Union')
-
-        valueBel1 = []
-        if ('Belgium' in coun):
-            valueBel1 = getSAWQE('Belgium')
-
-        valueBul1 = []
-        if ('Bulgaria' in coun):
-            valueBul1 = getSAWQE('Bulgaria')
-
-        valueDen1 = []
-        if ('Denmark' in coun):
-            valueDen1 = getSAWQE('Denmark')
-
-        valueGer1 = []
-        if ('Germany' in coun):
-            valueGer1 = getSAWQE('Germany')
-
-        valueEst1 = []
-        if ('Estonia' in coun):
-            valueEst1 = getSAWQE('Estonia')
-
-        valueSpa1 = []
-        if ('Spain' in coun):
-            valueSpa1 = getSAWQE('Spain')
-
-        valueCro1 = []
-        if ('Croatia' in coun):
-            valueCro1 = getSAWQE('Croatia')
-
-        valueIta1 = []
-        if ('Italy' in coun):
-            valueIta1 = getSAWQE('Italy')
-
-        valueCyp1 = []
-        if ('Cyprus' in coun):
-            valueCyp1 = getSAWQE('Cyprus')
-
-        valueLat1 = []
-        if ('Latvia' in coun):
-            valueLat1 = getSAWQE('Latvia')
-
-        valueLith1 = []
-        if ('Lithuania' in coun):
-            valueLith1 = getSAWQE('Lithuania')
-
-        valueLux1 = []
-        if ('Luxembourg' in coun):
-            valueLux1 = getSAWQE('Luxembourg')
-
-        valueHun1 = []
-        if ('Hungary' in coun):
-            valueHun1 = getSAWQE('Hungary')
-
-        valueNet1 = []
-        if ('Netherlands' in coun):
-            valueNet1 = getSAWQE('Netherlands')
-
-        valueAus1 = []
-        if ('Austria' in coun):
-            valueAus1 = getSAWQE('Austria')
-
-        valueRom1 = []
-        if ('Romania' in coun):
-            valueRom1 = getSAWQE('Romania')
-
-        valueSlo1 = []
-        if ('Slovenia' in coun):
-            valueSlo1 = getSAWQE('Slovenia')
-
-        valueSlovak1 = []
-        if ('Slovakia' in coun):
-            valueSlovak1 = getSAWQE('Slovakia')
-
-        valueFin1 = []
-        if ('Finland' in coun):
-            valueFin1 = getSAWQE('Finland')
-
-        valueSwe1 = []
-        if ('Sweden' in coun):
-            valueSwe1 = getSAWQE('Sweden')
-
-        valueUk1 = []
-        if ('United Kingdom' in coun):
-            valueUk1 = getSAWQE('United Kingdom')
-
-        valueIce1 = []
-        if ('Iceland' in coun):
-            valueIce1 = getSAWQE('Iceland')
-
-        valueNor1 = []
-        if ('Norway' in coun):
-            valueNor1 = getSAWQE('Norway')
-
-        valueEa1 = []
-        if ('Euro area' in coun):
-            valueEa1 = getSAWQE('Euro area')
-
-        valueIre1 = []
-        if ('Ireland' in coun):
-            valueIre1 = getSAWQE('Ireland')
-
         qe = pd.read_csv('data/Society and work-Quarterly employment.csv')
         df1 = {}
         for i in range(0, 26):
@@ -6822,7 +5145,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
             df1[i] = niz
         return {
             'data': [go.Scatter(x=labelSAWQE,
-                                y=valueEu1,
+                                y=[float(s.replace(',','')) for s in dataSAWQE.collect()[0][1:20]] if 'European Union' in coun else [],
                                 mode='lines+markers',
                                 name='EU',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#E6D1D1'),
@@ -6833,7 +5156,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'European Union' + '<br>' +
                                 '<b>Quarterly employment</b>: ' + df1[0].astype(str) + '<br>'),
                      go.Scatter(x=labelSAWQE,
-                                y=valueBel1,
+                                y=[float(s.replace(',','')) for s in dataSAWQE.collect()[2][1:20]] if 'Belgium' in coun else [],
                                 mode='lines+markers',
                                 name='BE',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#FF0000'),
@@ -6844,7 +5167,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Belgium' + '<br>'+
                                 '<b>Quarterly employment</b>: ' + df1[2].astype(str) + '<br>'),
                      go.Scatter(x=labelSAWQE,
-                                y=valueEa1,
+                                y=[float(s.replace(',','')) for s in dataSAWQE.collect()[0][1:20]] if 'Euro area' in coun else [],
                                 mode='lines+markers',
                                 name='EA',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#472727'),
@@ -6855,7 +5178,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Euro area' + '<br>' +
                                 '<b>Quarterly employment</b>: ' + df1[1].astype(str) + '<br>'),
                      go.Scatter(x=labelSAWQE,
-                                y=valueBul1,
+                                y=[float(s.replace(',','')) for s in dataSAWQE.collect()[3][1:20]] if 'Bulgaria' in coun else [],
                                 mode='lines+markers',
                                 name='BG',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#353131'),
@@ -6866,7 +5189,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Bulgaria' + '<br>' +
                                 '<b>Quarterly employment</b>: ' + df1[3].astype(str) + '<br>'),
                      go.Scatter(x=labelSAWQE,
-                                y=valueDen1,
+                                y=[float(s.replace(',','')) for s in dataSAWQE.collect()[4][1:20]] if 'Denmark' in coun else [],
                                 mode='lines+markers',
                                 name='DK',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#2A4623'),
@@ -6877,7 +5200,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Denmark' + '<br>' +
                                 '<b>Quarterly employment</b>: ' + df1[4].astype(str) + '<br>'),
                      go.Scatter(x=labelSAWQE,
-                                y=valueGer1,
+                                y=[float(s.replace(',','')) for s in dataSAWQE.collect()[5][1:20]] if 'Germany' in coun else [],
                                 mode='lines+markers',
                                 name='DE',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#7B7D7B'),
@@ -6888,7 +5211,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Germany' + '<br>' +
                                 '<b>Quarterly employment</b>: ' + df1[5].astype(str) + '<br>'),
                      go.Scatter(x=labelSAWQE,
-                                y=valueEst1,
+                                y=[float(s.replace(',','')) for s in dataSAWQE.collect()[6][1:20]] if 'Estonia' in coun else [],
                                 mode='lines+markers',
                                 name='EE',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#C4C048'),
@@ -6899,7 +5222,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Estonia' + '<br>' +
                                 '<b>Quarterly employment</b>: ' + df1[6].astype(str) + '<br>'),
                      go.Scatter(x=labelSAWQE,
-                                y=valueIre1,
+                                y=[float(s.replace(',','')) for s in dataSAWQE.collect()[7][1:20]] if 'Ireland' in coun else [],
                                 mode='lines+markers',
                                 name='IE',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#9E9D7B'),
@@ -6910,7 +5233,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Ireland' + '<br>' +
                                 '<b>Quarterly employment</b>: ' + df1[7].astype(str) + '<br>'),
                      go.Scatter(x=labelSAWQE,
-                                y=valueSpa1,
+                                y=[float(s.replace(',','')) for s in dataSAWQE.collect()[8][1:20]] if 'Spain' in coun else [],
                                 mode='lines+markers',
                                 name='ES',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#2E063A'),
@@ -6921,7 +5244,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Spain' + '<br>' +
                                 '<b>Quarterly employment</b>: ' + df1[8].astype(str) + '<br>'),
                      go.Scatter(x=labelSAWQE,
-                                y=valueCro1,
+                                y=[float(s.replace(',','')) for s in dataSAWQE.collect()[9][1:20]] if 'Croatia' in coun else [],
                                 mode='lines+markers',
                                 name='HR',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#189F96'),
@@ -6932,7 +5255,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Croatia' + '<br>' +
                                 '<b>Quarterly employment</b>: ' + df1[9].astype(str) + '<br>'),
                      go.Scatter(x=labelSAWQE,
-                                y=valueIta1,
+                                y=[float(s.replace(',','')) for s in dataSAWQE.collect()[10][1:20]] if 'Italy' in coun else [],
                                 mode='lines+markers',
                                 name='IT',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#94A4A3'),
@@ -6943,7 +5266,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Italy' + '<br>' +
                                 '<b>Quarterly employment</b>: ' + df1[10].astype(str) + '<br>'),
                      go.Scatter(x=labelSAWQE,
-                                y=valueCyp1,
+                                y=[float(s.replace(',','')) for s in dataSAWQE.collect()[11][1:20]] if 'Cyprus' in coun else [],
                                 mode='lines+markers',
                                 name='CY',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#ff3399'),
@@ -6954,7 +5277,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Cyprus' + '<br>' +
                                 '<b>Quarterly employment</b>: ' + df1[11].astype(str) + '<br>'),
                      go.Scatter(x=labelSAWQE,
-                                y=valueLat1,
+                                y=[float(s.replace(',','')) for s in dataSAWQE.collect()[12][1:20]] if 'Latvia' in coun else [],
                                 mode='lines+markers',
                                 name='LV',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#aaaa55'),
@@ -6965,7 +5288,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Latvia' + '<br>' +
                                 '<b>Quarterly employment</b>: ' + df1[12].astype(str) + '<br>'),
                      go.Scatter(x=labelSAWQE,
-                                y=valueLith1,
+                                y=[float(s.replace(',','')) for s in dataSAWQE.collect()[13][1:20]] if 'Lithuania' in coun else [],
                                 mode='lines+markers',
                                 name='LT',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#ffff00'),
@@ -6976,7 +5299,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Lithuania' + '<br>' +
                                 '<b>Quarterly employment</b>: ' + df1[13].astype(str) + '<br>'),
                      go.Scatter(x=labelSAWQE,
-                                y=valueLux1,
+                                y=[float(s.replace(',','')) for s in dataSAWQE.collect()[14][1:20]] if 'Luxembourg' in coun else [],
                                 mode='lines+markers',
                                 name='LU',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#007399'),
@@ -6987,7 +5310,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Luxembourg' + '<br>' +
                                 '<b>Quarterly employment</b>: ' + df1[14].astype(str) + '<br>'),
                      go.Scatter(x=labelSAWQE,
-                                y=valueHun1,
+                                y=[float(s.replace(',','')) for s in dataSAWQE.collect()[15][1:20]] if 'Hungary' in coun else [],
                                 mode='lines+markers',
                                 name='HU',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#ff3300'),
@@ -6998,7 +5321,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Hungary' + '<br>' +
                                 '<b>Quarterly employment</b>: ' + df1[15].astype(str) + '<br>'),
                      go.Scatter(x=labelSAWQE,
-                                y=valueNet1,
+                                y=[float(s.replace(',','')) for s in dataSAWQE.collect()[16][1:20]] if 'Netherlands' in coun else [],
                                 mode='lines+markers',
                                 name='NL',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#00e600'),
@@ -7009,7 +5332,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Netherlands' + '<br>' +
                                 '<b>Quarterly employment</b>: ' + df1[16].astype(str) + '<br>'),
                      go.Scatter(x=labelSAWQE,
-                                y=valueAus1,
+                                y=[float(s.replace(',','')) for s in dataSAWQE.collect()[17][1:20]] if 'Austria' in coun else [],
                                 mode='lines+markers',
                                 name='AT',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#4dff4d'),
@@ -7020,7 +5343,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Austria' + '<br>' +
                                 '<b>Quarterly employment</b>: ' + df1[17].astype(str) + '<br>'),
                      go.Scatter(x=labelSAWQE,
-                                y=valueRom1,
+                                y=[float(s.replace(',','')) for s in dataSAWQE.collect()[18][1:20]] if 'Romania' in coun else [],
                                 mode='lines+markers',
                                 name='RO',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#993399'),
@@ -7031,7 +5354,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Romania' + '<br>' +
                                 '<b>Quarterly employment</b>: ' + df1[18].astype(str) + '<br>'),
                      go.Scatter(x=labelSAWQE,
-                                y=valueSlo1,
+                                y=[float(s.replace(',','')) for s in dataSAWQE.collect()[19][1:20]] if 'Slovenia' in coun else [],
                                 mode='lines+markers',
                                 name='SI',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#d98cd9'),
@@ -7042,7 +5365,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Slovenia' + '<br>' +
                                 '<b>Quarterly employment</b>: ' + df1[19].astype(str) + '<br>'),
                      go.Scatter(x=labelSAWQE,
-                                y=valueSlovak1,
+                                y=[float(s.replace(',','')) for s in dataSAWQE.collect()[20][1:20]] if 'Slovakia' in coun else [],
                                 mode='lines+markers',
                                 name='SK',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#0033cc'),
@@ -7053,7 +5376,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Slovakia' + '<br>' +
                                 '<b>Quarterly employment</b>: ' + df1[20].astype(str) + '<br>'),
                      go.Scatter(x=labelSAWQE,
-                                y=valueFin1,
+                                y=[float(s.replace(',','')) for s in dataSAWQE.collect()[21][1:20]] if 'Finland' in coun else [],
                                 mode='lines+markers',
                                 name='FI',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#99b3ff'),
@@ -7064,7 +5387,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Finland' + '<br>' +
                                 '<b>Quarterly employment</b>: ' + df1[21].astype(str) + '<br>'),
                      go.Scatter(x=labelSAWQE,
-                                y=valueSwe1,
+                                y=[float(s.replace(',','')) for s in dataSAWQE.collect()[22][1:20]] if 'Sweden' in coun else [],
                                 mode='lines+markers',
                                 name='SE',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#001a66'),
@@ -7075,7 +5398,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Sweden' + '<br>' +
                                 '<b>Quarterly employment</b>: ' + df1[22].astype(str) + '<br>'),
                      go.Scatter(x=labelSAWQE,
-                                y=valueUk1,
+                                y=[float(s.replace(',','')) for s in dataSAWQE.collect()[23][1:20]] if 'United Kingdom' in coun else [],
                                 mode='lines+markers',
                                 name='UK',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#00cc99'),
@@ -7086,7 +5409,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'United Kingdom' + '<br>' +
                                 '<b>Quarterly employment</b>: ' + df1[23].astype(str) + '<br>'),
                      go.Scatter(x=labelSAWQE,
-                                y=valueIce1,
+                                y=[float(s.replace(',','')) for s in dataSAWQE.collect()[24][1:20]] if 'Iceland' in coun else [],
                                 mode='lines+markers',
                                 name='IS',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#336600'),
@@ -7097,7 +5420,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Iceland' + '<br>' +
                                 '<b>Quarterly employment</b>: ' + df1[24].astype(str) + '<br>'),
                      go.Scatter(x=labelSAWQE,
-                                y=valueNor1,
+                                y=[float(s.replace(',','')) for s in dataSAWQE.collect()[25][1:20]] if 'Norway' in coun else [],
                                 mode='lines+markers',
                                 name='NO',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#73e600'),
@@ -7162,138 +5485,6 @@ def update_graph(w_countries, w_countries1, country_chosen):
         }
     #Krece podgrupa Society and work-Quarterly labour market slack
     elif (w_countries == 'Society and work') & (w_countries1 == 'Quarterly labour market slack'):
-        valueEu1 = []
-        if ('European Union' in coun):
-            valueEu1 = getSAWQLMS('European Union')
-
-        valueBel1 = []
-        if ('Belgium' in coun):
-            valueBel1 = getSAWQLMS('Belgium')
-
-        valueBul1 = []
-        if ('Bulgaria' in coun):
-            valueBul1 = getSAWQLMS('Bulgaria')
-
-        valueSer1 = []
-        if ('Serbia' in coun):
-            valueSer1 = getSAWQLMS('Serbia')
-
-        valueChe1 = []
-        if ('Czechia' in coun):
-            valueChe1 = getSAWQLMS('Czechia')
-
-        valueDen1 = []
-        if ('Denmark' in coun):
-            valueDen1 = getSAWQLMS('Denmark')
-
-        valueGer1 = []
-        if ('Germany' in coun):
-            valueGer1 = getSAWQLMS('Germany')
-
-        valueEst1 = []
-        if ('Estonia' in coun):
-            valueEst1 = getSAWQLMS('Estonia')
-
-        valueGree1 = []
-        if ('Greece' in coun):
-            valueGree1 = getSAWQLMS('Greece')
-
-        valueSpa1 = []
-        if ('Spain' in coun):
-            valueSpa1 = getSAWQLMS('Spain')
-
-        valueFra1 = []
-        if ('France' in coun):
-            valueFra1 = getSAWQLMS('France')
-
-        valueCro1 = []
-        if ('Croatia' in coun):
-            valueCro1 = getSAWQLMS('Croatia')
-
-        valueIta1 = []
-        if ('Italy' in coun):
-            valueIta1 = getSAWQLMS('Italy')
-
-        valueCyp1 = []
-        if ('Cyprus' in coun):
-            valueCyp1 = getSAWQLMS('Cyprus')
-
-        valueLat1 = []
-        if ('Latvia' in coun):
-            valueLat1 = getSAWQLMS('Latvia')
-
-        valueLith1 = []
-        if ('Lithuania' in coun):
-            valueLith1 = getSAWQLMS('Lithuania')
-
-        valueLux1 = []
-        if ('Luxembourg' in coun):
-            valueLux1 = getSAWQLMS('Luxembourg')
-
-        valueHun1 = []
-        if ('Hungary' in coun):
-            valueHun1 = getSAWQLMS('Hungary')
-
-        valueNet1 = []
-        if ('Netherlands' in coun):
-            valueNet1 = getSAWQLMS('Netherlands')
-
-        valueAus1 = []
-        if ('Austria' in coun):
-            valueAus1 = getSAWQLMS('Austria')
-
-        valuePol1 = []
-        if ('Poland' in coun):
-            valuePol1 = getSAWQLMS('Poland')
-
-        valuePor1 = []
-        if ('Portugal' in coun):
-            valuePor1 = getSAWQLMS('Portugal')
-
-        valueRom1 = []
-        if ('Romania' in coun):
-            valueRom1 = getSAWQLMS('Romania')
-
-        valueSlo1 = []
-        if ('Slovenia' in coun):
-            valueSlo1 = getSAWQLMS('Slovenia')
-
-        valueSlovak1 = []
-        if ('Slovakia' in coun):
-            valueSlovak1 = getSAWQLMS('Slovakia')
-
-        valueFin1 = []
-        if ('Finland' in coun):
-            valueFin1 = getSAWQLMS('Finland')
-
-        valueSwe1 = []
-        if ('Sweden' in coun):
-            valueSwe1 = getSAWQLMS('Sweden')
-
-        valueIce1 = []
-        if ('Iceland' in coun):
-            valueIce1 = getSAWQLMS('Iceland')
-
-        valueNor1 = []
-        if ('Norway' in coun):
-            valueNor1 = getSAWQLMS('Norway')
-
-        valueSwi1 = []
-        if ('Switzerland' in coun):
-            valueSwi1 = getSAWQLMS('Switzerland')
-
-        valueEa1 = []
-        if ('Euro area' in coun):
-            valueEa1 = getSAWQLMS('Euro area')
-
-        valueTur1 = []
-        if ('Turkey' in coun):
-            valueTur1 = getSAWQLMS('Turkey')
-
-        valueIre1 = []
-        if ('Ireland' in coun):
-            valueIre1 = getSAWQLMS('Ireland')
-
         qlms = pd.read_csv('data/Society and work-Quarterly labour market slack.csv')
         df1 = {}
         for i in range(0, 36):
@@ -7301,7 +5492,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
             df1[i] = niz
         return {
             'data': [go.Scatter(x=labelSAWQLMS,
-                                y=valueEu1,
+                                y=[float(s.replace(',','')) for s in dataSAWQLMS.collect()[0][1:20]] if 'European Union' in coun else [],
                                 mode='lines+markers',
                                 name='BE',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#E6D1D1'),
@@ -7312,7 +5503,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'European Union' + '<br>'+
                                 '<b>Quarterly labour market slack</b>: ' + df1[0].astype(str) + '<br>'),
                      go.Scatter(x=labelSAWQLMS,
-                                y=valueBel1,
+                                y=[float(s.replace(',','')) for s in dataSAWQLMS.collect()[2][1:20]] if 'Belgium' in coun else [],
                                 mode='lines+markers',
                                 name='EU',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#FF0000'),
@@ -7323,7 +5514,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Belgium' + '<br>'+
                                 '<b>Quarterly labour market slack</b>: ' + df1[2].astype(str) + '<br>'),
                      go.Scatter(x=labelSAWQLMS,
-                                y=valueEa1,
+                                y=[float(s.replace(',','')) for s in dataSAWQLMS.collect()[1][1:20]] if 'Euro area' in coun else [],
                                 mode='lines+markers',
                                 name='EA',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#472727'),
@@ -7334,7 +5525,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Euro area' + '<br>' +
                                 '<b>Quarterly labour market slack</b>: ' + df1[1].astype(str) + '<br>'),
                      go.Scatter(x=labelSAWQLMS,
-                                y=valueBul1,
+                                y=[float(s.replace(',','')) for s in dataSAWQLMS.collect()[3][1:20]] if 'Bulgaria' in coun else [],
                                 mode='lines+markers',
                                 name='BG',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#353131'),
@@ -7345,7 +5536,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Bulgaria' + '<br>' +
                                 '<b>Quarterly labour market slack</b>: ' + df1[3].astype(str) + '<br>'),
                      go.Scatter(x=labelSAWQLMS,
-                                y=valueChe1,
+                                y=[float(s.replace(',','')) for s in dataSAWQLMS.collect()[4][1:20]] if 'Czechia' in coun else [],
                                 mode='lines+markers',
                                 name='CZ',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#49AF30'),
@@ -7356,7 +5547,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Czechia' + '<br>' +
                                 '<b>Quarterly labour market slack</b>: ' + df1[4].astype(str) + '<br>'),
                      go.Scatter(x=labelSAWQLMS,
-                                y=valueDen1,
+                                y=[float(s.replace(',','')) for s in dataSAWQLMS.collect()[5][1:20]] if 'Denmark' in coun else [],
                                 mode='lines+markers',
                                 name='DK',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#2A4623'),
@@ -7367,7 +5558,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Denmark' + '<br>' +
                                 '<b>Quarterly labour market slack</b>: ' + df1[5].astype(str) + '<br>'),
                      go.Scatter(x=labelSAWQLMS,
-                                y=valueGer1,
+                                y=[float(s.replace(',','')) for s in dataSAWQLMS.collect()[6][1:20]] if 'Germany' in coun else [],
                                 mode='lines+markers',
                                 name='DE',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#7B7D7B'),
@@ -7378,7 +5569,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Germany' + '<br>' +
                                 '<b>Quarterly labour market slack</b>: ' + df1[6].astype(str) + '<br>'),
                      go.Scatter(x=labelSAWQLMS,
-                                y=valueEst1,
+                                y=[float(s.replace(',','')) for s in dataSAWQLMS.collect()[7][1:20]] if 'Estonia' in coun else [],
                                 mode='lines+markers',
                                 name='EE',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#C4C048'),
@@ -7389,7 +5580,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Estonia' + '<br>' +
                                 '<b>Quarterly labour market slack</b>: ' + df1[7].astype(str) + '<br>'),
                      go.Scatter(x=labelSAWQLMS,
-                                y=valueIre1,
+                                y=[float(s.replace(',','')) for s in dataSAWQLMS.collect()[8][1:20]] if 'Ireland' in coun else [],
                                 mode='lines+markers',
                                 name='IE',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#9E9D7B'),
@@ -7400,7 +5591,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Ireland' + '<br>' +
                                 '<b>Quarterly labour market slack</b>: ' + df1[8].astype(str) + '<br>'),
                      go.Scatter(x=labelSAWQLMS,
-                                y=valueGree1,
+                                y=[float(s.replace(',','')) for s in dataSAWQLMS.collect()[9][1:20]] if 'Greece' in coun else [],
                                 mode='lines+markers',
                                 name='EL',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#1A46C0'),
@@ -7411,7 +5602,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Greece' + '<br>' +
                                 '<b>Quarterly labour market slack</b>: ' + df1[9].astype(str) + '<br>'),
                      go.Scatter(x=labelSAWQLMS,
-                                y=valueSpa1,
+                                y=[float(s.replace(',','')) for s in dataSAWQLMS.collect()[10][1:20]] if 'Spain' in coun else [],
                                 mode='lines+markers',
                                 name='ES',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#2E063A'),
@@ -7422,7 +5613,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Spain' + '<br>' +
                                 '<b>Quarterly labour market slack</b>: ' + df1[10].astype(str) + '<br>'),
                      go.Scatter(x=labelSAWQLMS,
-                                y=valueFra1,
+                                y=[float(s.replace(',','')) for s in dataSAWQLMS.collect()[11][1:20]] if 'France' in coun else [],
                                 mode='lines+markers',
                                 name='FR',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#39313C'),
@@ -7433,7 +5624,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'France' + '<br>' +
                                 '<b>Quarterly labour market slack</b>: ' + df1[11].astype(str) + '<br>'),
                      go.Scatter(x=labelSAWQLMS,
-                                y=valueCro1,
+                                y=[float(s.replace(',','')) for s in dataSAWQLMS.collect()[12][1:20]] if 'Croatia' in coun else [],
                                 mode='lines+markers',
                                 name='HR',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#189F96'),
@@ -7444,7 +5635,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Croatia' + '<br>' +
                                 '<b>Quarterly labour market slack</b>: ' + df1[12].astype(str) + '<br>'),
                      go.Scatter(x=labelSAWQLMS,
-                                y=valueIta1,
+                                y=[float(s.replace(',','')) for s in dataSAWQLMS.collect()[13][1:20]] if 'Italy' in coun else [],
                                 mode='lines+markers',
                                 name='IT',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#94A4A3'),
@@ -7455,7 +5646,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Italy' + '<br>' +
                                 '<b>Quarterly labour market slack</b>: ' + df1[13].astype(str) + '<br>'),
                      go.Scatter(x=labelSAWQLMS,
-                                y=valueCyp1,
+                                y=[float(s.replace(',','')) for s in dataSAWQLMS.collect()[14][1:20]] if 'Cyprus' in coun else [],
                                 mode='lines+markers',
                                 name='CY',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#ff3399'),
@@ -7466,7 +5657,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Cyprus' + '<br>' +
                                 '<b>Quarterly labour market slack</b>: ' + df1[14].astype(str) + '<br>'),
                      go.Scatter(x=labelSAWQLMS,
-                                y=valueLat1,
+                                y=[float(s.replace(',','')) for s in dataSAWQLMS.collect()[15][1:20]] if 'Latvia' in coun else [],
                                 mode='lines+markers',
                                 name='LV',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#aaaa55'),
@@ -7477,7 +5668,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Latvia' + '<br>' +
                                 '<b>Quarterly labour market slack</b>: ' + df1[15].astype(str) + '<br>'),
                      go.Scatter(x=labelSAWQLMS,
-                                y=valueLith1,
+                                y=[float(s.replace(',','')) for s in dataSAWQLMS.collect()[16][1:20]] if 'Lithuania' in coun else [],
                                 mode='lines+markers',
                                 name='LT',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#ffff00'),
@@ -7488,7 +5679,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Lithuania' + '<br>' +
                                 '<b>Quarterly labour market slack</b>: ' + df1[16].astype(str) + '<br>'),
                      go.Scatter(x=labelSAWQLMS,
-                                y=valueLux1,
+                                y=[float(s.replace(',','')) for s in dataSAWQLMS.collect()[17][1:20]] if 'Luxembourg' in coun else [],
                                 mode='lines+markers',
                                 name='LU',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#007399'),
@@ -7499,7 +5690,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Luxembourg' + '<br>' +
                                 '<b>Quarterly labour market slack</b>: ' + df1[17].astype(str) + '<br>'),
                      go.Scatter(x=labelSAWQLMS,
-                                y=valueHun1,
+                                y=[float(s.replace(',','')) for s in dataSAWQLMS.collect()[18][1:20]] if 'Hungary' in coun else [],
                                 mode='lines+markers',
                                 name='HU',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#ff3300'),
@@ -7510,7 +5701,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Hungary' + '<br>' +
                                 '<b>Quarterly labour market slack</b>: ' + df1[18].astype(str) + '<br>'),
                      go.Scatter(x=labelSAWQLMS,
-                                y=valueNet1,
+                                y=[float(s.replace(',','')) for s in dataSAWQLMS.collect()[20][1:20]] if 'Netherlands' in coun else [],
                                 mode='lines+markers',
                                 name='NL',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#00e600'),
@@ -7521,7 +5712,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Netherlands' + '<br>' +
                                 '<b>Quarterly labour market slack</b>: ' + df1[20].astype(str) + '<br>'),
                      go.Scatter(x=labelSAWQLMS,
-                                y=valueAus1,
+                                y=[float(s.replace(',','')) for s in dataSAWQLMS.collect()[21][1:20]] if 'Austria' in coun else [],
                                 mode='lines+markers',
                                 name='AT',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#4dff4d'),
@@ -7532,7 +5723,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Austria' + '<br>' +
                                 '<b>Quarterly labour market slack</b>: ' + df1[21].astype(str) + '<br>'),
                      go.Scatter(x=labelSAWQLMS,
-                                y=valuePol1,
+                                y=[float(s.replace(',','')) for s in dataSAWQLMS.collect()[22][1:20]] if 'Poland' in coun else [],
                                 mode='lines+markers',
                                 name='PL',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#003300'),
@@ -7543,7 +5734,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Poland' + '<br>' +
                                 '<b>Quarterly labour market slack</b>: ' + df1[22].astype(str) + '<br>'),
                      go.Scatter(x=labelSAWQLMS,
-                                y=valuePor1,
+                                y=[float(s.replace(',','')) for s in dataSAWQLMS.collect()[23][1:20]] if 'Portugal' in coun else [],
                                 mode='lines+markers',
                                 name='PT',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#662900'),
@@ -7554,7 +5745,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Portugal' + '<br>' +
                                 '<b>Quarterly labour market slack</b>: ' + df1[23].astype(str) + '<br>'),
                      go.Scatter(x=labelSAWQLMS,
-                                y=valueRom1,
+                                y=[float(s.replace(',','')) for s in dataSAWQLMS.collect()[24][1:20]] if 'Romania' in coun else [],
                                 mode='lines+markers',
                                 name='RO',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#993399'),
@@ -7565,7 +5756,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Romania' + '<br>' +
                                 '<b>Quarterly labour market slack</b>: ' + df1[24].astype(str) + '<br>'),
                      go.Scatter(x=labelSAWQLMS,
-                                y=valueSlo1,
+                                y=[float(s.replace(',','')) for s in dataSAWQLMS.collect()[25][1:20]] if 'Slovenia' in coun else [],
                                 mode='lines+markers',
                                 name='SI',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#d98cd9'),
@@ -7576,7 +5767,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Slovenia' + '<br>' +
                                 '<b>Quarterly labour market slack</b>: ' + df1[25].astype(str) + '<br>'),
                      go.Scatter(x=labelSAWQLMS,
-                                y=valueSlovak1,
+                                y=[float(s.replace(',','')) for s in dataSAWQLMS.collect()[26][1:20]] if 'Slovakia' in coun else [],
                                 mode='lines+markers',
                                 name='SK',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#0033cc'),
@@ -7587,7 +5778,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Slovakia' + '<br>' +
                                 '<b>Quarterly labour market slack</b>: ' + df1[26].astype(str) + '<br>'),
                      go.Scatter(x=labelSAWQLMS,
-                                y=valueFin1,
+                                y=[float(s.replace(',','')) for s in dataSAWQLMS.collect()[27][1:20]] if 'Finland' in coun else [],
                                 mode='lines+markers',
                                 name='FI',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#99b3ff'),
@@ -7598,7 +5789,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Finland' + '<br>' +
                                 '<b>Quarterly labour market slack</b>: ' + df1[27].astype(str) + '<br>'),
                      go.Scatter(x=labelSAWQLMS,
-                                y=valueSwe1,
+                                y=[float(s.replace(',','')) for s in dataSAWQLMS.collect()[28][1:20]] if 'Sweden' in coun else [],
                                 mode='lines+markers',
                                 name='SE',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#001a66'),
@@ -7609,7 +5800,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Sweden' + '<br>' +
                                 '<b>Quarterly labour market slack</b>: ' + df1[28].astype(str) + '<br>'),
                      go.Scatter(x=labelSAWQLMS,
-                                y=valueIce1,
+                                y=[float(s.replace(',','')) for s in dataSAWQLMS.collect()[29][1:20]] if 'Icelan' in coun else [],
                                 mode='lines+markers',
                                 name='IS',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#336600'),
@@ -7620,7 +5811,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Iceland' + '<br>' +
                                 '<b>Quarterly labour market slack</b>: ' + df1[29].astype(str) + '<br>'),
                      go.Scatter(x=labelSAWQLMS,
-                                y=valueNor1,
+                                y=[float(s.replace(',','')) for s in dataSAWQLMS.collect()[30][1:20]] if 'Norway' in coun else [],
                                 mode='lines+markers',
                                 name='NO',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#73e600'),
@@ -7631,7 +5822,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Norway' + '<br>' +
                                 '<b>Quarterly labour market slack</b>: ' + df1[30].astype(str) + '<br>'),
                      go.Scatter(x=labelSAWQLMS,
-                                y=valueSwi1,
+                                y=[float(s.replace(',','')) for s in dataSAWQLMS.collect()[31][1:20]] if 'Switzerland' in coun else [],
                                 mode='lines+markers',
                                 name='CH',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#bfff80'),
@@ -7642,7 +5833,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Switzerland' + '<br>' +
                                 '<b>Quarterly labour market slack</b>: ' + df1[31].astype(str) + '<br>'),
                      go.Scatter(x=labelSAWQLMS,
-                                y=valueTur1,
+                                y=[float(s.replace(',','')) for s in dataSAWQLMS.collect()[35][1:20]] if 'Turkey' in coun else [],
                                 mode='lines+markers',
                                 name='TR',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#ff4da6'),
@@ -7653,7 +5844,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Turkey' + '<br>' +
                                 '<b>Quarterly labour market slack</b>: ' + df1[35].astype(str) + '<br>'),
                      go.Scatter(x=labelSAWQLMS,
-                                y=valueSer1,
+                                y=[float(s.replace(',','')) for s in dataSAWQLMS.collect()[34][1:20]] if 'Serbia' in coun else [],
                                 mode='lines+markers',
                                 name='US',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#4dc3ff'),
@@ -7718,118 +5909,6 @@ def update_graph(w_countries, w_countries1, country_chosen):
         }
     #KRece podgrupa Society and work-Quarterly job vacancy rate
     elif (w_countries == 'Society and work') & (w_countries1 == 'Quarterly job vacancy rate'):
-        valueEu1 = []
-        if ('European Union' in coun):
-            valueEu1 = getSAWQJVR('European Union')
-
-        valueBel1 = []
-        if ('Belgium' in coun):
-            valueBel1 = getSAWQJVR('Belgium')
-
-        valueBul1 = []
-        if ('Bulgaria' in coun):
-            valueBul1 = getSAWQJVR('Bulgaria')
-
-        valueChe1 = []
-        if ('Czechia' in coun):
-            valueChe1 = getSAWQJVR('Czechia')
-
-        valueDen1 = []
-        if ('Denmark' in coun):
-            valueDen1 = getSAWQJVR('Denmark')
-
-        valueGer1 = []
-        if ('Germany' in coun):
-            valueGer1 = getSAWQJVR('Germany')
-
-        valueEst1 = []
-        if ('Estonia' in coun):
-            valueEst1 = getSAWQJVR('Estonia')
-
-        valueGree1 = []
-        if ('Greece' in coun):
-            valueGree1 = getSAWQJVR('Greece')
-
-        valueSpa1 = []
-        if ('Spain' in coun):
-            valueSpa1 = getSAWQJVR('Spain')
-
-        valueCyp1 = []
-        if ('Cyprus' in coun):
-            valueCyp1 = getSAWQJVR('Cyprus')
-
-        valueLat1 = []
-        if ('Latvia' in coun):
-            valueLat1 = getSAWQJVR('Latvia')
-
-        valueLith1 = []
-        if ('Lithuania' in coun):
-            valueLith1 = getSAWQJVR('Lithuania')
-
-        valueLux1 = []
-        if ('Luxembourg' in coun):
-            valueLux1 = getSAWQJVR('Luxembourg')
-
-        valueHun1 = []
-        if ('Hungary' in coun):
-            valueHun1 = getSAWQJVR('Hungary')
-
-        valueNet1 = []
-        if ('Netherlands' in coun):
-            valueNet1 = getSAWQJVR('Netherlands')
-
-        valueAus1 = []
-        if ('Austria' in coun):
-            valueAus1 = getSAWQJVR('Austria')
-
-        valuePol1 = []
-        if ('Poland' in coun):
-            valuePol1 = getSAWQJVR('Poland')
-
-        valuePor1 = []
-        if ('Portugal' in coun):
-            valuePor1 = getSAWQJVR('Portugal')
-
-        valueRom1 = []
-        if ('Romania' in coun):
-            valueRom1 = getSAWQJVR('Romania')
-
-        valueSlo1 = []
-        if ('Slovenia' in coun):
-            valueSlo1 = getSAWQJVR('Slovenia')
-
-        valueSlovak1 = []
-        if ('Slovakia' in coun):
-            valueSlovak1 = getSAWQJVR('Slovakia')
-
-        valueFin1 = []
-        if ('Finland' in coun):
-            valueFin1 = getSAWQJVR('Finland')
-
-        valueSwe1 = []
-        if ('Sweden' in coun):
-            valueSwe1 = getSAWQJVR('Sweden')
-
-        valueUk1 = []
-        if ('United Kingdom' in coun):
-            valueUk1 = getSAWQJVR('United Kingdom')
-
-        valueNor1 = []
-        if ('Norway' in coun):
-            valueNor1 = getSAWQJVR('Norway')
-
-        valueSwi1 = []
-        if ('Switzerland' in coun):
-            valueSwi1 = getSAWQJVR('Switzerland')
-
-        valueEa1 = []
-        if ('Euro area' in coun):
-            valueEa1 = getSAWQJVR('Euro area')
-
-        valueIre1 = []
-        if ('Ireland' in coun):
-            valueIre1 = getSAWQJVR('Ireland')
-
         mur = pd.read_csv('data/Society and work-Quarterly job vacancy rate.csv')
         df1 = {}
         for i in range(0, 29):
@@ -7837,7 +5916,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
             df1[i] = niz
         return {
             'data': [go.Scatter(x=labelSAWQE,
-                                y=valueEu1,
+                                y=dataSAWQJVR.collect()[0][2:20] if 'European Union' in coun else [],
                                 mode='lines+markers',
                                 name='EU',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#E6D1D1'),
@@ -7848,7 +5927,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'European Union' + '<br>'+
                                 '<b>Quarterly job vacancy rate</b>: ' + df1[0].astype(str) + '<br>'),
                      go.Scatter(x=labelSAWQE,
-                                y=valueBel1,
+                                y=dataSAWQJVR.collect()[2][2:20] if 'Belgium' in coun else [],
                                 mode='lines+markers',
                                 name='BE',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#FF0000'),
@@ -7859,7 +5938,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Belgium' + '<br>'+
                                 '<b>Quarterly job vacancy rate</b>: ' + df1[2].astype(str) + '<br>'),
                      go.Scatter(x=labelSAWQE,
-                                y=valueEa1,
+                                y=dataSAWQJVR.collect()[1][2:20] if 'Euro area' in coun else [],
                                 mode='lines+markers',
                                 name='EA',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#472727'),
@@ -7870,7 +5949,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Euro area' + '<br>' +
                                 '<b>Quarterly job vacancy rate</b>: ' + df1[1].astype(str) + '<br>'),
                      go.Scatter(x=labelSAWQE,
-                                y=valueBul1,
+                                y=dataSAWQJVR.collect()[3][2:20] if 'Bulgaria' in coun else [],
                                 mode='lines+markers',
                                 name='BG',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#353131'),
@@ -7881,7 +5960,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Bulgaria' + '<br>' +
                                 '<b>Quarterly job vacancy rate</b>: ' + df1[3].astype(str) + '<br>'),
                      go.Scatter(x=labelSAWQE,
-                                y=valueChe1,
+                                y=dataSAWQJVR.collect()[4][2:20] if 'Czechia' in coun else [],
                                 mode='lines+markers',
                                 name='CZ',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#49AF30'),
@@ -7892,18 +5971,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Czechia' + '<br>' +
                                 '<b>Quarterly job vacancy rate</b>: ' + df1[4].astype(str) + '<br>'),
                      go.Scatter(x=labelSAWQE,
-                                y=valueDen1,
-                                mode='lines+markers',
-                                name='DK',
-                                line=dict(shape="spline", smoothing=1.3, width=3, color='#2A4623'),
-                                marker=dict(size=5, symbol='circle', color='lightblue',
-                                            line=dict(color='#2A4623', width=2)),
-                                hoverinfo='text',
-                                hovertext=
-                                '<b>Country</b>: ' + 'Denmark' + '<br>' +
-                                '<b>Quarterly job vacancy rate</b>: ' + df1[5].astype(str) + '<br>'),
-                     go.Scatter(x=labelSAWQE,
-                                y=valueGer1,
+                                y=dataSAWQJVR.collect()[5][2:20] if 'Germany' in coun else [],
                                 mode='lines+markers',
                                 name='DE',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#7B7D7B'),
@@ -7914,7 +5982,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Germany' + '<br>' +
                                 '<b>Quarterly job vacancy rate</b>: ' + df1[6].astype(str) + '<br>'),
                      go.Scatter(x=labelSAWQE,
-                                y=valueEst1,
+                                y=dataSAWQJVR.collect()[6][2:20] if 'Estonia' in coun else [],
                                 mode='lines+markers',
                                 name='EE',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#C4C048'),
@@ -7925,7 +5993,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Estonia' + '<br>' +
                                 '<b>Quarterly job vacancy rate</b>: ' + df1[7].astype(str) + '<br>'),
                      go.Scatter(x=labelSAWQE,
-                                y=valueIre1,
+                                y=dataSAWQJVR.collect()[7][2:20] if 'Ireland' in coun else [],
                                 mode='lines+markers',
                                 name='IE',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#9E9D7B'),
@@ -7936,7 +6004,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Ireland' + '<br>' +
                                 '<b>Quarterly job vacancy rate</b>: ' + df1[8].astype(str) + '<br>'),
                      go.Scatter(x=labelSAWQE,
-                                y=valueGree1,
+                                y=dataSAWQJVR.collect()[8][2:20] if 'Greece' in coun else [],
                                 mode='lines+markers',
                                 name='EL',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#1A46C0'),
@@ -7947,7 +6015,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Greece' + '<br>' +
                                 '<b>Quarterly job vacancy rate</b>: ' + df1[9].astype(str) + '<br>'),
                      go.Scatter(x=labelSAWQE,
-                                y=valueSpa1,
+                                y=dataSAWQJVR.collect()[9][2:20] if 'Spain' in coun else [],
                                 mode='lines+markers',
                                 name='ES',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#2E063A'),
@@ -7958,7 +6026,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Spain' + '<br>' +
                                 '<b>Quarterly job vacancy rate</b>: ' + df1[9].astype(str) + '<br>'),
                      go.Scatter(x=labelSAWQE,
-                                y=valueCyp1,
+                                y=dataSAWQJVR.collect()[10][2:20] if 'Cyprus' in coun else [],
                                 mode='lines+markers',
                                 name='CY',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#ff3399'),
@@ -7969,7 +6037,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Cyprus' + '<br>' +
                                 '<b>Quarterly job vacancy rate</b>: ' + df1[10].astype(str) + '<br>'),
                      go.Scatter(x=labelSAWQE,
-                                y=valueLat1,
+                                y=dataSAWQJVR.collect()[11][2:20] if 'Latvia' in coun else [],
                                 mode='lines+markers',
                                 name='LV',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#aaaa55'),
@@ -7980,7 +6048,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Latvia' + '<br>' +
                                 '<b>Quarterly job vacancy rate</b>: ' + df1[11].astype(str) + '<br>'),
                      go.Scatter(x=labelSAWQE,
-                                y=valueLith1,
+                                y=dataSAWQJVR.collect()[12][2:20] if 'Lithuania' in coun else [],
                                 mode='lines+markers',
                                 name='LT',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#ffff00'),
@@ -7991,7 +6059,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Lithuania' + '<br>' +
                                 '<b>Quarterly job vacancy rate</b>: ' + df1[12].astype(str) + '<br>'),
                      go.Scatter(x=labelSAWQE,
-                                y=valueLux1,
+                                y=dataSAWQJVR.collect()[13][2:20] if 'Luxembourg' in coun else [],
                                 mode='lines+markers',
                                 name='LU',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#007399'),
@@ -8002,7 +6070,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Luxembourg' + '<br>' +
                                 '<b>Quarterly job vacancy rate</b>: ' + df1[13].astype(str) + '<br>'),
                      go.Scatter(x=labelSAWQE,
-                                y=valueHun1,
+                                y=dataSAWQJVR.collect()[14][2:20] if 'Hungary' in coun else [],
                                 mode='lines+markers',
                                 name='HU',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#ff3300'),
@@ -8013,7 +6081,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Hungary' + '<br>' +
                                 '<b>Quarterly job vacancy rate</b>: ' + df1[14].astype(str) + '<br>'),
                      go.Scatter(x=labelSAWQE,
-                                y=valueNet1,
+                                y=dataSAWQJVR.collect()[16][2:20] if 'Netherlands' in coun else [],
                                 mode='lines+markers',
                                 name='NL',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#00e600'),
@@ -8024,7 +6092,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Netherlands' + '<br>' +
                                 '<b>Quarterly job vacancy rate</b>: ' + df1[16].astype(str) + '<br>'),
                      go.Scatter(x=labelSAWQE,
-                                y=valueAus1,
+                                y=dataSAWQJVR.collect()[17][2:20] if 'Austria' in coun else [],
                                 mode='lines+markers',
                                 name='AT',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#4dff4d'),
@@ -8035,7 +6103,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Austria' + '<br>' +
                                 '<b>Quarterly job vacancy rate</b>: ' + df1[17].astype(str) + '<br>'),
                      go.Scatter(x=labelSAWQE,
-                                y=valuePol1,
+                                y=dataSAWQJVR.collect()[18][2:20] if 'Poland' in coun else [],
                                 mode='lines+markers',
                                 name='PL',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#003300'),
@@ -8046,7 +6114,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Poland' + '<br>' +
                                 '<b>Quarterly job vacancy rate</b>: ' + df1[18].astype(str) + '<br>'),
                      go.Scatter(x=labelSAWQE,
-                                y=valuePor1,
+                                y=dataSAWQJVR.collect()[19][2:20] if 'Portugal' in coun else [],
                                 mode='lines+markers',
                                 name='PT',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#662900'),
@@ -8057,7 +6125,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Portugal' + '<br>' +
                                 '<b>Quarterly job vacancy rate</b>: ' + df1[19].astype(str) + '<br>'),
                      go.Scatter(x=labelSAWQE,
-                                y=valueRom1,
+                                y=dataSAWQJVR.collect()[20][2:20] if 'Romania' in coun else [],
                                 mode='lines+markers',
                                 name='RO',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#993399'),
@@ -8068,7 +6136,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Romania' + '<br>' +
                                 '<b>Quarterly job vacancy rate</b>: ' + df1[20].astype(str) + '<br>'),
                      go.Scatter(x=labelSAWQE,
-                                y=valueSlo1,
+                                y=dataSAWQJVR.collect()[21][2:20] if 'SLovenia' in coun else [],
                                 mode='lines+markers',
                                 name='SI',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#d98cd9'),
@@ -8079,7 +6147,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Slovenia' + '<br>' +
                                 '<b>Quarterly job vacancy rate</b>: ' + df1[21].astype(str) + '<br>'),
                      go.Scatter(x=labelSAWQE,
-                                y=valueSlovak1,
+                                y=dataSAWQJVR.collect()[22][2:20] if 'Slovakia' in coun else [],
                                 mode='lines+markers',
                                 name='SK',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#0033cc'),
@@ -8090,7 +6158,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Slovakia' + '<br>' +
                                 '<b>Quarterly job vacancy rate</b>: ' + df1[22].astype(str) + '<br>'),
                      go.Scatter(x=labelSAWQE,
-                                y=valueFin1,
+                                y=dataSAWQJVR.collect()[23][2:20] if 'Finland' in coun else [],
                                 mode='lines+markers',
                                 name='FI',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#99b3ff'),
@@ -8101,7 +6169,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Finland' + '<br>' +
                                 '<b>Quarterly job vacancy rate</b>: ' + df1[23].astype(str) + '<br>'),
                      go.Scatter(x=labelSAWQE,
-                                y=valueSwe1,
+                                y=dataSAWQJVR.collect()[24][2:20] if 'Sweden' in coun else [],
                                 mode='lines+markers',
                                 name='SE',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#001a66'),
@@ -8112,7 +6180,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Sweden' + '<br>' +
                                 '<b>Quarterly job vacancy rate</b>: ' + df1[24].astype(str) + '<br>'),
                      go.Scatter(x=labelSAWQE,
-                                y=valueUk1,
+                                y=dataSAWQJVR.collect()[27][2:20] if 'United Kingdom' in coun else [],
                                 mode='lines+markers',
                                 name='UK',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#00cc99'),
@@ -8123,7 +6191,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'United Kingdom' + '<br>' +
                                 '<b>Quarterly job vacancy rate</b>: ' + df1[27].astype(str) + '<br>'),
                      go.Scatter(x=labelSAWQE,
-                                y=valueNor1,
+                                y=dataSAWQJVR.collect()[25][2:20] if 'Norway' in coun else [],
                                 mode='lines+markers',
                                 name='NO',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#73e600'),
@@ -8134,7 +6202,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Norway' + '<br>' +
                                 '<b>Quarterly job vacancy rate</b>: ' + df1[25].astype(str) + '<br>'),
                      go.Scatter(x=labelSAWQE,
-                                y=valueSwi1,
+                                y=dataSAWQJVR.collect()[26][2:20] if 'Switzerland' in coun else [],
                                 mode='lines+markers',
                                 name='CH',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#bfff80'),
@@ -8199,114 +6267,6 @@ def update_graph(w_countries, w_countries1, country_chosen):
         }
 # KRece podgrupa Society and work-Quarterly labour cost
     elif (w_countries == 'Society and work') & (w_countries1 == 'Quarterly labour cost'):
-        valueEu1 = []
-        if ('European Union' in coun):
-            valueEu1 = getSAWQLC('European Union')
-
-        valueBel1 = []
-        if ('Belgium' in coun):
-            valueBel1 = getSAWQLC('Belgium')
-
-        valueBul1 = []
-        if ('Bulgaria' in coun):
-            valueBul1 = getSAWQLC('Bulgaria')
-
-        valueChe1 = []
-        if ('Czechia' in coun):
-            valueChe1 = getSAWQLC('Czechia')
-
-        valueGer1 = []
-        if ('Germany' in coun):
-            valueGer1 = getSAWQLC('Germany')
-
-        valueEst1 = []
-        if ('Estonia' in coun):
-            valueEst1 = getSAWQLC('Estonia')
-
-        valueGree1 = []
-        if ('Greece' in coun):
-            valueGree1 = getSAWQLC('Greece')
-
-        valueSpa1 = []
-        if ('Spain' in coun):
-            valueSpa1 = getSAWQLC('Spain')
-
-        valueCyp1 = []
-        if ('Cyprus' in coun):
-            valueCyp1 = getSAWQLC('Cyprus')
-
-        valueLat1 = []
-        if ('Latvia' in coun):
-            valueLat1 = getSAWQLC('Latvia')
-
-        valueLith1 = []
-        if ('Lithuania' in coun):
-            valueLith1 = getSAWQLC('Lithuania')
-
-        valueLux1 = []
-        if ('Luxembourg' in coun):
-            valueLux1 = getSAWQLC('Luxembourg')
-
-        valueHun1 = []
-        if ('Hungary' in coun):
-            valueHun1 = getSAWQLC('Hungary')
-
-        valueNet1 = []
-        if ('Netherlands' in coun):
-            valueNet1 = getSAWQLC('Netherlands')
-
-        valueAus1 = []
-        if ('Austria' in coun):
-            valueAus1 = getSAWQLC('Austria')
-
-        valuePol1 = []
-        if ('Poland' in coun):
-            valuePol1 = getSAWQLC('Poland')
-
-        valuePor1 = []
-        if ('Portugal' in coun):
-            valuePor1 = getSAWQLC('Portugal')
-
-        valueRom1 = []
-        if ('Romania' in coun):
-            valueRom1 = getSAWQLC('Romania')
-
-        valueSlo1 = []
-        if ('Slovenia' in coun):
-            valueSlo1 = getSAWQLC('Slovenia')
-
-        valueSlovak1 = []
-        if ('Slovakia' in coun):
-            valueSlovak1 = getSAWQLC('Slovakia')
-
-        valueFin1 = []
-        if ('Finland' in coun):
-            valueFin1 = getSAWQLC('Finland')
-
-        valueSwe1 = []
-        if ('Sweden' in coun):
-            valueSwe1 = getSAWQLC('Sweden')
-
-        valueUk1 = []
-        if ('United Kingdom' in coun):
-            valueUk1 = getSAWQLC('United Kingdom')
-
-        valueNor1 = []
-        if ('Norway' in coun):
-            valueNor1 = getSAWQLC('Norway')
-
-        valueSwi1 = []
-        if ('Switzerland' in coun):
-            valueSwi1 = getSAWQLC('Switzerland')
-
-        valueEa1 = []
-        if ('Euro area' in coun):
-            valueEa1 = getSAWQLC('Euro area')
-
-        valueIre1 = []
-        if ('Ireland' in coun):
-            valueIre1 = getSAWQLC('Ireland')
-
         qlc = pd.read_csv('data/Society and work-Quarterly labour cost.csv')
         df1 = {}
         for i in range(0, 29):
@@ -8314,7 +6274,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
             df1[i] = niz
         return {
             'data': [go.Scatter(x=labelSAWQE,
-                                y=valueEu1,
+                                y=dataSAWQLC.collect()[0][2:20] if 'European Union' in coun else [],
                                 mode='lines+markers',
                                 name='EU',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#E6D1D1'),
@@ -8325,7 +6285,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'European Union' + '<br>'+
                                 '<b>Quarterly labour cost</b>: ' + df1[0].astype(str) + '<br>'),
                      go.Scatter(x=labelSAWQE,
-                                y=valueBel1,
+                                y=dataSAWQLC.collect()[2][2:20] if 'Belgium' in coun else [],
                                 mode='lines+markers',
                                 name='BE',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#FF0000'),
@@ -8336,7 +6296,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Belgium' + '<br>'+
                                 '<b>Quarterly labour cost</b>: ' + df1[2].astype(str) + '<br>'),
                      go.Scatter(x=labelSAWQE,
-                                y=valueEa1,
+                                y=dataSAWQLC.collect()[1][2:20] if 'Euro area' in coun else [],
                                 mode='lines+markers',
                                 name='EA',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#472727'),
@@ -8347,7 +6307,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Euro area' + '<br>' +
                                 '<b>Quarterly labour cost</b>: ' + df1[1].astype(str) + '<br>'),
                      go.Scatter(x=labelSAWQE,
-                                y=valueBul1,
+                                y=dataSAWQLC.collect()[3][2:20] if 'Bulgaria' in coun else [],
                                 mode='lines+markers',
                                 name='BG',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#353131'),
@@ -8358,7 +6318,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Bulgaria' + '<br>' +
                                 '<b>Quarterly labour cost</b>: ' + df1[3].astype(str) + '<br>'),
                      go.Scatter(x=labelSAWQE,
-                                y=valueChe1,
+                                y=dataSAWQLC.collect()[4][2:20] if 'Czechia' in coun else [],
                                 mode='lines+markers',
                                 name='CZ',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#49AF30'),
@@ -8369,7 +6329,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Czechia' + '<br>' +
                                 '<b>Quarterly labour cost</b>: ' + df1[4].astype(str) + '<br>'),
                      go.Scatter(x=labelSAWQE,
-                                y=valueGer1,
+                                y=dataSAWQLC.collect()[6][2:20] if 'Germany' in coun else [],
                                 mode='lines+markers',
                                 name='DE',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#7B7D7B'),
@@ -8380,7 +6340,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Germany' + '<br>' +
                                 '<b>Quarterly labour cost</b>: ' + df1[5].astype(str) + '<br>'),
                      go.Scatter(x=labelSAWQE,
-                                y=valueEst1,
+                                y=dataSAWQLC.collect()[7][2:20] if 'Estonia' in coun else [],
                                 mode='lines+markers',
                                 name='EE',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#C4C048'),
@@ -8391,7 +6351,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Estonia' + '<br>' +
                                 '<b>Quarterly labour cost</b>: ' + df1[6].astype(str) + '<br>'),
                      go.Scatter(x=labelSAWQE,
-                                y=valueIre1,
+                                y=dataSAWQLC.collect()[8][2:20] if 'Ireland' in coun else [],
                                 mode='lines+markers',
                                 name='IE',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#9E9D7B'),
@@ -8402,7 +6362,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Ireland' + '<br>' +
                                 '<b>Quarterly labour cost</b>: ' + df1[7].astype(str) + '<br>'),
                      go.Scatter(x=labelSAWQE,
-                                y=valueGree1,
+                                y=dataSAWQLC.collect()[9][2:20] if 'Greece' in coun else [],
                                 mode='lines+markers',
                                 name='EL',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#1A46C0'),
@@ -8413,7 +6373,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Greece' + '<br>' +
                                 '<b>Quarterly labour cost</b>: ' + df1[8].astype(str) + '<br>'),
                      go.Scatter(x=labelSAWQE,
-                                y=valueSpa1,
+                                y=dataSAWQLC.collect()[10][2:20] if 'Spain' in coun else [],
                                 mode='lines+markers',
                                 name='ES',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#2E063A'),
@@ -8424,7 +6384,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Spain' + '<br>' +
                                 '<b>Quarterly labour cost</b>: ' + df1[9].astype(str) + '<br>'),
                      go.Scatter(x=labelSAWQE,
-                                y=valueCyp1,
+                                y=dataSAWQLC.collect()[14][2:20] if 'Cyprus' in coun else [],
                                 mode='lines+markers',
                                 name='CY',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#ff3399'),
@@ -8435,7 +6395,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Cyprus' + '<br>' +
                                 '<b>Quarterly labour cost</b>: ' + df1[10].astype(str) + '<br>'),
                      go.Scatter(x=labelSAWQE,
-                                y=valueLat1,
+                                y=dataSAWQLC.collect()[15][2:20] if 'Latvia' in coun else [],
                                 mode='lines+markers',
                                 name='LV',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#aaaa55'),
@@ -8446,7 +6406,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Latvia' + '<br>' +
                                 '<b>Quarterly labour cost</b>: ' + df1[11].astype(str) + '<br>'),
                      go.Scatter(x=labelSAWQE,
-                                y=valueLith1,
+                                y=dataSAWQLC.collect()[16][2:20] if 'Lithuania' in coun else [],
                                 mode='lines+markers',
                                 name='LT',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#ffff00'),
@@ -8457,7 +6417,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Lithuania' + '<br>' +
                                 '<b>Quarterly labour cost</b>: ' + df1[12].astype(str) + '<br>'),
                      go.Scatter(x=labelSAWQE,
-                                y=valueLux1,
+                                y=dataSAWQLC.collect()[17][2:20] if 'Luxembourg' in coun else [],
                                 mode='lines+markers',
                                 name='LU',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#007399'),
@@ -8468,7 +6428,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Luxembourg' + '<br>' +
                                 '<b>Quarterly labour cost</b>: ' + df1[13].astype(str) + '<br>'),
                      go.Scatter(x=labelSAWQE,
-                                y=valueHun1,
+                                y=dataSAWQLC.collect()[18][2:20] if 'Hungary' in coun else [],
                                 mode='lines+markers',
                                 name='HU',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#ff3300'),
@@ -8479,7 +6439,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Hungary' + '<br>' +
                                 '<b>Quarterly labour cost</b>: ' + df1[14].astype(str) + '<br>'),
                      go.Scatter(x=labelSAWQE,
-                                y=valueNet1,
+                                y=dataSAWQLC.collect()[20][2:20] if 'Netherlands' in coun else [],
                                 mode='lines+markers',
                                 name='NL',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#00e600'),
@@ -8490,7 +6450,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Netherlands' + '<br>' +
                                 '<b>Quarterly labour cost</b>: ' + df1[16].astype(str) + '<br>'),
                      go.Scatter(x=labelSAWQE,
-                                y=valueAus1,
+                                y=dataSAWQLC.collect()[21][2:20] if 'Austria' in coun else [],
                                 mode='lines+markers',
                                 name='AT',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#4dff4d'),
@@ -8501,7 +6461,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Austria' + '<br>' +
                                 '<b>Quarterly labour cost</b>: ' + df1[17].astype(str) + '<br>'),
                      go.Scatter(x=labelSAWQE,
-                                y=valuePol1,
+                                y=dataSAWQLC.collect()[22][2:20] if 'Poland' in coun else [],
                                 mode='lines+markers',
                                 name='PL',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#003300'),
@@ -8512,7 +6472,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Poland' + '<br>' +
                                 '<b>Quarterly labour cost</b>: ' + df1[18].astype(str) + '<br>'),
                      go.Scatter(x=labelSAWQE,
-                                y=valuePor1,
+                                y=dataSAWQLC.collect()[23][2:20] if 'Portugal' in coun else [],
                                 mode='lines+markers',
                                 name='PT',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#662900'),
@@ -8523,7 +6483,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Portugal' + '<br>' +
                                 '<b>Quarterly labour cost</b>: ' + df1[19].astype(str) + '<br>'),
                      go.Scatter(x=labelSAWQE,
-                                y=valueRom1,
+                                y=dataSAWQLC.collect()[24][2:20] if 'Romania' in coun else [],
                                 mode='lines+markers',
                                 name='RO',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#993399'),
@@ -8534,7 +6494,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Romania' + '<br>' +
                                 '<b>Quarterly labour cost</b>: ' + df1[20].astype(str) + '<br>'),
                      go.Scatter(x=labelSAWQE,
-                                y=valueSlo1,
+                                y=dataSAWQLC.collect()[25][2:20] if 'Slovenia' in coun else [],
                                 mode='lines+markers',
                                 name='SI',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#d98cd9'),
@@ -8545,7 +6505,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Slovenia' + '<br>' +
                                 '<b>Quarterly labour cost</b>: ' + df1[21].astype(str) + '<br>'),
                      go.Scatter(x=labelSAWQE,
-                                y=valueSlovak1,
+                                y=dataSAWQLC.collect()[26][2:20] if 'Slovakia' in coun else [],
                                 mode='lines+markers',
                                 name='SK',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#0033cc'),
@@ -8556,7 +6516,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Slovakia' + '<br>' +
                                 '<b>Quarterly labour cost</b>: ' + df1[22].astype(str) + '<br>'),
                      go.Scatter(x=labelSAWQE,
-                                y=valueFin1,
+                                y=dataSAWQLC.collect()[27][2:20] if 'Finland' in coun else [],
                                 mode='lines+markers',
                                 name='FI',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#99b3ff'),
@@ -8567,7 +6527,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Finland' + '<br>' +
                                 '<b>Quarterly labour cost</b>: ' + df1[23].astype(str) + '<br>'),
                      go.Scatter(x=labelSAWQE,
-                                y=valueSwe1,
+                                y=dataSAWQLC.collect()[28][2:20] if 'Sweden' in coun else [],
                                 mode='lines+markers',
                                 name='SE',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#001a66'),
@@ -8578,7 +6538,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Sweden' + '<br>' +
                                 '<b>Quarterly labour cost</b>: ' + df1[24].astype(str) + '<br>'),
                      go.Scatter(x=labelSAWQE,
-                                y=valueUk1,
+                                y=dataSAWQLC.collect()[31][2:20] if 'United Kingdom' in coun else [],
                                 mode='lines+markers',
                                 name='UK',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#00cc99'),
@@ -8589,7 +6549,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'United Kingdom' + '<br>' +
                                 '<b>Quarterly labour cost</b>: ' + df1[27].astype(str) + '<br>'),
                      go.Scatter(x=labelSAWQE,
-                                y=valueNor1,
+                                y=dataSAWQLC.collect()[30][2:20] if 'Norway' in coun else [],
                                 mode='lines+markers',
                                 name='NO',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#73e600'),
@@ -8598,18 +6558,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 hoverinfo='text',
                                 hovertext=
                                 '<b>Country</b>: ' + 'Norway' + '<br>' +
-                                '<b>Quarterly labour cost</b>: ' + df1[25].astype(str) + '<br>'),
-                     go.Scatter(x=labelSAWQE,
-                                y=valueSwi1,
-                                mode='lines+markers',
-                                name='CH',
-                                line=dict(shape="spline", smoothing=1.3, width=3, color='#bfff80'),
-                                marker=dict(size=5, symbol='circle', color='lightblue',
-                                            line=dict(color='#bfff80', width=2)),
-                                hoverinfo='text',
-                                hovertext=
-                                '<b>Country</b>: ' + 'Switzerland' + '<br>' +
-                                '<b>Quarterly labour cost</b>: ' + df1[26].astype(str) + '<br>'),],
+                                '<b>Quarterly labour cost</b>: ' + df1[25].astype(str) + '<br>')],
             'layout': go.Layout(
                 barmode='stack',
                 plot_bgcolor='#808080',
@@ -8667,126 +6616,6 @@ def update_graph(w_countries, w_countries1, country_chosen):
     ###################################################
     #Krece oblast Agriculture, energy, transport & tourism-Monthly air passenger transport
     elif (w_countries == 'Agriculture, energy, transport & tourism') & (w_countries1 == 'Monthly air passenger transport'):
-        valueEu1 = []
-        if ('European Union' in coun):
-            valueEu1 = getAETTMAPT('European Union')
-
-        valueBel1 = []
-        if ('Belgium' in coun):
-            valueBel1 = getAETTMAPT('Belgium')
-
-        valueBul1 = []
-        if ('Bulgaria' in coun):
-            valueBul1 = getAETTMAPT('Bulgaria')
-
-        valueChe1 = []
-        if ('Czechia' in coun):
-            valueChe1 = getAETTMAPT('Czechia')
-
-        valueDen1 = []
-        if ('Denmark' in coun):
-            valueDen1 = getAETTMAPT('Denmark')
-
-        valueGer1 = []
-        if ('Germany' in coun):
-            valueGer1 = getAETTMAPT('Germany')
-
-        valueEst1 = []
-        if ('Estonia' in coun):
-            valueEst1 = getAETTMAPT('Estonia')
-
-        valueGree1 = []
-        if ('Greece' in coun):
-            valueGree1 = getAETTMAPT('Greece')
-
-        valueSpa1 = []
-        if ('Spain' in coun):
-            valueSpa1 = getAETTMAPT('Spain')
-
-        valueFra1 = []
-        if ('France' in coun):
-            valueFra1 = getAETTMAPT('France')
-
-        valueCro1 = []
-        if ('Croatia' in coun):
-            valueCro1 = getAETTMAPT('Croatia')
-
-        valueIta1 = []
-        if ('Italy' in coun):
-            valueIta1 = getAETTMAPT('Italy')
-
-        valueCyp1 = []
-        if ('Cyprus' in coun):
-            valueCyp1 = getAETTMAPT('Cyprus')
-
-        valueLat1 = []
-        if ('Latvia' in coun):
-            valueLat1 = getAETTMAPT('Latvia')
-
-        valueLith1 = []
-        if ('Lithuania' in coun):
-            valueLith1 = getAETTMAPT('Lithuania')
-
-        valueLux1 = []
-        if ('Luxembourg' in coun):
-            valueLux1 = getAETTMAPT('Luxembourg')
-
-        valueHun1 = []
-        if ('Hungary' in coun):
-            valueHun1 = getAETTMAPT('Hungary')
-
-        valueNet1 = []
-        if ('Netherlands' in coun):
-            valueNet1 = getAETTMAPT('Netherlands')
-
-        valueAus1 = []
-        if ('Austria' in coun):
-            valueAus1 = getAETTMAPT('Austria')
-
-        valuePol1 = []
-        if ('Poland' in coun):
-            valuePol1 = getAETTMAPT('Poland')
-
-        valuePor1 = []
-        if ('Portugal' in coun):
-            valuePor1 = getAETTMAPT('Portugal')
-
-        valueRom1 = []
-        if ('Romania' in coun):
-            valueRom1 = getAETTMAPT('Romania')
-
-        valueSlo1 = []
-        if ('Slovenia' in coun):
-            valueSlo1 = getAETTMAPT('Slovenia')
-
-        valueSlovak1 = []
-        if ('Slovakia' in coun):
-            valueSlovak1 = getAETTMAPT('Slovakia')
-
-        valueFin1 = []
-        if ('Finland' in coun):
-            valueFin1 = getAETTMAPT('Finland')
-
-        valueSwe1 = []
-        if ('Sweden' in coun):
-            valueSwe1 = getAETTMAPT('Sweden')
-
-        valueUk1 = []
-        if ('United Kingdom' in coun):
-            valueUk1 = getAETTMAPT('United Kingdom')
-
-        valueNor1 = []
-        if ('Norway' in coun):
-            valueNor1 = getAETTMAPT('Norway')
-
-        valueSwi1 = []
-        if ('Switzerland' in coun):
-            valueSwi1 = getAETTMAPT('Switzerland')
-
-        valueIre1 = []
-        if ('Ireland' in coun):
-            valueIre1 = getAETTMAPT('Ireland')
-
         mapt = pd.read_csv('data/Agriculture, energy, transport & tourism-Monthly air passenger transport.csv')
         df1 = {}
         for i in range(0, 31):
@@ -8794,7 +6623,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
             df1[i] = niz
         return {
             'data': [go.Scatter(x=labelsAETTMAPT,
-                                y=valueEu1,
+                                y=[float(s.replace(',','')) for s in dataAETTMAPT.collect()[0][1:35]] if 'European Union' in coun else [],
                                 mode='lines+markers',
                                 name='EU',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#E6D1D1'),
@@ -8805,7 +6634,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'European Union' + '<br>' +
                                 '<b>Monthly air passenger transport</b>: ' + df1[0].astype(str) + '<br>'),
                      go.Scatter(x=labelsAETTMAPT,
-                                y=valueBel1,
+                                y=[float(s.replace(',','')) for s in dataAETTMAPT.collect()[1][1:35]] if 'Belgium' in coun else [],
                                 mode='lines+markers',
                                 name='BE',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#FF0000'),
@@ -8816,7 +6645,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Belgium' + '<br>'+
                                 '<b>Monthly air passenger transport</b>: ' + df1[1].astype(str) + '<br>'),
                      go.Scatter(x=labelsAETTMAPT,
-                                y=valueBul1,
+                                y=[float(s.replace(',','')) for s in dataAETTMAPT.collect()[2][1:35]] if 'Bulgaria' in coun else [],
                                 mode='lines+markers',
                                 name='BG',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#353131'),
@@ -8827,7 +6656,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Bulgaria' + '<br>' +
                                 '<b>Monthly air passenger transport</b>: ' + df1[2].astype(str) + '<br>'),
                      go.Scatter(x=labelsAETTMAPT,
-                                y=valueChe1,
+                                y=[float(s.replace(',','')) for s in dataAETTMAPT.collect()[3][1:35]] if 'Czechia' in coun else [],
                                 mode='lines+markers',
                                 name='CZ',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#49AF30'),
@@ -8838,7 +6667,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Czechia' + '<br>' +
                                 '<b>Monthly air passenger transport</b>: ' + df1[3].astype(str) + '<br>'),
                      go.Scatter(x=labelsAETTMAPT,
-                                y=valueDen1,
+                                y=[float(s.replace(',','')) for s in dataAETTMAPT.collect()[4][1:35]] if 'Denmark' in coun else [],
                                 mode='lines+markers',
                                 name='DK',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#2A4623'),
@@ -8849,7 +6678,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Denmark' + '<br>' +
                                 '<b>Monthly air passenger transport</b>: ' + df1[5].astype(str) + '<br>'),
                      go.Scatter(x=labelsAETTMAPT,
-                                y=valueGer1,
+                                y=[float(s.replace(',','')) for s in dataAETTMAPT.collect()[5][1:35]] if 'Germany' in coun else [],
                                 mode='lines+markers',
                                 name='DE',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#7B7D7B'),
@@ -8860,7 +6689,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Germany' + '<br>' +
                                 '<b>Monthly air passenger transport</b>: ' + df1[5].astype(str) + '<br>'),
                      go.Scatter(x=labelsAETTMAPT,
-                                y=valueEst1,
+                                y=[float(s.replace(',','')) for s in dataAETTMAPT.collect()[6][1:35]] if 'Estonia' in coun else [],
                                 mode='lines+markers',
                                 name='EE',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#C4C048'),
@@ -8871,7 +6700,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Estonia' + '<br>' +
                                 '<b>Monthly air passenger transport</b>: ' + df1[6].astype(str) + '<br>'),
                      go.Scatter(x=labelsAETTMAPT,
-                                y=valueIre1,
+                                y=[float(s.replace(',','')) for s in dataAETTMAPT.collect()[7][1:35]] if 'Ireland' in coun else [],
                                 mode='lines+markers',
                                 name='IE',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#9E9D7B'),
@@ -8882,7 +6711,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Ireland' + '<br>' +
                                 '<b>Monthly air passenger transport</b>: ' + df1[7].astype(str) + '<br>'),
                      go.Scatter(x=labelsAETTMAPT,
-                                y=valueGree1,
+                                y=[float(s.replace(',','')) for s in dataAETTMAPT.collect()[8][1:35]] if 'Greece' in coun else [],
                                 mode='lines+markers',
                                 name='EL',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#1A46C0'),
@@ -8893,7 +6722,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Greece' + '<br>' +
                                 '<b>Monthly air passenger transport</b>: ' + df1[8].astype(str) + '<br>'),
                      go.Scatter(x=labelsAETTMAPT,
-                                y=valueSpa1,
+                                y=[float(s.replace(',','')) for s in dataAETTMAPT.collect()[9][1:35]] if 'Spain' in coun else [],
                                 mode='lines+markers',
                                 name='ES',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#2E063A'),
@@ -8904,7 +6733,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Spain' + '<br>' +
                                 '<b>Monthly air passenger transport</b>: ' + df1[9].astype(str) + '<br>'),
                      go.Scatter(x=labelsAETTMAPT,
-                                y=valueFra1,
+                                y=[float(s.replace(',','')) for s in dataAETTMAPT.collect()[10][1:35]] if 'France' in coun else [],
                                 mode='lines+markers',
                                 name='FR',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#39313C'),
@@ -8915,7 +6744,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'France' + '<br>' +
                                 '<b>Monthly air passenger transport</b>: ' + df1[10].astype(str) + '<br>'),
                      go.Scatter(x=labelsAETTMAPT,
-                                y=valueCro1,
+                                y=[float(s.replace(',','')) for s in dataAETTMAPT.collect()[11][1:35]] if 'Croatia' in coun else [],
                                 mode='lines+markers',
                                 name='HR',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#189F96'),
@@ -8926,7 +6755,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Croatia' + '<br>' +
                                 '<b>Monthly air passenger transport</b>: ' + df1[11].astype(str) + '<br>'),
                      go.Scatter(x=labelsAETTMAPT,
-                                y=valueIta1,
+                                y=[float(s.replace(',','')) for s in dataAETTMAPT.collect()[12][1:35]] if 'Italy' in coun else [],
                                 mode='lines+markers',
                                 name='IT',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#94A4A3'),
@@ -8937,7 +6766,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Italy' + '<br>' +
                                 '<b>Monthly air passenger transport</b>: ' + df1[12].astype(str) + '<br>'),
                      go.Scatter(x=labelsAETTMAPT,
-                                y=valueCyp1,
+                                y=[float(s.replace(',','')) for s in dataAETTMAPT.collect()[13][1:35]] if 'Cyprus' in coun else [],
                                 mode='lines+markers',
                                 name='CY',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#ff3399'),
@@ -8948,7 +6777,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Cyprus' + '<br>' +
                                 '<b>Monthly air passenger transport</b>: ' + df1[13].astype(str) + '<br>'),
                      go.Scatter(x=labelsAETTMAPT,
-                                y=valueLat1,
+                                y=[float(s.replace(',','')) for s in dataAETTMAPT.collect()[14][1:35]] if 'Latvia' in coun else [],
                                 mode='lines+markers',
                                 name='LV',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#aaaa55'),
@@ -8959,7 +6788,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Latvia' + '<br>' +
                                 '<b>Monthly air passenger transport</b>: ' + df1[14].astype(str) + '<br>'),
                      go.Scatter(x=labelsAETTMAPT,
-                                y=valueLith1,
+                                y=[float(s.replace(',','')) for s in dataAETTMAPT.collect()[15][1:35]] if 'Lithuania' in coun else [],
                                 mode='lines+markers',
                                 name='LT',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#ffff00'),
@@ -8970,7 +6799,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Lithuania' + '<br>' +
                                 '<b>Monthly air passenger transport</b>: ' + df1[15].astype(str) + '<br>'),
                      go.Scatter(x=labelsAETTMAPT,
-                                y=valueLux1,
+                                y=[float(s.replace(',','')) for s in dataAETTMAPT.collect()[16][1:35]] if 'Luxembourg' in coun else [],
                                 mode='lines+markers',
                                 name='LU',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#007399'),
@@ -8981,7 +6810,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Luxembourg' + '<br>' +
                                 '<b>Monthly air passenger transport</b>: ' + df1[16].astype(str) + '<br>'),
                      go.Scatter(x=labelsAETTMAPT,
-                                y=valueHun1,
+                                y=[float(s.replace(',','')) for s in dataAETTMAPT.collect()[17][1:35]] if 'Hungary' in coun else [],
                                 mode='lines+markers',
                                 name='HU',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#ff3300'),
@@ -8992,7 +6821,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Hungary' + '<br>' +
                                 '<b>Monthly air passenger transport</b>: ' + df1[17].astype(str) + '<br>'),
                      go.Scatter(x=labelsAETTMAPT,
-                                y=valueNet1,
+                                y=[float(s.replace(',','')) for s in dataAETTMAPT.collect()[19][1:35]] if 'Netherlands' in coun else [],
                                 mode='lines+markers',
                                 name='NL',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#00e600'),
@@ -9003,7 +6832,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Netherlands' + '<br>' +
                                 '<b>Monthly air passenger transport</b>: ' + df1[19].astype(str) + '<br>'),
                      go.Scatter(x=labelsAETTMAPT,
-                                y=valueAus1,
+                                y=[float(s.replace(',','')) for s in dataAETTMAPT.collect()[20][1:35]] if 'Austria' in coun else [],
                                 mode='lines+markers',
                                 name='AT',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#4dff4d'),
@@ -9014,7 +6843,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Austria' + '<br>' +
                                 '<b>Monthly air passenger transport</b>: ' + df1[20].astype(str) + '<br>'),
                      go.Scatter(x=labelsAETTMAPT,
-                                y=valuePol1,
+                                y=[float(s.replace(',','')) for s in dataAETTMAPT.collect()[21][1:35]] if 'Poland' in coun else [],
                                 mode='lines+markers',
                                 name='PL',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#003300'),
@@ -9025,7 +6854,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Poland' + '<br>' +
                                 '<b>Monthly air passenger transport</b>: ' + df1[21].astype(str) + '<br>'),
                      go.Scatter(x=labelsAETTMAPT,
-                                y=valuePor1,
+                                y=[float(s.replace(',','')) for s in dataAETTMAPT.collect()[22][1:35]] if 'Portugal' in coun else [],
                                 mode='lines+markers',
                                 name='PT',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#662900'),
@@ -9036,7 +6865,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Portugal' + '<br>' +
                                 '<b>Monthly air passenger transport</b>: ' + df1[22].astype(str) + '<br>'),
                      go.Scatter(x=labelsAETTMAPT,
-                                y=valueRom1,
+                                y=[float(s.replace(',','')) for s in dataAETTMAPT.collect()[23][1:35]] if 'Romania' in coun else [],
                                 mode='lines+markers',
                                 name='RO',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#993399'),
@@ -9047,7 +6876,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Romania' + '<br>' +
                                 '<b>Monthly air passenger transport</b>: ' + df1[23].astype(str) + '<br>'),
                      go.Scatter(x=labelsAETTMAPT,
-                                y=valueSlo1,
+                                y=[float(s.replace(',','')) for s in dataAETTMAPT.collect()[24][1:35]] if 'Slovenia' in coun else [],
                                 mode='lines+markers',
                                 name='SI',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#d98cd9'),
@@ -9058,7 +6887,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Slovenia' + '<br>' +
                                 '<b>Monthly air passenger transport</b>: ' + df1[24].astype(str) + '<br>'),
                      go.Scatter(x=labelsAETTMAPT,
-                                y=valueSlovak1,
+                                y=[float(s.replace(',','')) for s in dataAETTMAPT.collect()[25][1:35]] if 'Slovakia' in coun else [],
                                 mode='lines+markers',
                                 name='SK',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#0033cc'),
@@ -9069,7 +6898,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Slovakia' + '<br>' +
                                 '<b>Monthly air passenger transport</b>: ' + df1[25].astype(str) + '<br>'),
                      go.Scatter(x=labelsAETTMAPT,
-                                y=valueFin1,
+                                y=[float(s.replace(',','')) for s in dataAETTMAPT.collect()[26][1:35]] if 'Finland' in coun else [],
                                 mode='lines+markers',
                                 name='FI',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#99b3ff'),
@@ -9080,7 +6909,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Finland' + '<br>' +
                                 '<b>Monthly air passenger transport</b>: ' + df1[26].astype(str) + '<br>'),
                      go.Scatter(x=labelsAETTMAPT,
-                                y=valueSwe1,
+                                y=[float(s.replace(',','')) for s in dataAETTMAPT.collect()[27][1:35]] if 'Sweden' in coun else [],
                                 mode='lines+markers',
                                 name='SE',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#001a66'),
@@ -9091,7 +6920,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Sweden' + '<br>' +
                                 '<b>Monthly air passenger transport</b>: ' + df1[27].astype(str) + '<br>'),
                      go.Scatter(x=labelsAETTMAPT,
-                                y=valueUk1,
+                                y=[float(s.replace(',','')) for s in dataAETTMAPT.collect()[30][1:35]] if 'United Kingdom' in coun else [],
                                 mode='lines+markers',
                                 name='UK',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#00cc99'),
@@ -9102,7 +6931,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'United Kingdom' + '<br>' +
                                 '<b>Monthly air passenger transport</b>: ' + df1[30].astype(str) + '<br>'),
                      go.Scatter(x=labelsAETTMAPT,
-                                y=valueNor1,
+                                y=[float(s.replace(',','')) for s in dataAETTMAPT.collect()[28][1:35]] if 'Norway' in coun else [],
                                 mode='lines+markers',
                                 name='NO',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#73e600'),
@@ -9113,7 +6942,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Norway' + '<br>' +
                                 '<b>Monthly air passenger transport</b>: ' + df1[28].astype(str) + '<br>'),
                      go.Scatter(x=labelsAETTMAPT,
-                                y=valueSwi1,
+                                y=[float(s.replace(',','')) for s in dataAETTMAPT.collect()[29][1:35]] if 'Switzerland' in coun else [],
                                 mode='lines+markers',
                                 name='CH',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#bfff80'),
@@ -9178,134 +7007,6 @@ def update_graph(w_countries, w_countries1, country_chosen):
         }
     # Krece oblast Agriculture, energy, transport & tourism-Monthly commercial air flights
     elif (w_countries == 'Agriculture, energy, transport & tourism') & (w_countries1 == 'Monthly commercial air flights'):
-        valueEu1 = []
-        if ('European Union' in coun):
-            valueEu1 = getAETTMCAF('European Union')
-
-        valueBel1 = []
-        if ('Belgium' in coun):
-            valueBel1 = getAETTMCAF('Belgium')
-
-        valueBul1=[]
-        if ('Bulgaria' in coun):
-            valueBul1 = getAETTMCAF('Bulgaria')
-
-        valueChe1 = []
-        if ('Czechia' in coun):
-            valueChe1 = getAETTMCAF('Czechia')
-
-        valueDen1 = []
-        if ('Denmark' in coun):
-            valueDen1 = getAETTMCAF('Denmark')
-
-        valueGer1 = []
-        if ('Germany' in coun):
-            valueGer1 = getAETTMCAF('Germany')
-
-        valueEst1 = []
-        if ('Estonia' in coun):
-            valueEst1 = getAETTMCAF('Estonia')
-
-        valueGree1 = []
-        if ('Greece' in coun):
-            valueGree1 = getAETTMCAF('Greece')
-
-        valueSpa1 = []
-        if ('Spain' in coun):
-            valueSpa1 = getAETTMCAF('Spain')
-
-        valueFra1 = []
-        if ('France' in coun):
-            valueFra1 = getAETTMCAF('France')
-
-        valueCro1 = []
-        if ('Croatia' in coun):
-            valueCro1 = getAETTMCAF('Croatia')
-
-        valueIta1 = []
-        if ('Italy' in coun):
-            valueIta1 = getAETTMCAF('Italy')
-
-        valueCyp1 = []
-        if ('Cyprus' in coun):
-            valueCyp1 = getAETTMCAF('Cyprus')
-
-        valueLat1 = []
-        if ('Latvia' in coun):
-            valueLat1 = getAETTMCAF('Latvia')
-
-        valueLith1 = []
-        if ('Lithuania' in coun):
-            valueLith1 = getAETTMCAF('Lithuania')
-
-        valueLux1 = []
-        if ('Luxembourg' in coun):
-            valueLux1 = getAETTMCAF('Luxembourg')
-
-        valueHun1 = []
-        if ('Hungary' in coun):
-            valueHun1 = getAETTMCAF('Hungary')
-
-        valueNet1 = []
-        if ('Netherlands' in coun):
-            valueNet1 = getAETTMCAF('Netherlands')
-
-        valueAus1 = []
-        if ('Austria' in coun):
-            valueAus1 = getAETTMCAF('Austria')
-
-        valuePol1 = []
-        if ('Poland' in coun):
-            valuePol1 = getAETTMCAF('Poland')
-
-        valuePor1 = []
-        if ('Portugal' in coun):
-            valuePor1 = getAETTMCAF('Portugal')
-
-        valueRom1 = []
-        if ('Romania' in coun):
-            valueRom1 = getAETTMCAF('Romania')
-
-        valueSlo1 = []
-        if ('Slovenia' in coun):
-            valueSlo1 = getAETTMCAF('Slovenia')
-
-        valueSlovak1 = []
-        if ('Slovakia' in coun):
-            valueSlovak1 = getAETTMCAF('Slovakia')
-
-        valueFin1 = []
-        if ('Finland' in coun):
-            valueFin1 = getAETTMCAF('Finland')
-
-        valueSwe1 = []
-        if ('Sweden' in coun):
-            valueSwe1 = getAETTMCAF('Sweden')
-
-        valueUk1 = []
-        if ('United Kingdom' in coun):
-            valueUk1 = getAETTMCAF('United Kingdom')
-
-        valueIce1 = []
-        if ('Iceland' in coun):
-            valueIce1 = getAETTMCAF('Iceland')
-
-        valueNor1 = []
-        if ('Norway' in coun):
-            valueNor1 = getAETTMCAF('Norway')
-
-        valueSwi1 = []
-        if ('Switzerland' in coun):
-            valueSwi1 = getAETTMCAF('Switzerland')
-
-        valueTur1 = []
-        if ('Turkey' in coun):
-            valueTur1 = getAETTMCAF('Turkey')
-
-        valueIre1 = []
-        if ('Ireland' in coun):
-            valueIre1 = getAETTMCAF('Ireland')
-
         mcaf = pd.read_csv('data/Agriculture, energy, transport & tourism-Monthly commercial air flights.csv')
         df1 = {}
         for i in range(0, 37):
@@ -9313,7 +7014,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
             df1[i] = niz
         return {
             'data': [go.Scatter(x=labelsAETTMCAF,
-                                y=valueEu1,
+                                y=dataAETTMCAF.collect()[0][2:35] if 'European Union' in coun else [],
                                 mode='lines+markers',
                                 name='EU',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#E6D1D1'),
@@ -9324,7 +7025,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'European Union' + '<br>' +
                                 '<b>Monthly commercial air flights</b>: ' + df1[1].astype(str) + '<br>'),
                      go.Scatter(x=labelsAETTMCAF,
-                                y=valueBel1,
+                                y=dataAETTMCAF.collect()[1][2:35] if 'Belgium' in coun else [],
                                 mode='lines+markers',
                                 name='BE',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#FF0000'),
@@ -9335,7 +7036,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Belgium' + '<br>'+
                                 '<b>Monthly commercial air flights</b>: ' + df1[2].astype(str) + '<br>'),
                      go.Scatter(x=labelsAETTMCAF,
-                                y=valueBul1,
+                                y=dataAETTMCAF.collect()[2][2:35] if 'Bulgaria' in coun else [],
                                 mode='lines+markers',
                                 name='BG',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#353131'),
@@ -9346,7 +7047,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Bulgaria' + '<br>' +
                                 '<b>Monthly commercial air flights</b>: ' + df1[2].astype(str) + '<br>'),
                      go.Scatter(x=labelsAETTMCAF,
-                                y=valueChe1,
+                                y=dataAETTMCAF.collect()[3][2:35] if 'Czechia' in coun else [],
                                 mode='lines+markers',
                                 name='CZ',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#49AF30'),
@@ -9357,7 +7058,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Czechia' + '<br>' +
                                 '<b>Monthly commercial air flights</b>: ' + df1[3].astype(str) + '<br>'),
                      go.Scatter(x=labelsAETTMCAF,
-                                y=valueDen1,
+                                y=dataAETTMCAF.collect()[4][2:35] if 'Denmark' in coun else [],
                                 mode='lines+markers',
                                 name='DK',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#2A4623'),
@@ -9368,7 +7069,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Denmark' + '<br>' +
                                 '<b>Monthly commercial air flights</b>: ' + df1[4].astype(str) + '<br>'),
                      go.Scatter(x=labelsAETTMCAF,
-                                y=valueGer1,
+                                y=dataAETTMCAF.collect()[5][2:35] if 'Germany' in coun else [],
                                 mode='lines+markers',
                                 name='DE',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#7B7D7B'),
@@ -9379,7 +7080,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Germany' + '<br>' +
                                 '<b>Monthly commercial air flights</b>: ' + df1[5].astype(str) + '<br>'),
                      go.Scatter(x=labelsAETTMCAF,
-                                y=valueEst1,
+                                y=dataAETTMCAF.collect()[6][2:35] if 'Estonia' in coun else [],
                                 mode='lines+markers',
                                 name='EE',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#C4C048'),
@@ -9390,7 +7091,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Estonia' + '<br>' +
                                 '<b>Monthly commercial air flights</b>: ' + df1[6].astype(str) + '<br>'),
                      go.Scatter(x=labelsAETTMCAF,
-                                y=valueIre1,
+                                y=dataAETTMCAF.collect()[7][2:35] if 'Ireland' in coun else [],
                                 mode='lines+markers',
                                 name='IE',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#9E9D7B'),
@@ -9401,7 +7102,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Ireland' + '<br>' +
                                 '<b>Monthly commercial air flights</b>: ' + df1[7].astype(str) + '<br>'),
                      go.Scatter(x=labelsAETTMCAF,
-                                y=valueGree1,
+                                y=dataAETTMCAF.collect()[8][2:35] if 'Greece' in coun else [],
                                 mode='lines+markers',
                                 name='EL',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#1A46C0'),
@@ -9412,7 +7113,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Greece' + '<br>' +
                                 '<b>Monthly commercial air flights</b>: ' + df1[8].astype(str) + '<br>'),
                      go.Scatter(x=labelsAETTMCAF,
-                                y=valueSpa1,
+                                y=dataAETTMCAF.collect()[9][2:35] if 'Spain' in coun else [],
                                 mode='lines+markers',
                                 name='ES',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#2E063A'),
@@ -9423,7 +7124,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Spain' + '<br>' +
                                 '<b>Monthly commercial air flights</b>: ' + df1[9].astype(str) + '<br>'),
                      go.Scatter(x=labelsAETTMCAF,
-                                y=valueFra1,
+                                y=dataAETTMCAF.collect()[10][2:35] if 'France' in coun else [],
                                 mode='lines+markers',
                                 name='FR',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#39313C'),
@@ -9434,7 +7135,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'France' + '<br>' +
                                 '<b>Monthly commercial air flights</b>: ' + df1[10].astype(str) + '<br>'),
                      go.Scatter(x=labelsAETTMCAF,
-                                y=valueCro1,
+                                y=dataAETTMCAF.collect()[11][2:35] if 'Croatia' in coun else [],
                                 mode='lines+markers',
                                 name='HR',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#189F96'),
@@ -9445,7 +7146,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Croatia' + '<br>' +
                                 '<b>Monthly commercial air flights</b>: ' + df1[11].astype(str) + '<br>'),
                      go.Scatter(x=labelsAETTMCAF,
-                                y=valueIta1,
+                                y=dataAETTMCAF.collect()[12][2:35] if 'Italy' in coun else [],
                                 mode='lines+markers',
                                 name='IT',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#94A4A3'),
@@ -9456,7 +7157,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Italy' + '<br>' +
                                 '<b>Monthly commercial air flights</b>: ' + df1[12].astype(str) + '<br>'),
                      go.Scatter(x=labelsAETTMCAF,
-                                y=valueCyp1,
+                                y=dataAETTMCAF.collect()[13][2:35] if 'Cyprus' in coun else [],
                                 mode='lines+markers',
                                 name='CY',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#ff3399'),
@@ -9467,7 +7168,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Cyprus' + '<br>' +
                                 '<b>Monthly commercial air flights</b>: ' + df1[13].astype(str) + '<br>'),
                      go.Scatter(x=labelsAETTMCAF,
-                                y=valueLat1,
+                                y=dataAETTMCAF.collect()[14][2:35] if 'Latvia' in coun else [],
                                 mode='lines+markers',
                                 name='LV',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#aaaa55'),
@@ -9478,7 +7179,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Latvia' + '<br>' +
                                 '<b>Monthly commercial air flights</b>: ' + df1[14].astype(str) + '<br>'),
                      go.Scatter(x=labelsAETTMCAF,
-                                y=valueLith1,
+                                y=dataAETTMCAF.collect()[15][2:35] if 'Lithuania' in coun else [],
                                 mode='lines+markers',
                                 name='LT',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#ffff00'),
@@ -9489,7 +7190,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Lithuania' + '<br>' +
                                 '<b>Monthly commercial air flights</b>: ' + df1[15].astype(str) + '<br>'),
                      go.Scatter(x=labelsAETTMCAF,
-                                y=valueLux1,
+                                y=dataAETTMCAF.collect()[16][2:35] if 'Luxembourg' in coun else [],
                                 mode='lines+markers',
                                 name='LU',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#007399'),
@@ -9500,7 +7201,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Luxembourg' + '<br>' +
                                 '<b>Monthly commercial air flights</b>: ' + df1[16].astype(str) + '<br>'),
                      go.Scatter(x=labelsAETTMCAF,
-                                y=valueHun1,
+                                y=dataAETTMCAF.collect()[17][2:35] if 'Hungary' in coun else [],
                                 mode='lines+markers',
                                 name='HU',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#ff3300'),
@@ -9511,7 +7212,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Hungary' + '<br>' +
                                 '<b>Monthly commercial air flights</b>: ' + df1[17].astype(str) + '<br>'),
                      go.Scatter(x=labelsAETTMCAF,
-                                y=valueNet1,
+                                y=dataAETTMCAF.collect()[19][2:35] if 'Netherlands' in coun else [],
                                 mode='lines+markers',
                                 name='NL',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#00e600'),
@@ -9522,7 +7223,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Netherlands' + '<br>' +
                                 '<b>Monthly commercial air flights</b>: ' + df1[18].astype(str) + '<br>'),
                      go.Scatter(x=labelsAETTMCAF,
-                                y=valueAus1,
+                                y=dataAETTMCAF.collect()[20][2:35] if 'Austria' in coun else [],
                                 mode='lines+markers',
                                 name='AT',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#4dff4d'),
@@ -9533,7 +7234,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Austria' + '<br>' +
                                 '<b>Monthly commercial air flights</b>: ' + df1[20].astype(str) + '<br>'),
                      go.Scatter(x=labelsAETTMCAF,
-                                y=valuePol1,
+                                y=dataAETTMCAF.collect()[21][2:35] if 'Poland' in coun else [],
                                 mode='lines+markers',
                                 name='PL',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#003300'),
@@ -9544,7 +7245,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Poland' + '<br>' +
                                 '<b>Monthly commercial air flights</b>: ' + df1[21].astype(str) + '<br>'),
                      go.Scatter(x=labelsAETTMCAF,
-                                y=valuePor1,
+                                y=dataAETTMCAF.collect()[22][2:35] if 'Portugal' in coun else [],
                                 mode='lines+markers',
                                 name='PT',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#662900'),
@@ -9555,7 +7256,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Portugal' + '<br>' +
                                 '<b>Monthly commercial air flights</b>: ' + df1[22].astype(str) + '<br>'),
                      go.Scatter(x=labelsAETTMCAF,
-                                y=valueRom1,
+                                y=dataAETTMCAF.collect()[23][2:35] if 'Romania' in coun else [],
                                 mode='lines+markers',
                                 name='RO',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#993399'),
@@ -9566,7 +7267,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Romania' + '<br>' +
                                 '<b>Monthly commercial air flights</b>: ' + df1[23].astype(str) + '<br>'),
                      go.Scatter(x=labelsAETTMCAF,
-                                y=valueSlo1,
+                                y=dataAETTMCAF.collect()[24][2:35] if 'Slovenia' in coun else [],
                                 mode='lines+markers',
                                 name='SI',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#d98cd9'),
@@ -9577,7 +7278,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Slovenia' + '<br>' +
                                 '<b>Monthly commercial air flights</b>: ' + df1[24].astype(str) + '<br>'),
                      go.Scatter(x=labelsAETTMCAF,
-                                y=valueSlovak1,
+                                y=dataAETTMCAF.collect()[25][2:35] if 'Slovakia' in coun else [],
                                 mode='lines+markers',
                                 name='SK',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#0033cc'),
@@ -9588,7 +7289,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Slovakia' + '<br>' +
                                 '<b>Monthly commercial air flights</b>: ' + df1[25].astype(str) + '<br>'),
                      go.Scatter(x=labelsAETTMCAF,
-                                y=valueFin1,
+                                y=dataAETTMCAF.collect()[26][2:35] if 'Finland' in coun else [],
                                 mode='lines+markers',
                                 name='FI',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#99b3ff'),
@@ -9599,7 +7300,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Finland' + '<br>' +
                                 '<b>Monthly commercial air flights</b>: ' + df1[26].astype(str) + '<br>'),
                      go.Scatter(x=labelsAETTMCAF,
-                                y=valueSwe1,
+                                y=dataAETTMCAF.collect()[27][2:35] if 'Sweden' in coun else [],
                                 mode='lines+markers',
                                 name='SE',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#001a66'),
@@ -9610,7 +7311,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Sweden' + '<br>' +
                                 '<b>Monthly commercial air flights</b>: ' + df1[27].astype(str) + '<br>'),
                      go.Scatter(x=labelsAETTMCAF,
-                                y=valueUk1,
+                                y=dataAETTMCAF.collect()[28][2:35] if 'United Kingdom' in coun else [],
                                 mode='lines+markers',
                                 name='UK',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#00cc99'),
@@ -9621,7 +7322,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'United Kingdom' + '<br>' +
                                 '<b>Monthly commercial air flights</b>: ' + df1[28].astype(str) + '<br>'),
                      go.Scatter(x=labelsAETTMCAF,
-                                y=valueIce1,
+                                y=dataAETTMCAF.collect()[29][2:35] if 'Iceland' in coun else [],
                                 mode='lines+markers',
                                 name='IS',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#336600'),
@@ -9632,7 +7333,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Iceland' + '<br>' +
                                 '<b>Monthly commercial air flights</b>: ' + df1[29].astype(str) + '<br>'),
                      go.Scatter(x=labelsAETTMCAF,
-                                y=valueNor1,
+                                y=dataAETTMCAF.collect()[30][2:35] if 'Norway' in coun else [],
                                 mode='lines+markers',
                                 name='NO',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#73e600'),
@@ -9643,7 +7344,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Norway' + '<br>' +
                                 '<b>Monthly commercial air flights</b>: ' + df1[30].astype(str) + '<br>'),
                      go.Scatter(x=labelsAETTMCAF,
-                                y=valueSwi1,
+                                y=dataAETTMCAF.collect()[31][2:35] if 'Switzerland' in coun else [],
                                 mode='lines+markers',
                                 name='CH',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#bfff80'),
@@ -9654,7 +7355,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Switzerland' + '<br>' +
                                 '<b>Monthly commercial air flights</b>: ' + df1[31].astype(str) + '<br>'),
                      go.Scatter(x=labelsAETTMCAF,
-                                y=valueTur1,
+                                y=dataAETTMCAF.collect()[36][2:35] if 'Turkey' in coun else [],
                                 mode='lines+markers',
                                 name='TR',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#ff4da6'),
@@ -9719,110 +7420,6 @@ def update_graph(w_countries, w_countries1, country_chosen):
         }
     # Krece oblast Agriculture, energy, transport & tourism-Monthly arrivals at tourist accommodation
     elif (w_countries == 'Agriculture, energy, transport & tourism') & (w_countries1 == 'Monthly arrivals at tourist accommodation'):
-        valueEu1 = []
-        if ('European Union' in coun):
-            valueEu1 = getAETTMATA('European Union')
-
-        valueBel1 = []
-        if ('Belgium' in coun):
-            valueBel1 = getAETTMATA('Belgium')
-
-        valueBul1 = []
-        if ('Bulgaria' in coun):
-            valueBul1 = getAETTMATA('Bulgaria')
-
-        valueChe1 = []
-        if ('Czechia' in coun):
-            valueChe1 = getAETTMATA('Czechia')
-
-        valueGer1 = []
-        if ('Germany' in coun):
-            valueGer1 = getAETTMATA('Germany')
-
-        valueEst1 = []
-        if ('Estonia' in coun):
-            valueEst1 = getAETTMATA('Estonia')
-
-        valueGree1 = []
-        if ('Greece' in coun):
-            valueGree1 = getAETTMATA('Greece')
-
-        valueSpa1 = []
-        if ('Spain' in coun):
-            valueSpa1 = getAETTMATA('Spain')
-
-        valueCyp1 = []
-        if ('Cyprus' in coun):
-            valueCyp1 = getAETTMATA('Cyprus')
-
-        valueLat1 = []
-        if ('Latvia' in coun):
-            valueLat1 = getAETTMATA('Latvia')
-
-        valueLith1 = []
-        if ('Lithuania' in coun):
-            valueLith1 = getAETTMATA('Lithuania')
-
-        valueLux1 = []
-        if ('Luxembourg' in coun):
-            valueLux1 = getAETTMATA('Luxembourg')
-
-        valueHun1 = []
-        if ('Hungary' in coun):
-            valueHun1 = getAETTMATA('Hungary')
-
-        valueNet1 = []
-        if ('Netherlands' in coun):
-            valueNet1 = getAETTMATA('Netherlands')
-
-        valueAus1 = []
-        if ('Austria' in coun):
-            valueAus1 = getAETTMATA('Austria')
-
-        valuePol1 = []
-        if ('Poland' in coun):
-            valuePol1 = getAETTMATA('Poland')
-
-        valuePor1 = []
-        if ('Portugal' in coun):
-            valuePor1 = getAETTMATA('Portugal')
-
-        valueRom1 = []
-        if ('Romania' in coun):
-            valueRom1 = getAETTMATA('Romania')
-
-        valueSlo1 = []
-        if ('Slovenia' in coun):
-            valueSlo1 = getAETTMATA('Slovenia')
-
-        valueSlovak1 = []
-        if ('Slovakia' in coun):
-            valueSlovak1 = getAETTMATA('Slovakia')
-
-        valueFin1 = []
-        if ('Finland' in coun):
-            valueFin1 = getAETTMATA('Finland')
-
-        valueSwe1 = []
-        if ('Sweden' in coun):
-            valueSwe1 = getAETTMATA('Sweden')
-
-        valueIre1 = []
-        if ('Ireland' in coun):
-            valueIre1 = getAETTMATA('Ireland')
-
-        valueFra1 = []
-        if ('France' in coun):
-            valueFra1 = getAETTMATA('France')
-
-        valueCro1 = []
-        if ('Croatia' in coun):
-            valueCro1 = getAETTMATA('Croatia')
-
-        valueIta1 = []
-        if ('Italy' in coun):
-            valueIta1 = getAETTMATA('Italy')
-
         mata = pd.read_csv('data/Agriculture, energy, transport & tourism-Monthly arrivals at tourist accommodation.csv')
 
         df1 = {}
@@ -9831,7 +7428,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
             df1[i] = niz
         return {
             'data': [go.Scatter(x=labelsAETTMCAF,
-                                y=valueEu1,
+                                y=[float(s.replace(',','')) for s in dataAETTMATA.collect()[0][1:20]] if 'European Union' in coun else [],
                                 mode='lines+markers',
                                 name='EU',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#E6D1D1'),
@@ -9842,7 +7439,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'European Union' + '<br>'+
                                 '<b>Monthly arrivals at tourist accommodation</b>: ' + df1[0].astype(str) + '<br>'),
                      go.Scatter(x=labelsAETTMCAF,
-                                y=valueBel1,
+                                y=[float(s.replace(',','')) for s in dataAETTMATA.collect()[1][1:20]] if 'Belgium' in coun else [],
                                 mode='lines+markers',
                                 name='BE',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#FF0000'),
@@ -9853,7 +7450,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Belgium' + '<br>'+
                                 '<b>Monthly arrivals at tourist accommodation</b>: ' + df1[1].astype(str) + '<br>'),
                      go.Scatter(x=labelsAETTMCAF,
-                                y=valueBul1,
+                                y=[float(s.replace(',','')) for s in dataAETTMATA.collect()[2][1:20]] if 'Bulgaria' in coun else [],
                                 mode='lines+markers',
                                 name='BG',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#353131'),
@@ -9864,7 +7461,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Bulgaria' + '<br>' +
                                 '<b>Monthly arrivals at tourist accommodation</b>: ' + df1[2].astype(str) + '<br>'),
                      go.Scatter(x=labelsAETTMCAF,
-                                y=valueChe1,
+                                y=[float(s.replace(',','')) for s in dataAETTMATA.collect()[3][1:20]] if 'Czechia' in coun else [],
                                 mode='lines+markers',
                                 name='CZ',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#49AF30'),
@@ -9875,7 +7472,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Czechia' + '<br>' +
                                 '<b>Monthly arrivals at tourist accommodation</b>: ' + df1[3].astype(str) + '<br>'),
                      go.Scatter(x=labelsAETTMCAF,
-                                y=valueGer1,
+                                y=[float(s.replace(',','')) for s in dataAETTMATA.collect()[5][1:20]] if 'Germany' in coun else [],
                                 mode='lines+markers',
                                 name='DE',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#7B7D7B'),
@@ -9886,7 +7483,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Germany' + '<br>' +
                                 '<b>Monthly arrivals at tourist accommodation</b>: ' + df1[5].astype(str) + '<br>'),
                      go.Scatter(x=labelsAETTMCAF,
-                                y=valueEst1,
+                                y=[float(s.replace(',','')) for s in dataAETTMATA.collect()[6][1:20]] if 'Estonia' in coun else [],
                                 mode='lines+markers',
                                 name='EE',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#C4C048'),
@@ -9897,7 +7494,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Estonia' + '<br>' +
                                 '<b>Monthly arrivals at tourist accommodation</b>: ' + df1[6].astype(str) + '<br>'),
                      go.Scatter(x=labelsAETTMCAF,
-                                y=valueIre1,
+                                y=[float(s.replace(',','')) for s in dataAETTMATA.collect()[7][1:20]] if 'Ireland' in coun else [],
                                 mode='lines+markers',
                                 name='IE',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#9E9D7B'),
@@ -9908,7 +7505,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Ireland' + '<br>' +
                                 '<b>Monthly arrivals at tourist accommodation</b>: ' + df1[7].astype(str) + '<br>'),
                      go.Scatter(x=labelsAETTMCAF,
-                                y=valueGree1,
+                                y=[float(s.replace(',','')) for s in dataAETTMATA.collect()[8][1:20]] if 'Greece' in coun else [],
                                 mode='lines+markers',
                                 name='EL',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#1A46C0'),
@@ -9919,7 +7516,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Greece' + '<br>' +
                                 '<b>Monthly arrivals at tourist accommodation</b>: ' + df1[8].astype(str) + '<br>'),
                      go.Scatter(x=labelsAETTMCAF,
-                                y=valueSpa1,
+                                y=[float(s.replace(',','')) for s in dataAETTMATA.collect()[9][1:20]] if 'Spain' in coun else [],
                                 mode='lines+markers',
                                 name='ES',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#2E063A'),
@@ -9930,7 +7527,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Spain' + '<br>' +
                                 '<b>Monthly arrivals at tourist accommodation</b>: ' + df1[9].astype(str) + '<br>'),
                      go.Scatter(x=labelsAETTMCAF,
-                                y=valueFra1,
+                                y=[float(s.replace(',','')) for s in dataAETTMATA.collect()[10][1:20]] if 'France' in coun else [],
                                 mode='lines+markers',
                                 name='FR',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#39313C'),
@@ -9941,7 +7538,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'France' + '<br>' +
                                 '<b>Monthly arrivals at tourist accommodation</b>: ' + df1[10].astype(str) + '<br>'),
                      go.Scatter(x=labelsAETTMCAF,
-                                y=valueCro1,
+                                y=[float(s.replace(',','')) for s in dataAETTMATA.collect()[11][1:20]] if 'Croatia' in coun else [],
                                 mode='lines+markers',
                                 name='HR',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#189F96'),
@@ -9952,7 +7549,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Croatia' + '<br>' +
                                 '<b>Monthly arrivals at tourist accommodation</b>: ' + df1[11].astype(str) + '<br>'),
                      go.Scatter(x=labelsAETTMCAF,
-                                y=valueIta1,
+                                y=[float(s.replace(',','')) for s in dataAETTMATA.collect()[12][1:20]] if 'Italy' in coun else [],
                                 mode='lines+markers',
                                 name='IT',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#94A4A3'),
@@ -9963,7 +7560,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Italy' + '<br>' +
                                 '<b>Monthly arrivals at tourist accommodation</b>: ' + df1[12].astype(str) + '<br>'),
                      go.Scatter(x=labelsAETTMCAF,
-                                y=valueCyp1,
+                                y=[float(s.replace(',','')) for s in dataAETTMATA.collect()[13][1:20]] if 'Cyprus' in coun else [],
                                 mode='lines+markers',
                                 name='CY',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#ff3399'),
@@ -9974,7 +7571,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Cyprus' + '<br>' +
                                 '<b>Monthly arrivals at tourist accommodation</b>: ' + df1[13].astype(str) + '<br>'),
                      go.Scatter(x=labelsAETTMCAF,
-                                y=valueLat1,
+                                y=[float(s.replace(',','')) for s in dataAETTMATA.collect()[14][1:20]] if 'Latvia' in coun else [],
                                 mode='lines+markers',
                                 name='LV',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#aaaa55'),
@@ -9985,7 +7582,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Latvia' + '<br>' +
                                 '<b>Monthly arrivals at tourist accommodation</b>: ' + df1[14].astype(str) + '<br>'),
                      go.Scatter(x=labelsAETTMCAF,
-                                y=valueLith1,
+                                y=[float(s.replace(',','')) for s in dataAETTMATA.collect()[15][1:20]] if 'Lithuania' in coun else [],
                                 mode='lines+markers',
                                 name='LT',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#ffff00'),
@@ -9996,7 +7593,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Lithuania' + '<br>' +
                                 '<b>Monthly arrivals at tourist accommodation</b>: ' + df1[15].astype(str) + '<br>'),
                      go.Scatter(x=labelsAETTMCAF,
-                                y=valueLux1,
+                                y=[float(s.replace(',','')) for s in dataAETTMATA.collect()[16][1:20]] if 'Luxembourg' in coun else [],
                                 mode='lines+markers',
                                 name='LU',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#007399'),
@@ -10007,7 +7604,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Luxembourg' + '<br>' +
                                 '<b>Monthly arrivals at tourist accommodation</b>: ' + df1[16].astype(str) + '<br>'),
                      go.Scatter(x=labelsAETTMCAF,
-                                y=valueHun1,
+                                y=[float(s.replace(',','')) for s in dataAETTMATA.collect()[17][1:20]] if 'Hungary' in coun else [],
                                 mode='lines+markers',
                                 name='HU',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#ff3300'),
@@ -10018,7 +7615,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Hungary' + '<br>' +
                                 '<b>Monthly arrivals at tourist accommodation</b>: ' + df1[17].astype(str) + '<br>'),
                      go.Scatter(x=labelsAETTMCAF,
-                                y=valueNet1,
+                                y=[float(s.replace(',','')) for s in dataAETTMATA.collect()[19][1:20]] if 'Netherlands' in coun else [],
                                 mode='lines+markers',
                                 name='NL',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#00e600'),
@@ -10029,7 +7626,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Netherlands' + '<br>' +
                                 '<b>Monthly arrivals at tourist accommodation</b>: ' + df1[19].astype(str) + '<br>'),
                      go.Scatter(x=labelsAETTMCAF,
-                                y=valueAus1,
+                                y=[float(s.replace(',','')) for s in dataAETTMATA.collect()[20][1:20]] if 'Austria' in coun else [],
                                 mode='lines+markers',
                                 name='AT',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#4dff4d'),
@@ -10040,7 +7637,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Austria' + '<br>' +
                                 '<b>Monthly arrivals at tourist accommodation</b>: ' + df1[20].astype(str) + '<br>'),
                      go.Scatter(x=labelsAETTMCAF,
-                                y=valuePol1,
+                                y=[float(s.replace(',','')) for s in dataAETTMATA.collect()[21][1:20]] if 'Poland' in coun else [],
                                 mode='lines+markers',
                                 name='PL',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#003300'),
@@ -10051,7 +7648,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Poland' + '<br>' +
                                 '<b>Monthly arrivals at tourist accommodation</b>: ' + df1[21].astype(str) + '<br>'),
                      go.Scatter(x=labelsAETTMCAF,
-                                y=valuePor1,
+                                y=[float(s.replace(',','')) for s in dataAETTMATA.collect()[22][1:20]] if 'Portugal' in coun else [],
                                 mode='lines+markers',
                                 name='PT',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#662900'),
@@ -10062,7 +7659,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Portugal' + '<br>' +
                                 '<b>Monthly arrivals at tourist accommodation</b>: ' + df1[22].astype(str) + '<br>'),
                      go.Scatter(x=labelsAETTMCAF,
-                                y=valueRom1,
+                                y=[float(s.replace(',','')) for s in dataAETTMATA.collect()[23][1:20]] if 'Romania' in coun else [],
                                 mode='lines+markers',
                                 name='RO',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#993399'),
@@ -10073,7 +7670,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Romania' + '<br>' +
                                 '<b>Monthly arrivals at tourist accommodation</b>: ' + df1[23].astype(str) + '<br>'),
                      go.Scatter(x=labelsAETTMCAF,
-                                y=valueSlo1,
+                                y=[float(s.replace(',','')) for s in dataAETTMATA.collect()[24][1:20]] if 'Slovenia' in coun else [],
                                 mode='lines+markers',
                                 name='SI',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#d98cd9'),
@@ -10084,7 +7681,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Slovenia' + '<br>' +
                                 '<b>Monthly arrivals at tourist accommodation</b>: ' + df1[24].astype(str) + '<br>'),
                      go.Scatter(x=labelsAETTMCAF,
-                                y=valueSlovak1,
+                                y=[float(s.replace(',','')) for s in dataAETTMATA.collect()[25][1:20]] if 'Slovakia' in coun else [],
                                 mode='lines+markers',
                                 name='SK',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#0033cc'),
@@ -10095,7 +7692,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Slovakia' + '<br>' +
                                 '<b>Monthly arrivals at tourist accommodation</b>: ' + df1[25].astype(str) + '<br>'),
                      go.Scatter(x=labelsAETTMCAF,
-                                y=valueFin1,
+                                y=[float(s.replace(',','')) for s in dataAETTMATA.collect()[26][1:20]] if 'Finland' in coun else [],
                                 mode='lines+markers',
                                 name='FI',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#99b3ff'),
@@ -10106,7 +7703,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Finland' + '<br>' +
                                 '<b>Monthly arrivals at tourist accommodation</b>: ' + df1[26].astype(str) + '<br>'),
                      go.Scatter(x=labelsAETTMCAF,
-                                y=valueSwe1,
+                                y=[float(s.replace(',','')) for s in dataAETTMATA.collect()[27][1:20]] if 'Sweden' in coun else [],
                                 mode='lines+markers',
                                 name='SE',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#001a66'),
@@ -10171,122 +7768,6 @@ def update_graph(w_countries, w_countries1, country_chosen):
         }
     # Krece oblast Agriculture, energy, transport & tourism-Monthly nights spent at tourist accommodation
     elif (w_countries == 'Agriculture, energy, transport & tourism') & (w_countries1 == 'Monthly nights spent at tourist accommodation'):
-        valueEu1 = []
-        if ('European Union' in coun):
-            valueEu1 = getAETTMNSTA('European Union')
-
-        valueBel1 = []
-        if ('Belgium' in coun):
-            valueBel1 = getAETTMNSTA('Belgium')
-
-        valueBul1 = []
-        if ('Bulgaria' in coun):
-            valueBul1 = getAETTMNSTA('Bulgaria')
-
-        valueChe1 = []
-        if ('Czechia' in coun):
-            valueChe1 = getAETTMNSTA('Czechia')
-
-        valueDen1 = []
-        if ('Denmark' in coun):
-            valueDen1 = getAETTMNSTA('Denmark')
-
-        valueGer1 = []
-        if ('Germany' in coun):
-            valueGer1 = getAETTMNSTA('Germany')
-
-        valueEst1 = []
-        if ('Estonia' in coun):
-            valueEst1 = getAETTMNSTA('Estonia')
-
-        valueGree1 = []
-        if ('Greece' in coun):
-            valueGree1 = getAETTMNSTA('Greece')
-
-        valueSpa1 = []
-        if ('Spain' in coun):
-            valueSpa1 = getAETTMNSTA('Spain')
-
-        valueFra1 = []
-        if ('France' in coun):
-            valueFra1 = getAETTMNSTA('France')
-
-        valueCro1 = []
-        if ('Croatia' in coun):
-            valueCro1 = getAETTMNSTA('Croatia')
-
-        valueIta1 = []
-        if ('Italy' in coun):
-            valueIta1 = getAETTMNSTA('Italy')
-
-        valueCyp1 = []
-        if ('Cyprus' in coun):
-            valueCyp1 = getAETTMNSTA('Cyprus')
-
-        valueLat1 = []
-        if ('Latvia' in coun):
-            valueLat1 = getAETTMNSTA('Latvia')
-
-        valueLith1 = []
-        if ('Lithuania' in coun):
-            valueLith1 = getAETTMNSTA('Lithuania')
-
-        valueLux1 = []
-        if ('Luxembourg' in coun):
-            valueLux1 = getAETTMNSTA('Luxembourg')
-
-        valueHun1 = []
-        if ('Hungary' in coun):
-            valueHun1 = getAETTMNSTA('Hungary')
-
-        valueNet1 = []
-        if ('Netherlands' in coun):
-            valueNet1 = getAETTMNSTA('Netherlands')
-
-        valueAus1 = []
-        if ('Austria' in coun):
-            valueAus1 = getAETTMNSTA('Austria')
-
-        valuePol1 = []
-        if ('Poland' in coun):
-            valuePol1 = getAETTMNSTA('Poland')
-
-        valuePor1 = []
-        if ('Portugal' in coun):
-            valuePor1 = getAETTMNSTA('Portugal')
-
-        valueRom1 = []
-        if ('Romania' in coun):
-            valueRom1 = getAETTMNSTA('Romania')
-
-        valueSlo1 = []
-        if ('Slovenia' in coun):
-            valueSlo1 = getAETTMNSTA('Slovenia')
-
-        valueSlovak1 = []
-        if ('Slovakia' in coun):
-            valueSlovak1 = getAETTMNSTA('Slovakia')
-
-        valueFin1 = []
-        if ('Finland' in coun):
-            valueFin1 = getAETTMNSTA('Finland')
-
-        valueSwe1 = []
-        if ('Sweden' in coun):
-            valueSwe1 = getAETTMNSTA('Sweden')
-
-        valueUk1 = []
-        if ('United Kingdom' in coun):
-            valueUk1 = getAETTMNSTA('United Kingdom')
-
-        valueNor1 = []
-        if ('Norway' in coun):
-            valueNor1 = getAETTMNSTA('Norway')
-
-        valueIre1 = []
-        if ('Ireland' in coun):
-            valueIre1 = getAETTMNSTA('Ireland')
-
         mnsta = pd.read_csv('data/Agriculture, energy, transport & tourism-Monthly nights spent at tourist accommodation.csv')
         df1 = {}
         for i in range(0, 32):
@@ -10294,7 +7775,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
             df1[i] = niz
         return {
             'data': [go.Scatter(x=labelsAETTMCAF,
-                                y=valueEu1,
+                                y=[float(s.replace(',','')) for s in dataAETTMNSTA.collect()[0][1:25]] if 'European Union' in coun else [],
                                 mode='lines+markers',
                                 name='EU',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#E6D1D1'),
@@ -10305,7 +7786,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'European Union' + '<br>'+
                                 '<b>Monthly nights spent at tourist accommodation</b>: ' + df1[0].astype(str) + '<br>'),
                      go.Scatter(x=labelsAETTMCAF,
-                                y=valueBel1,
+                                y=[float(s.replace(',','')) for s in dataAETTMNSTA.collect()[1][1:25]] if 'Belgium' in coun else [],
                                 mode='lines+markers',
                                 name='BE',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#FF0000'),
@@ -10316,7 +7797,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Belgium' + '<br>'+
                                 '<b>Monthly nights spent at tourist accommodation</b>: ' + df1[1].astype(str) + '<br>'),
                      go.Scatter(x=labelsAETTMCAF,
-                                y=valueBul1,
+                                y=[float(s.replace(',','')) for s in dataAETTMNSTA.collect()[2][1:25]] if 'Bulgaria' in coun else [],
                                 mode='lines+markers',
                                 name='BG',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#353131'),
@@ -10327,7 +7808,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Bulgaria' + '<br>' +
                                 '<b>Monthly nights spent at tourist accommodation</b>: ' + df1[2].astype(str) + '<br>'),
                      go.Scatter(x=labelsAETTMCAF,
-                                y=valueChe1,
+                                y=[float(s.replace(',','')) for s in dataAETTMNSTA.collect()[3][1:25]] if 'Czechia' in coun else [],
                                 mode='lines+markers',
                                 name='CZ',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#49AF30'),
@@ -10338,7 +7819,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Czechia' + '<br>' +
                                 '<b>Monthly nights spent at tourist accommodation</b>: ' + df1[3].astype(str) + '<br>'),
                      go.Scatter(x=labelsAETTMCAF,
-                                y=valueDen1,
+                                y=[float(s.replace(',','')) for s in dataAETTMNSTA.collect()[4][1:25]] if 'Denmark' in coun else [],
                                 mode='lines+markers',
                                 name='DK',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#2A4623'),
@@ -10349,7 +7830,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Denmark' + '<br>' +
                                 '<b>Monthly nights spent at tourist accommodation</b>: ' + df1[5].astype(str) + '<br>'),
                      go.Scatter(x=labelsAETTMCAF,
-                                y=valueGer1,
+                                y=[float(s.replace(',','')) for s in dataAETTMNSTA.collect()[5][1:25]] if 'Germany' in coun else [],
                                 mode='lines+markers',
                                 name='DE',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#7B7D7B'),
@@ -10360,7 +7841,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Germany' + '<br>' +
                                 '<b>Monthly nights spent at tourist accommodation</b>: ' + df1[5].astype(str) + '<br>'),
                      go.Scatter(x=labelsAETTMCAF,
-                                y=valueEst1,
+                                y=[float(s.replace(',','')) for s in dataAETTMNSTA.collect()[6][1:25]] if 'Estonia' in coun else [],
                                 mode='lines+markers',
                                 name='EE',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#C4C048'),
@@ -10371,7 +7852,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Estonia' + '<br>' +
                                 '<b>Monthly nights spent at tourist accommodation</b>: ' + df1[6].astype(str) + '<br>'),
                      go.Scatter(x=labelsAETTMCAF,
-                                y=valueIre1,
+                                y=[float(s.replace(',','')) for s in dataAETTMNSTA.collect()[7][1:25]] if 'Ireland' in coun else [],
                                 mode='lines+markers',
                                 name='IE',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#9E9D7B'),
@@ -10382,7 +7863,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Ireland' + '<br>' +
                                 '<b>Monthly nights spent at tourist accommodation</b>: ' + df1[7].astype(str) + '<br>'),
                      go.Scatter(x=labelsAETTMCAF,
-                                y=valueGree1,
+                                y=[float(s.replace(',','')) for s in dataAETTMNSTA.collect()[8][1:25]] if 'Greece' in coun else [],
                                 mode='lines+markers',
                                 name='EL',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#1A46C0'),
@@ -10393,7 +7874,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Greece' + '<br>' +
                                 '<b>Monthly nights spent at tourist accommodation</b>: ' + df1[8].astype(str) + '<br>'),
                      go.Scatter(x=labelsAETTMCAF,
-                                y=valueSpa1,
+                                y=[float(s.replace(',','')) for s in dataAETTMNSTA.collect()[9][1:25]] if 'Spain' in coun else [],
                                 mode='lines+markers',
                                 name='ES',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#2E063A'),
@@ -10404,7 +7885,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Spain' + '<br>' +
                                 '<b>Monthly nights spent at tourist accommodation</b>: ' + df1[9].astype(str) + '<br>'),
                      go.Scatter(x=labelsAETTMCAF,
-                                y=valueFra1,
+                                y=[float(s.replace(',','')) for s in dataAETTMNSTA.collect()[10][1:25]] if 'France' in coun else [],
                                 mode='lines+markers',
                                 name='FR',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#39313C'),
@@ -10415,7 +7896,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'France' + '<br>' +
                                 '<b>Monthly nights spent at tourist accommodation</b>: ' + df1[10].astype(str) + '<br>'),
                      go.Scatter(x=labelsAETTMCAF,
-                                y=valueCro1,
+                                y=[float(s.replace(',','')) for s in dataAETTMNSTA.collect()[11][1:25]] if 'Croatia' in coun else [],
                                 mode='lines+markers',
                                 name='HR',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#189F96'),
@@ -10426,7 +7907,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Croatia' + '<br>' +
                                 '<b>Monthly nights spent at tourist accommodation</b>: ' + df1[11].astype(str) + '<br>'),
                      go.Scatter(x=labelsAETTMCAF,
-                                y=valueIta1,
+                                y=[float(s.replace(',','')) for s in dataAETTMNSTA.collect()[12][1:25]] if 'Italy' in coun else [],
                                 mode='lines+markers',
                                 name='IT',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#94A4A3'),
@@ -10437,7 +7918,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Italy' + '<br>' +
                                 '<b>Monthly nights spent at tourist accommodation</b>: ' + df1[12].astype(str) + '<br>'),
                      go.Scatter(x=labelsAETTMCAF,
-                                y=valueCyp1,
+                                y=[float(s.replace(',','')) for s in dataAETTMNSTA.collect()[13][1:25]] if 'Cyprus' in coun else [],
                                 mode='lines+markers',
                                 name='CY',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#ff3399'),
@@ -10448,7 +7929,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Cyprus' + '<br>' +
                                 '<b>Monthly nights spent at tourist accommodation</b>: ' + df1[13].astype(str) + '<br>'),
                      go.Scatter(x=labelsAETTMCAF,
-                                y=valueLat1,
+                                y=[float(s.replace(',','')) for s in dataAETTMNSTA.collect()[14][1:25]] if 'Latvia' in coun else [],
                                 mode='lines+markers',
                                 name='LV',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#aaaa55'),
@@ -10459,7 +7940,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Latvia' + '<br>' +
                                 '<b>Monthly nights spent at tourist accommodation</b>: ' + df1[14].astype(str) + '<br>'),
                      go.Scatter(x=labelsAETTMCAF,
-                                y=valueLith1,
+                                y=[float(s.replace(',','')) for s in dataAETTMNSTA.collect()[15][1:25]] if 'Lithuania' in coun else [],
                                 mode='lines+markers',
                                 name='LT',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#ffff00'),
@@ -10470,7 +7951,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Lithuania' + '<br>' +
                                 '<b>Monthly nights spent at tourist accommodation</b>: ' + df1[15].astype(str) + '<br>'),
                      go.Scatter(x=labelsAETTMCAF,
-                                y=valueLux1,
+                                y=[float(s.replace(',','')) for s in dataAETTMNSTA.collect()[16][1:25]] if 'Luxembourg' in coun else [],
                                 mode='lines+markers',
                                 name='LU',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#007399'),
@@ -10481,7 +7962,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Luxembourg' + '<br>' +
                                 '<b>Monthly nights spent at tourist accommodation</b>: ' + df1[16].astype(str) + '<br>'),
                      go.Scatter(x=labelsAETTMCAF,
-                                y=valueHun1,
+                                y=[float(s.replace(',','')) for s in dataAETTMNSTA.collect()[17][1:25]] if 'Hungary' in coun else [],
                                 mode='lines+markers',
                                 name='HU',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#ff3300'),
@@ -10492,7 +7973,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Hungary' + '<br>' +
                                 '<b>Monthly nights spent at tourist accommodation</b>: ' + df1[17].astype(str) + '<br>'),
                      go.Scatter(x=labelsAETTMCAF,
-                                y=valueNet1,
+                                y=[float(s.replace(',','')) for s in dataAETTMNSTA.collect()[19][1:25]] if 'Netherlands' in coun else [],
                                 mode='lines+markers',
                                 name='NL',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#00e600'),
@@ -10503,7 +7984,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Netherlands' + '<br>' +
                                 '<b>Monthly nights spent at tourist accommodation</b>: ' + df1[19].astype(str) + '<br>'),
                      go.Scatter(x=labelsAETTMCAF,
-                                y=valueAus1,
+                                y=[float(s.replace(',','')) for s in dataAETTMNSTA.collect()[20][1:25]] if 'Austria' in coun else [],
                                 mode='lines+markers',
                                 name='AT',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#4dff4d'),
@@ -10514,7 +7995,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Austria' + '<br>' +
                                 '<b>Monthly nights spent at tourist accommodation</b>: ' + df1[20].astype(str) + '<br>'),
                      go.Scatter(x=labelsAETTMCAF,
-                                y=valuePol1,
+                                y=[float(s.replace(',','')) for s in dataAETTMNSTA.collect()[21][1:25]] if 'Poland' in coun else [],
                                 mode='lines+markers',
                                 name='PL',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#003300'),
@@ -10525,7 +8006,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Poland' + '<br>' +
                                 '<b>Monthly nights spent at tourist accommodation</b>: ' + df1[21].astype(str) + '<br>'),
                      go.Scatter(x=labelsAETTMCAF,
-                                y=valuePor1,
+                                y=[float(s.replace(',','')) for s in dataAETTMNSTA.collect()[22][1:25]] if 'Portugal' in coun else [],
                                 mode='lines+markers',
                                 name='PT',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#662900'),
@@ -10536,7 +8017,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Portugal' + '<br>' +
                                 '<b>Monthly nights spent at tourist accommodation</b>: ' + df1[22].astype(str) + '<br>'),
                      go.Scatter(x=labelsAETTMCAF,
-                                y=valueRom1,
+                                y=[float(s.replace(',','')) for s in dataAETTMNSTA.collect()[23][1:25]] if 'Romania' in coun else [],
                                 mode='lines+markers',
                                 name='RO',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#993399'),
@@ -10547,7 +8028,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Romania' + '<br>' +
                                 '<b>Monthly nights spent at tourist accommodation</b>: ' + df1[23].astype(str) + '<br>'),
                      go.Scatter(x=labelsAETTMCAF,
-                                y=valueSlo1,
+                                y=[float(s.replace(',','')) for s in dataAETTMNSTA.collect()[24][1:25]] if 'Slovenia' in coun else [],
                                 mode='lines+markers',
                                 name='SI',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#d98cd9'),
@@ -10558,7 +8039,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Slovenia' + '<br>' +
                                 '<b>Monthly nights spent at tourist accommodation</b>: ' + df1[24].astype(str) + '<br>'),
                      go.Scatter(x=labelsAETTMCAF,
-                                y=valueSlovak1,
+                                y=[float(s.replace(',','')) for s in dataAETTMNSTA.collect()[25][1:25]] if 'Slovakia' in coun else [],
                                 mode='lines+markers',
                                 name='SK',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#0033cc'),
@@ -10569,7 +8050,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Slovakia' + '<br>' +
                                 '<b>Monthly nights spent at tourist accommodation</b>: ' + df1[25].astype(str) + '<br>'),
                      go.Scatter(x=labelsAETTMCAF,
-                                y=valueFin1,
+                                y=[float(s.replace(',','')) for s in dataAETTMNSTA.collect()[26][1:25]] if 'Finland' in coun else [],
                                 mode='lines+markers',
                                 name='FI',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#99b3ff'),
@@ -10580,7 +8061,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Finland' + '<br>' +
                                 '<b>Monthly nights spent at tourist accommodation</b>: ' + df1[26].astype(str) + '<br>'),
                      go.Scatter(x=labelsAETTMCAF,
-                                y=valueSwe1,
+                                y=[float(s.replace(',','')) for s in dataAETTMNSTA.collect()[27][1:25]] if 'Sweden' in coun else [],
                                 mode='lines+markers',
                                 name='SE',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#001a66'),
@@ -10591,7 +8072,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Sweden' + '<br>' +
                                 '<b>Monthly nights spent at tourist accommodation</b>: ' + df1[27].astype(str) + '<br>'),
                      go.Scatter(x=labelsAETTMCAF,
-                                y=valueUk1,
+                                y=[float(s.replace(',','')) for s in dataAETTMNSTA.collect()[30][1:25]] if 'United Kingdom' in coun else [],
                                 mode='lines+markers',
                                 name='UK',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#00cc99'),
@@ -10602,7 +8083,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'United Kingdom' + '<br>' +
                                 '<b>Monthly nights spent at tourist accommodation</b>: ' + df1[30].astype(str) + '<br>'),
                      go.Scatter(x=labelsAETTMCAF,
-                                y=valueNor1,
+                                y=[float(s.replace(',','')) for s in dataAETTMNSTA.collect()[29][1:25]] if 'Norway' in coun else [],
                                 mode='lines+markers',
                                 name='NO',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#73e600'),
@@ -10668,122 +8149,6 @@ def update_graph(w_countries, w_countries1, country_chosen):
         }
     # Krece oblast Agriculture, energy, transport & tourism-Monthly electricity consumed by end-users
     elif (w_countries == 'Agriculture, energy, transport & tourism') & (w_countries1 == 'Monthly electricity consumed by end-users'):
-        valueEu1 = []
-        if ('European Union' in coun):
-            valueEu1 = getAETTMEC('European Union')
-
-        valueBul1 = []
-        if ('Bulgaria' in coun):
-            valueBul1 = getAETTMEC('Bulgaria')
-
-        valueBel1 = []
-        if ('Belgium' in coun):
-            valueBel1 = getAETTMEC('Belgium')
-
-        valueChe1 = []
-        if ('Czechia' in coun):
-            valueChe1 = getAETTMEC('Czechia')
-
-        valueDen1 = []
-        if ('Denmark' in coun):
-            valueDen1 = getAETTMEC('Denmark')
-
-        valueGer1 = []
-        if ('Germany' in coun):
-            valueGer1 = getAETTMEC('Germany')
-
-        valueEst1 = []
-        if ('Estonia' in coun):
-            valueEst1 = getAETTMEC('Estonia')
-
-        valueGree1 = []
-        if ('Greece' in coun):
-            valueGree1 = getAETTMEC('Greece')
-
-        valueSpa1 = []
-        if ('Spain' in coun):
-            valueSpa1 = getAETTMEC('Spain')
-
-        valueFra1 = []
-        if ('France' in coun):
-            valueFra1 = getAETTMEC('France')
-
-        valueCro1 = []
-        if ('Croatia' in coun):
-            valueCro1 = getAETTMEC('Croatia')
-
-        valueIta1 = []
-        if ('Italy' in coun):
-            valueIta1 = getAETTMEC('Italy')
-
-        valueCyp1 = []
-        if ('Cyprus' in coun):
-            valueCyp1 = getAETTMEC('Cyprus')
-
-        valueLat1 = []
-        if ('Latvia' in coun):
-            valueLat1 = getAETTMEC('Latvia')
-
-        valueLith1 = []
-        if ('Lithuania' in coun):
-            valueLith1 = getAETTMEC('Lithuania')
-
-        valueLux1 = []
-        if ('Luxembourg' in coun):
-            valueLux1 = getAETTMEC('Luxembourg')
-
-        valueHun1 = []
-        if ('Hungary' in coun):
-            valueHun1 = getAETTMEC('Hungary')
-
-        valueNet1 = []
-        if ('Netherlands' in coun):
-            valueNet1 = getAETTMEC('Netherlands')
-
-        valueAus1 = []
-        if ('Austria' in coun):
-            valueAus1 = getAETTMEC('Austria')
-
-        valuePol1 = []
-        if ('Poland' in coun):
-            valuePol1 = getAETTMEC('Poland')
-
-        valuePor1 = []
-        if ('Portugal' in coun):
-            valuePor1 = getAETTMEC('Portugal')
-
-        valueRom1 = []
-        if ('Romania' in coun):
-            valueRom1 = getAETTMEC('Romania')
-
-        valueSlo1 = []
-        if ('Slovenia' in coun):
-            valueSlo1 = getAETTMEC('Slovenia')
-
-        valueSlovak1 = []
-        if ('Slovakia' in coun):
-            valueSlovak1 = getAETTMEC('Slovakia')
-
-        valueFin1 = []
-        if ('Finland' in coun):
-            valueFin1 = getAETTMEC('Finland')
-
-        valueSwe1 = []
-        if ('Sweden' in coun):
-            valueSwe1 = getAETTMEC('Sweden')
-
-        valueUk1 = []
-        if ('United Kingdom' in coun):
-            valueUk1 = getAETTMEC('United Kingdom')
-
-        valueNor1 = []
-        if ('Norway' in coun):
-            valueNor1 = getAETTMEC('Norway')
-
-        valueIre1 = []
-        if ('Ireland' in coun):
-            valueIre1 = getAETTMEC('Ireland')
-
         mecbu = pd.read_csv('data/Agriculture, energy, transport & tourism-Monthly electricity consumed by end-users.csv')
         df1 = {}
         for i in range(0, 30):
@@ -10791,7 +8156,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
             df1[i] = niz
         return {
             'data': [go.Scatter(x=labelsAETTMCAF,
-                                y=valueEu1,
+                                y=dataAETTMEC.collect()[0][2:35] if 'European Union' in coun else [],
                                 mode='lines+markers',
                                 name='EU',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#E6D1D1'),
@@ -10802,7 +8167,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'European Union' + '<br>' +
                                 '<b>Monthly electricity consumed by end-users</b>: ' + df1[0].astype(str) + '<br>'),
                      go.Scatter(x=labelsAETTMCAF,
-                                y=valueBel1,
+                                y=dataAETTMEC.collect()[1][2:35] if 'Belgium' in coun else [],
                                 mode='lines+markers',
                                 name='BE',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#FF0000'),
@@ -10813,7 +8178,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Belgium' + '<br>'+
                                 '<b>Monthly electricity consumed by end-users</b>: ' + df1[1].astype(str) + '<br>'),
                      go.Scatter(x=labelsAETTMCAF,
-                                y=valueBul1,
+                                y=dataAETTMEC.collect()[2][2:35] if 'Bulgaria' in coun else [],
                                 mode='lines+markers',
                                 name='BG',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#353131'),
@@ -10824,7 +8189,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Bulgaria' + '<br>' +
                                 '<b>Monthly electricity consumed by end-users</b>: ' + df1[2].astype(str) + '<br>'),
                      go.Scatter(x=labelsAETTMCAF,
-                                y=valueChe1,
+                                y=dataAETTMEC.collect()[3][2:35] if 'Czechia' in coun else [],
                                 mode='lines+markers',
                                 name='CZ',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#49AF30'),
@@ -10835,7 +8200,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Czechia' + '<br>' +
                                 '<b>Monthly electricity consumed by end-users</b>: ' + df1[3].astype(str) + '<br>'),
                      go.Scatter(x=labelsAETTMCAF,
-                                y=valueDen1,
+                                y=dataAETTMEC.collect()[4][2:35] if 'Denmark' in coun else [],
                                 mode='lines+markers',
                                 name='DK',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#2A4623'),
@@ -10846,7 +8211,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Denmark' + '<br>' +
                                 '<b>Monthly electricity consumed by end-users</b>: ' + df1[5].astype(str) + '<br>'),
                      go.Scatter(x=labelsAETTMCAF,
-                                y=valueGer1,
+                                y=dataAETTMEC.collect()[5][2:35] if 'Germany' in coun else [],
                                 mode='lines+markers',
                                 name='DE',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#7B7D7B'),
@@ -10857,7 +8222,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Germany' + '<br>' +
                                 '<b>Monthly electricity consumed by end-users</b>: ' + df1[5].astype(str) + '<br>'),
                      go.Scatter(x=labelsAETTMCAF,
-                                y=valueEst1,
+                                y=dataAETTMEC.collect()[6][2:35] if 'Estonia' in coun else [],
                                 mode='lines+markers',
                                 name='EE',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#C4C048'),
@@ -10868,7 +8233,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Estonia' + '<br>' +
                                 '<b>Monthly electricity consumed by end-users</b>: ' + df1[6].astype(str) + '<br>'),
                      go.Scatter(x=labelsAETTMCAF,
-                                y=valueIre1,
+                                y=dataAETTMEC.collect()[7][2:35] if 'Ireland' in coun else [],
                                 mode='lines+markers',
                                 name='IE',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#9E9D7B'),
@@ -10879,7 +8244,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Ireland' + '<br>' +
                                 '<b>Monthly electricity consumed by end-users</b>: ' + df1[7].astype(str) + '<br>'),
                      go.Scatter(x=labelsAETTMCAF,
-                                y=valueGree1,
+                                y=dataAETTMEC.collect()[8][2:35] if 'Greece' in coun else [],
                                 mode='lines+markers',
                                 name='EL',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#1A46C0'),
@@ -10890,7 +8255,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Greece' + '<br>' +
                                 '<b>Monthly electricity consumed by end-users</b>: ' + df1[8].astype(str) + '<br>'),
                      go.Scatter(x=labelsAETTMCAF,
-                                y=valueSpa1,
+                                y=dataAETTMEC.collect()[9][2:35] if 'Spain' in coun else [],
                                 mode='lines+markers',
                                 name='ES',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#2E063A'),
@@ -10901,7 +8266,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Spain' + '<br>' +
                                 '<b>Monthly electricity consumed by end-users</b>: ' + df1[9].astype(str) + '<br>'),
                      go.Scatter(x=labelsAETTMCAF,
-                                y=valueFra1,
+                                y=dataAETTMEC.collect()[10][2:35] if 'France' in coun else [],
                                 mode='lines+markers',
                                 name='FR',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#39313C'),
@@ -10912,7 +8277,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'France' + '<br>' +
                                 '<b>Monthly electricity consumed by end-users</b>: ' + df1[10].astype(str) + '<br>'),
                      go.Scatter(x=labelsAETTMCAF,
-                                y=valueCro1,
+                                y=dataAETTMEC.collect()[11][2:35] if 'Croatia' in coun else [],
                                 mode='lines+markers',
                                 name='HR',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#189F96'),
@@ -10923,7 +8288,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Croatia' + '<br>' +
                                 '<b>Monthly electricity consumed by end-users</b>: ' + df1[11].astype(str) + '<br>'),
                      go.Scatter(x=labelsAETTMCAF,
-                                y=valueIta1,
+                                y=dataAETTMEC.collect()[12][2:35] if 'Italy' in coun else [],
                                 mode='lines+markers',
                                 name='IT',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#94A4A3'),
@@ -10934,7 +8299,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Italy' + '<br>' +
                                 '<b>Monthly electricity consumed by end-users</b>: ' + df1[12].astype(str) + '<br>'),
                      go.Scatter(x=labelsAETTMCAF,
-                                y=valueCyp1,
+                                y=dataAETTMEC.collect()[13][2:35] if 'Cyprus' in coun else [],
                                 mode='lines+markers',
                                 name='CY',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#ff3399'),
@@ -10945,7 +8310,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Cyprus' + '<br>' +
                                 '<b>Monthly electricity consumed by end-users</b>: ' + df1[13].astype(str) + '<br>'),
                      go.Scatter(x=labelsAETTMCAF,
-                                y=valueLat1,
+                                y=dataAETTMEC.collect()[14][2:35] if 'Latvia' in coun else [],
                                 mode='lines+markers',
                                 name='LV',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#aaaa55'),
@@ -10956,7 +8321,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Latvia' + '<br>' +
                                 '<b>Monthly electricity consumed by end-users</b>: ' + df1[14].astype(str) + '<br>'),
                      go.Scatter(x=labelsAETTMCAF,
-                                y=valueLith1,
+                                y=dataAETTMEC.collect()[15][2:35] if 'Lithuania' in coun else [],
                                 mode='lines+markers',
                                 name='LT',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#ffff00'),
@@ -10967,7 +8332,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Lithuania' + '<br>' +
                                 '<b>Monthly electricity consumed by end-users</b>: ' + df1[15].astype(str) + '<br>'),
                      go.Scatter(x=labelsAETTMCAF,
-                                y=valueLux1,
+                                y=dataAETTMEC.collect()[16][2:35] if 'Luxembourg' in coun else [],
                                 mode='lines+markers',
                                 name='LU',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#007399'),
@@ -10978,7 +8343,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Luxembourg' + '<br>' +
                                 '<b>Monthly electricity consumed by end-users</b>: ' + df1[16].astype(str) + '<br>'),
                      go.Scatter(x=labelsAETTMCAF,
-                                y=valueHun1,
+                                y=dataAETTMEC.collect()[17][2:35] if 'Hungary' in coun else [],
                                 mode='lines+markers',
                                 name='HU',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#ff3300'),
@@ -10989,7 +8354,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Hungary' + '<br>' +
                                 '<b>Monthly electricity consumed by end-users</b>: ' + df1[17].astype(str) + '<br>'),
                      go.Scatter(x=labelsAETTMCAF,
-                                y=valueNet1,
+                                y=dataAETTMEC.collect()[19][2:35] if 'Netherlands' in coun else [],
                                 mode='lines+markers',
                                 name='NL',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#00e600'),
@@ -11000,7 +8365,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Netherlands' + '<br>' +
                                 '<b>Monthly electricity consumed by end-users</b>: ' + df1[19].astype(str) + '<br>'),
                      go.Scatter(x=labelsAETTMCAF,
-                                y=valueAus1,
+                                y=dataAETTMEC.collect()[20][2:35] if 'Austria' in coun else [],
                                 mode='lines+markers',
                                 name='AT',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#4dff4d'),
@@ -11011,7 +8376,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Austria' + '<br>' +
                                 '<b>Monthly electricity consumed by end-users</b>: ' + df1[20].astype(str) + '<br>'),
                      go.Scatter(x=labelsAETTMCAF,
-                                y=valuePol1,
+                                y=dataAETTMEC.collect()[21][2:35] if 'Poland' in coun else [],
                                 mode='lines+markers',
                                 name='PL',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#003300'),
@@ -11022,7 +8387,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Poland' + '<br>' +
                                 '<b>Monthly electricity consumed by end-users</b>: ' + df1[21].astype(str) + '<br>'),
                      go.Scatter(x=labelsAETTMCAF,
-                                y=valuePor1,
+                                y=dataAETTMEC.collect()[22][2:35] if 'Portugal' in coun else [],
                                 mode='lines+markers',
                                 name='PT',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#662900'),
@@ -11033,7 +8398,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Portugal' + '<br>' +
                                 '<b>Monthly electricity consumed by end-users</b>: ' + df1[22].astype(str) + '<br>'),
                      go.Scatter(x=labelsAETTMCAF,
-                                y=valueRom1,
+                                y=dataAETTMEC.collect()[23][2:35] if 'Romania' in coun else [],
                                 mode='lines+markers',
                                 name='RO',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#993399'),
@@ -11044,7 +8409,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Romania' + '<br>' +
                                 '<b>Monthly electricity consumed by end-users</b>: ' + df1[23].astype(str) + '<br>'),
                      go.Scatter(x=labelsAETTMCAF,
-                                y=valueSlo1,
+                                y=dataAETTMEC.collect()[24][2:35] if 'Slovenia' in coun else [],
                                 mode='lines+markers',
                                 name='SI',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#d98cd9'),
@@ -11055,7 +8420,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Slovenia' + '<br>' +
                                 '<b>Monthly electricity consumed by end-users</b>: ' + df1[24].astype(str) + '<br>'),
                      go.Scatter(x=labelsAETTMCAF,
-                                y=valueSlovak1,
+                                y=dataAETTMEC.collect()[25][2:35] if 'Slovakia' in coun else [],
                                 mode='lines+markers',
                                 name='SK',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#0033cc'),
@@ -11066,7 +8431,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Slovakia' + '<br>' +
                                 '<b>Monthly electricity consumed by end-users</b>: ' + df1[25].astype(str) + '<br>'),
                      go.Scatter(x=labelsAETTMCAF,
-                                y=valueFin1,
+                                y=dataAETTMEC.collect()[26][2:35] if 'Finland' in coun else [],
                                 mode='lines+markers',
                                 name='FI',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#99b3ff'),
@@ -11077,7 +8442,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Finland' + '<br>' +
                                 '<b>Monthly electricity consumed by end-users</b>: ' + df1[26].astype(str) + '<br>'),
                      go.Scatter(x=labelsAETTMCAF,
-                                y=valueSwe1,
+                                y=dataAETTMEC.collect()[27][2:35] if 'Sweden' in coun else [],
                                 mode='lines+markers',
                                 name='SE',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#001a66'),
@@ -11088,7 +8453,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'Sweden' + '<br>' +
                                 '<b>Monthly electricity consumed by end-users</b>: ' + df1[27].astype(str) + '<br>'),
                      go.Scatter(x=labelsAETTMCAF,
-                                y=valueUk1,
+                                y=dataAETTMEC.collect()[28][2:35] if 'United Kingdom' in coun else [],
                                 mode='lines+markers',
                                 name='UK',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#00cc99'),
@@ -11099,7 +8464,7 @@ def update_graph(w_countries, w_countries1, country_chosen):
                                 '<b>Country</b>: ' + 'United Kingdom' + '<br>' +
                                 '<b>Monthly electricity consumed by end-users</b>: ' + df1[28].astype(str) + '<br>'),
                      go.Scatter(x=labelsAETTMCAF,
-                                y=valueNor1,
+                                y=dataAETTMEC.collect()[29][2:35] if 'Norway' in coun else [],
                                 mode='lines+markers',
                                 name='NO',
                                 line=dict(shape="spline", smoothing=1.3, width=3, color='#73e600'),
