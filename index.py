@@ -4,11 +4,15 @@ from dash import html
 from dash.dependencies import Input, Output
 import plotly.graph_objs as go
 import pandas as pd
+import findspark
+findspark.init()
 from pyspark import SparkContext, SparkConf
 from pyspark.sql import SQLContext
 import numpy as np
 import arrow
+from pyspark.ml.feature import VectorAssembler
 from pyspark.ml.regression import LinearRegression
+import matplotlib.pyplot as plt
 
 app = dash.Dash(__name__, )
 app.title = 'Spark Visual Data'
@@ -18,7 +22,7 @@ location1 = terr2[['subproducts']]
 list_locations = location1.set_index('subproducts').T.to_dict('dict')
 region = terr2['products'].unique()
 
-conf = SparkConf().setAppName('Spark visual').setMaster('local[*]')
+conf = SparkConf().setAppName('Spark visual')
 sc = SparkContext(conf=conf)
 sqlContext = SQLContext(sc)
 
@@ -238,6 +242,20 @@ app.layout = html.Div([
                       config={'displayModeBar': 'hover'}),
         ], className="create_container three columns"),
     ], className="row flex-display"),
+        html.Div([
+            html.Div([
+                 dcc.Graph(id='bar_line_2', figure={}, clickData=None, hoverData=None,
+                      config={
+                          'staticPlot': False,
+                          'scrollZoom': True,
+                          'doubleClick': 'reset',
+                          'showTips': False,
+                          'displayModeBar': True,
+                          'watermark': True,
+                      }),
+            ],className="create_container 12 columns"),
+        ],className="row flex-display"),
+
 ], id="mainContainer", style={"display": "flex", "flex-direction": "column"})
 @app.callback(
     Output('w_countries1', 'options'),
@@ -252,6 +270,129 @@ def get_country_options(w_countries):
 def get_country_value(w_countries1):
     return [k['value'] for k in w_countries1][0]
 
+###################################################
+###################################################
+#Kreiranje predikcije i rad sa linearnom regresijom
+@app.callback(Output('bar_line_2', 'figure'),
+              [Input('w_countries', 'value')],
+              [Input('w_countries1', 'value')])
+def update_prediction(w_countries, w_countries1):
+
+    if (w_countries == 'Economy') & (w_countries1 == 'Inflation - annual growth rate'):
+        df = sqlContext.read.format('csv').options(header=True, inferSchema=True).load('data/Economy-inflation.csv')
+        d = df.columns[2:32]
+
+        va = VectorAssembler(inputCols=d, outputCol='features')
+        va_df = va.transform(df)
+        va_df = va_df.select(['features', 'sum'])
+
+        lr = LinearRegression(featuresCol='features', labelCol='sum', regParam=0.3, elasticNetParam=0.8)
+        lr_model = lr.fit(va_df)
+        mdata = lr_model.transform(va_df)
+        y_pred = mdata.select("prediction").collect()
+        y_orig = mdata.select("sum").collect()
+        pred = np.array(y_pred)
+
+
+        pred1 = []
+        for i in range(0, pred.size):
+            pred1.append("{:.2f}".format(pred[i][0]))
+
+        pred2=pred1.sort()
+
+        orig=np.array(y_orig)
+        orig1=[]
+        for i in range(0,orig.size):
+            orig1.append(orig[i][0])
+
+        labels=np.array(df.select('GEOLABEL').collect())
+        labels1=[]
+        for i in range(0,labels.size):
+            labels1.append(labels[i][0])
+
+        diff1=abs(orig - pred)
+        diff = []
+        for i in range(0, pred.size):
+            diff.append("{:.2f}".format(diff1[i][0]))
+
+        return {
+            'data': [go.Scatter(x=labels1,
+                                y=orig1,
+                                mode='markers',
+                                name='ORIGINAL',
+                                marker=dict(size=5, symbol='circle', color='blue',
+                                line=dict(color='#4D96FF', width=2)),
+                                hoverinfo='text',
+                                hovertext=
+                                '<b>Original</b>' + '<br>'),
+                     go.Scatter(x=labels1,
+                                y=pred2,
+                                mode='lines',
+                                name='PREDICTION',
+                                line=dict(width=3, color='red'),
+                                hoverinfo='text',
+                                opacity=0.65,
+                                hovertext=
+                                '<b>Prediction</b>' + '<br>'),
+                     ],
+            'layout': go.Layout(
+                barmode='stack',
+                plot_bgcolor='#808080',
+                paper_bgcolor='#A8A8A8',
+                title={
+                    'text': 'Inflation - annual growth rate' + '  ' + '<br>' +
+                            "(predictions and original)" + '</br>',
+                    'y': 0.93,
+                    'x': 0.5,
+                    'xanchor': 'center',
+                    'yanchor': 'top'},
+                titlefont={
+                    'color': 'white',
+                    'size': 20},
+                hovermode='closest',
+                showlegend=True,
+                xaxis=dict(title='<b>Country</b>',
+                           spikemode='toaxis+across',
+                           spikedash='solid',
+                           tick0=0,
+                           dtick=1,
+                           color='white',
+                           showline=True,
+                           showgrid=True,
+                           showticklabels=True,
+                           linecolor='white',
+                           linewidth=2,
+                           ticks='outside',
+                           tickfont=dict(
+                               family='Arial',
+                               size=12,
+                               color='white')),
+                yaxis=dict(title='<b>%</b>',
+                           color='white',
+                           showline=True,
+                           showgrid=True,
+                           showticklabels=True,
+                           linecolor='white',
+                           linewidth=2,
+                           ticks='outside',
+                           tickfont=dict(
+                               family='Arial',
+                               size=12,
+                               color='white')),
+                legend={
+                    'orientation': 'h',
+                    'bgcolor': '#010915',
+                    'xanchor': 'center', 'x': 0.5, 'y': -0.3},
+                font=dict(
+                    family="sans-serif",
+                    size=12,
+                    color='white'), )
+        }
+
+    else:
+        return dash.no_update
+
+###################################################
 csv_World = 'data/Latitude.csv'
 data_World = sqlContext.read.format("csv").options(header='true').load(csv_World)
 ############################
